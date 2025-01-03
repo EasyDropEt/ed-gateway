@@ -1,4 +1,4 @@
-from rmediator.mediator import Mediator
+from rmediator import Mediator
 
 from src.application.features.business.handlers.commands import (
     CreateBusinessAccountCommandHandler,
@@ -34,14 +34,12 @@ from src.application.features.drivers.requests.queries import (
     GetDeliveryJobByIdQuery,
     GetDeliveryJobsQuery,
 )
-from src.infrastructure.persistence.db_client import DbClient
 from src.infrastructure.persistence.unit_of_work import UnitOfWork
 
 
 def mediator() -> Mediator:
     # Dependencies
-    db_client = DbClient()
-    uow = UnitOfWork(db_client)
+    uow = UnitOfWork()
 
     # Driver features
     mediator = Mediator()
@@ -65,5 +63,4 @@ def mediator() -> Mediator:
     )
     mediator.register_handler(CreateOrderCommand, CreateOrderCommandHandler(uow))
 
-    db_client.start()
     return mediator

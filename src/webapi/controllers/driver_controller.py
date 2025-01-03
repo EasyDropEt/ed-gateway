@@ -1,8 +1,8 @@
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, WebSocket
-from rmediator.decorators.request_handler import Annotated
-from rmediator.mediator import Mediator
+from rmediator import Mediator
 
 from src.application.features.drivers.dtos import (
     CreateDriverAccountDto,
