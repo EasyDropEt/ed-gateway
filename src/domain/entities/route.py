@@ -13,6 +13,8 @@ class WayPoint(TypedDict):
     order_id: UUID
     action: WayPointAction
     location_id: UUID
+    latitude: float
+    longitude: float
     eta: datetime
     sequence: int
 
