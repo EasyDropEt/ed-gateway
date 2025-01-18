@@ -13,6 +13,8 @@ from src.common.logging_helpers import get_logger
 
 LOG = get_logger()
 
+DRIVERS_DB = {}
+
 
 @request_handler(LoginDriverCommand, BaseResponse[DriverAccountDto])
 class LoginDriverCommandHandler(RequestHandler):
