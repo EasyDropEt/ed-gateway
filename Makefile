@@ -1,5 +1,9 @@
 .phony: format lint run test docker.build docker.build.quite docker.run
 
+export_deps:
+	@echo "Make: Exporting dependencies..."
+	@poetry export --without-hashes --format=requirements.txt > requirements.txt
+
 format:
 	@echo "Make: Running formatters..."
 	@isort src
