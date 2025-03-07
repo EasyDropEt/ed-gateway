@@ -16,6 +16,7 @@ class API(FastAPI):
         return self
 
     def start(self) -> None:
+        """Start the API server."""
         LOG.info("Starting api...")
         self._include_routers()
         self._contain_exceptions()
