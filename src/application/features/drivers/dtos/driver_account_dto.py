@@ -1,4 +1,4 @@
-from typing import TypedDict
+from ed_domain_model.services.core.dtos.driver_dto import DriverDto
 
 
-class DriverAccountDto(TypedDict): ...
+class DriverAccountDto(DriverDto): ...

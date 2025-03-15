@@ -5,7 +5,7 @@ from starlette.responses import JSONResponse
 from src.common.exception_helpers import ApplicationException
 from src.common.logging_helpers import get_logger
 from src.webapi.common.helpers import GenericResponse
-from src.webapi.controllers import business_controller, driver_controller
+from src.webapi.controllers import driver_controller
 
 LOG = get_logger()
 
@@ -29,7 +29,6 @@ class API(FastAPI):
     def _include_routers(self) -> None:
         LOG.info("Including routers...")
         self.include_router(driver_controller.router)
-        self.include_router(business_controller.router)
 
     def _contain_exceptions(self) -> None:
         @self.exception_handler(ApplicationException)
