@@ -1,15 +1,18 @@
+from typing import Generic, TypeVar
+
 import jsons
 import requests
 from ed_domain_model.services.common.endpoint import (EndpointCallParams,
                                                       EndpointDescription)
-from ed_domain_model.services.common.generic_responce import GenericResponse
 
+from src.application.common.responses.api_response import ApiResponse
 
-class ApiClient:
+T = TypeVar("T")
+class ApiClient(Generic[T]):
     def __init__(self, description: EndpointDescription):
         self._description = description
     
-    def send(self, call_params: EndpointCallParams) -> type | str:
+    def __call__(self, call_params: EndpointCallParams) -> ApiResponse[T]:
         self._validate_endpoint_description(call_params)
 
         url = self._build_url(call_params)
@@ -19,11 +22,7 @@ class ApiClient:
         data = call_params.get("request", {}) if 'request_model' in self._description else {}
 
         response = requests.request(method, url, headers=headers, params=params, data=jsons.dumps(data))
-        if response.status_code >= 400:
-            response.raise_for_status()
-
-        json: GenericResponse = response.json()
-        return json['data'] if 'response_model' in self._description else json['message']
+        return response.json()
     
     def _build_url(self, call_params: EndpointCallParams) -> str:
         path = self._description["path"]
