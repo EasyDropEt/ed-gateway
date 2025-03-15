@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from uuid import UUID
 
 from ed_domain_model.services.auth.dtos import (CreateUserDto,
                                                 CreateUserVerifyDto,
@@ -25,3 +26,6 @@ class ABCAuthApiHandler(metaclass=ABCMeta):
 
     @abstractmethod
     def verify_token(self, verify_token_dto: VerifyTokenDto) -> ApiResponse[UserDto]: ...
+
+    @abstractmethod
+    def delete_user(self, id: UUID) -> ApiResponse[None]: ...

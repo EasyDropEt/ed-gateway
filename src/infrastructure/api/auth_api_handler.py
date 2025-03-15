@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from ed_domain_model.services.auth.auth_endpoints import AuthEndpoint
 from ed_domain_model.services.auth.dtos import (CreateUserDto,
                                                 CreateUserVerifyDto,
@@ -48,4 +50,11 @@ class AuthApiHandler(ABCAuthApiHandler):
 
         api_client = ApiClient[UserDto](endpoint)
 
-        return api_client({'request': verify_token_dto})
+        return api_client({'request': verify_token_dto}) 
+
+    def delete_user(self, id: UUID) -> ApiResponse[None]:
+        endpoint = self._driver_endpoints.get_description('delete_user')
+
+        api_client = ApiClient[None](endpoint)
+
+        return api_client({'path_params': {'user_id': str(id)}})
