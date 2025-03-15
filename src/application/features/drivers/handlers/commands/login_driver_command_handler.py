@@ -22,8 +22,13 @@ class LoginDriverCommandHandler(RequestHandler):
         self, request: LoginDriverCommand
     ) -> BaseResponse[UnverifiedUserDto]:
         LOG.info("Handling LoginDriverCommand")
-        unverified_user_dto = self._api.auth_api.login_get_otp({**request.dto})
+        response = self._api.auth_api.login_get_otp({**request.dto})
+
+        if not response['is_success']:
+            return BaseResponse[UnverifiedUserDto].error(
+                "Failed to send OTP for log-in", response['errors']
+            )
 
         return BaseResponse[UnverifiedUserDto].success(
-            "Log-in OTP sent successfully", unverified_user_dto
+            "Log-in OTP sent successfully", response['data']
         )

@@ -21,9 +21,14 @@ class CreateDriverAccountCommandHandler(RequestHandler):
         self, request: CreateDriverAccountCommand
     ) -> BaseResponse[DriverAccountDto]:
         LOG.info("Handling CreateDriverAccountCommand")
-        driver_dto = self._api_handler.core_api.create_driver(request.dto)
+        response = self._api_handler.core_api.create_driver(request.dto)
+
+        if response['is_success'] is False:
+            return BaseResponse[DriverAccountDto].error(
+                "Failed to create driver account", response['errors']
+            )
 
         return BaseResponse[DriverAccountDto].success(
-            "Driver accoutn created successfully", driver_dto
+            "Driver accoutn created successfully", response['data']
         )
 

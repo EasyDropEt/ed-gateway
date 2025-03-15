@@ -19,11 +19,19 @@ class LoginDriverVerifyCommandHandler(RequestHandler):
     async def handle(
         self, request: LoginDriverVerifyCommand
     ) -> BaseResponse[DriverDto]:
-        user_dto = self._api.auth_api.login_verify_otp(request.dto)
+        verify_response = self._api.auth_api.login_verify_otp(request.dto)
+        if verify_response['is_success'] is False:
+            return BaseResponse[DriverDto].error(
+                "Failed to verify OTP for log-in", verify_response['errors']
+            )
 
-        id = user_dto['id']
-        driver = self._api.core_api.get_driver(str(id))
+        user = verify_response['data']
+        get_driver_response = self._api.core_api.get_driver(str(user['id']))
+        if get_driver_response['is_success'] is False:
+            return BaseResponse[DriverDto].error(
+                "Failed to get driver information", get_driver_response['errors']
+            )
 
         return BaseResponse[DriverDto].success(
-            "Driver logged in successfully", driver
+            "Driver logged in successfully", get_driver_response['data']
         )
