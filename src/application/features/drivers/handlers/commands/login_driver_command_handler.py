@@ -4,8 +4,9 @@ from rmediator.types import RequestHandler
 
 from src.application.common.responses.base_response import BaseResponse
 from src.application.contracts.infrastructure.api.abc_api import ABCApi
-from src.application.features.drivers.requests.commands.login_driver_command import \
-    LoginDriverCommand
+from src.application.features.drivers.requests.commands.login_driver_command import (
+    LoginDriverCommand,
+)
 from src.common.exception_helpers import ApplicationException, Exceptions
 from src.common.logging_helpers import get_logger
 
@@ -24,13 +25,13 @@ class LoginDriverCommandHandler(RequestHandler):
     ) -> BaseResponse[UnverifiedUserDto]:
         LOG.info("Handling LoginDriverCommand")
         response = self._api.auth_api.login_get_otp({**request.dto})
-        if not response['is_success']:
+        if not response["is_success"]:
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to send OTP for log-in",
-                response['errors'],
+                response["errors"],
             )
 
         return BaseResponse[UnverifiedUserDto].success(
-            "Log-in OTP sent successfully", response['data']
+            "Log-in OTP sent successfully", response["data"]
         )

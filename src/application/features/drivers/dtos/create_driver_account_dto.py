@@ -1,8 +1,7 @@
 from typing import TypedDict
 
 from ed_domain_model.services.core.dtos.create_car_dto import CreateCarDto
-from ed_domain_model.services.core.dtos.create_location_dto import \
-    CreateLocationDto
+from ed_domain_model.services.core.dtos.create_location_dto import CreateLocationDto
 
 
 class CreateDriverAccountDto(TypedDict):

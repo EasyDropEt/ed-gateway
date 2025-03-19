@@ -23,12 +23,12 @@ test:
 
 docker.build: lint
 	@echo "Make: Building a docker image... (Might be minutes)"
-	@docker build -t package:dev .
+	@docker build -t ed-gateway-package:dev .
 
 docker.build.quite: lint
 	@echo "Make: Building a docker image... (Might be minutes)"
-	@docker build -q -t package:dev .
+	@docker build -q -t ed-gateway-package:dev .
 
-docker.run: docker.build.quite
+docker.run: docker.build
 	@echo "Make: Running docker container..."
-	@docker run -p 8000:8000 -v $(PWD):/app package:dev run
+	@docker run -p 8000:8000 -v $(PWD):/app ed-gateway-package:dev run

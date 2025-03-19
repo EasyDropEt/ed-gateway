@@ -1,13 +1,11 @@
 from datetime import datetime
 
+from ed_domain_model.services.core.dtos import DeliveryJobDto
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
 from src.application.common.responses.base_response import BaseResponse
-from src.application.contracts.infrastructure.persistence.abc_unit_of_work import (
-    ABCUnitOfWork,
-)
-from src.application.features.drivers.dtos.delivery_job_dto import DeliveryJobDto
+from src.application.contracts.infrastructure.api.abc_api import ABCApi
 from src.application.features.drivers.requests.queries.get_delivery_jobs_query import (
     GetDeliveryJobsQuery,
 )
@@ -20,8 +18,8 @@ LOG = get_logger()
 
 @request_handler(GetDeliveryJobsQuery, BaseResponse[list[DeliveryJobDto]])
 class GetDeliveryJobsQueryHandler(RequestHandler):
-    def __init__(self, uow: ABCUnitOfWork):
-        self._uow = uow
+    def __init__(self, api: ABCApi):
+        self._api = api
 
     async def handle(
         self, request: GetDeliveryJobsQuery

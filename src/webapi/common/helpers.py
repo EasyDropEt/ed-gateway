@@ -36,7 +36,7 @@ class GenericResponse(_ApiResponse, Generic[T]):
 
 
 def rest_endpoint(
-    func: Callable[..., Awaitable[BaseResponse]]
+    func: Callable[..., Awaitable[BaseResponse]],
 ) -> Callable[..., Awaitable[GenericResponse]]:
     @wraps(func)
     async def wrapper(*args, **kwargs) -> GenericResponse:

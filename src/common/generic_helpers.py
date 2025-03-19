@@ -14,5 +14,6 @@ def get_config() -> Config:
         "core_api": os.getenv("CORE_API") or "",
     }
 
+
 def get_new_id():
     return str(uuid.uuid4())
