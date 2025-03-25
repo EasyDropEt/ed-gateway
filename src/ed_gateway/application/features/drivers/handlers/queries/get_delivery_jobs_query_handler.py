@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from ed_domain_model.services.core.dtos import DeliveryJobDto
+from ed_domain.services.core.dtos import DeliveryJobDto
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 

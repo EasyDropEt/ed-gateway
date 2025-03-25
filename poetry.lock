@@ -760,13 +760,13 @@ pgp = ["gpg"]
 
 [[package]]
 name = "ed-auth"
-version = "0.1.1"
+version = "0.1.2"
 description = "EasyDrop auth model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_auth-0.1.1-py3-none-any.whl", hash = "sha256:4c3a0300daa0a780327bc8314ac414ecc870b1d01ddec04b3a30198ea0f77faf"},
+    {file = "ed_auth-0.1.2-py3-none-any.whl", hash = "sha256:05b7fcd62fea1d71a6295d09623194ea21b9ab1a02a15dc520e1e28143f3e7cd"},
 ]
 
 [package.extras]
@@ -774,13 +774,13 @@ dev = ["check-manifest"]
 
 [[package]]
 name = "ed-core"
-version = "0.1.0"
+version = "0.1.1"
 description = "EasyDrop auth model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_core-0.1.0-py3-none-any.whl", hash = "sha256:1e88d71f209560e070d1cec7ce503487aef25fe44db1fa5c6dc7648fa8430a19"},
+    {file = "ed_core-0.1.1-py3-none-any.whl", hash = "sha256:f12fdd97d6f3bf69e1df092d27e385513404fd032865d92ac5600cafc19d7e5e"},
 ]
 
 [package.extras]

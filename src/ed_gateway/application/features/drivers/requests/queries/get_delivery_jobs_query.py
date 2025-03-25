@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ed_domain_model.services.core.dtos import DeliveryJobDto
+from ed_domain.services.core.dtos import DeliveryJobDto
 from rmediator.decorators import request
 from rmediator.mediator import Request
 

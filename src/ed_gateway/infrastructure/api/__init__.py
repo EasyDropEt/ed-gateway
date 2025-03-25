@@ -1,5 +1,5 @@
-from ed_gateway.infrastructure.api.core_api_handler import CoreApiHandler
+from ed_gateway.infrastructure.api.api import Api
 
 __all__ = [
-    "CoreApiHandler",
+    "Api",
 ]

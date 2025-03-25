@@ -3,13 +3,12 @@ from rmediator.types import RequestHandler
 
 from ed_gateway.application.common.responses.base_response import BaseResponse
 from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
-from ed_gateway.application.features.drivers.dtos.driver_account_dto import (
-    DriverAccountDto,
-)
-from ed_gateway.application.features.drivers.requests.commands.create_driver_account_command import (
-    CreateDriverAccountCommand,
-)
-from ed_gateway.common.exception_helpers import ApplicationException, Exceptions
+from ed_gateway.application.features.drivers.dtos.driver_account_dto import \
+    DriverAccountDto
+from ed_gateway.application.features.drivers.requests.commands.create_driver_account_command import \
+    CreateDriverAccountCommand
+from ed_gateway.common.exception_helpers import (ApplicationException,
+                                                 Exceptions)
 from ed_gateway.common.logging_helpers import get_logger
 
 LOG = get_logger()

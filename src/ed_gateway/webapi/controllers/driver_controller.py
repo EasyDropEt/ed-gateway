@@ -1,20 +1,15 @@
 from typing import Annotated
 
-from ed_domain_model.services.auth.dtos import LoginUserVerifyDto, UnverifiedUserDto
-from ed_domain_model.services.core.dtos.driver_dto import DriverDto
+from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
+                                                    UnverifiedUserDto)
+from ed_domain.services.core.dtos.driver_dto import DriverDto
 from fastapi import APIRouter, Depends
 from rmediator import Mediator
 
 from ed_gateway.application.features.drivers.dtos import (
-    CreateDriverAccountDto,
-    DriverAccountDto,
-    LoginDriverDto,
-)
+    CreateDriverAccountDto, DriverAccountDto, LoginDriverDto)
 from ed_gateway.application.features.drivers.requests.commands import (
-    CreateDriverAccountCommand,
-    LoginDriverCommand,
-    LoginDriverVerifyCommand,
-)
+    CreateDriverAccountCommand, LoginDriverCommand, LoginDriverVerifyCommand)
 from ed_gateway.common.logging_helpers import get_logger
 from ed_gateway.webapi.common.helpers import GenericResponse, rest_endpoint
 from ed_gateway.webapi.dependency_setup import mediator

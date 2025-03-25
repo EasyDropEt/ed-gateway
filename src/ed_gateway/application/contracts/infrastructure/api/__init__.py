@@ -1,5 +1,3 @@
-from ed_gateway.application.contracts.infrastructure.api.abc_core_api_handler import (
-    ABCCoreApiHandler,
-)
+from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
 
-__all__ = ["ABCCoreApiHandler"]
+__all__ = ["ABCApi"]
