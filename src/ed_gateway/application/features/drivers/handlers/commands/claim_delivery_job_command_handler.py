@@ -25,6 +25,12 @@ class ClaimDeliveryJobCommandHandler(RequestHandler):
             str(request.driver_id), str(request.delivery_job_id)
         )
         if response["is_success"] is False:
+            LOG.error(
+                "Failed to claim delivery job.",
+                request.driver_id,
+                request.delivery_job_id,
+                response["errors"],
+            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to claim delivery job.",
