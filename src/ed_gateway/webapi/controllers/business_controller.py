@@ -69,7 +69,7 @@ async def create_orders(
     )
 
 
-@router.get("/{business_id}/orders", response_model=GenericResponse[BusinessAccountDto])
+@router.get("/{business_id}/orders", response_model=GenericResponse[list[OrderDto]])
 @rest_endpoint
 async def get_orders(
     business_id: UUID, mediator: Annotated[Mediator, Depends(mediator)]
