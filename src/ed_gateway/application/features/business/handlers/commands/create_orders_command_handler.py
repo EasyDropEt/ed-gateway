@@ -21,7 +21,7 @@ class CreateOrdersCommandHandler(RequestHandler):
     async def handle(
         self, request: CreateOrdersCommand
     ) -> BaseResponse[list[OrderDto]]:
-        LOG.info("Handling CreateBusinessAccountCommand")
+        LOG.info("Handling CreateOrdersCommand")
         response = self._api_handler.core_api.create_business_orders(
             str(request.business_id), request.dto
         )
