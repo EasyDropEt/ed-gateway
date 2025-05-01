@@ -55,8 +55,14 @@ async def get_business(
     return await mediator.send(GetBusinessQuery(business_id=business_id))
 
 
+from ed_core.documentation.abc_core_api_client import (
+    BusinessDto,
+    CreateOrdersDto,
+    OrderDto,
+)
+
 @router.post(
-    "/{business_id}/orders", response_model=GenericResponse[BusinessAccountDto]
+    "/{business_id}/orders", response_model=GenericResponse[list[OrderDto]]
 )
 @rest_endpoint
 async def create_orders(
