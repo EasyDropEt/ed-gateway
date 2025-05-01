@@ -26,6 +26,11 @@ class CreateOrdersCommandHandler(RequestHandler):
             str(request.business_id), request.dto
         )
         if not response["is_success"]:
+            LOG.error(
+                "Failed to create an order.",
+                request.business_id,
+                response["errors"],
+            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to create an order.",
