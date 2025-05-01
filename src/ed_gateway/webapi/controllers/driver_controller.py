@@ -3,14 +3,15 @@ from uuid import UUID
 
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
-from ed_core.documentation.abc_core_api_client import DriverDto
+from ed_core.documentation.abc_core_api_client import DeliveryJobDto, DriverDto
 from fastapi import APIRouter, Depends
 from rmediator import Mediator
 
 from ed_gateway.application.features.drivers.dtos import (
     CreateDriverAccountDto, DriverAccountDto, LoginDriverDto)
 from ed_gateway.application.features.drivers.requests.commands import (
-    CreateDriverAccountCommand, LoginDriverCommand, LoginDriverVerifyCommand)
+    ClaimDeliveryJobCommand, CreateDriverAccountCommand, LoginDriverCommand,
+    LoginDriverVerifyCommand)
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByIdQuery, GetDriverDeliveryJobsQuery)
 from ed_gateway.common.logging_helpers import get_logger
@@ -51,9 +52,27 @@ async def get_driver(driver_id: UUID, mediator: Annotated[Mediator, Depends(medi
     return await mediator.send(GetDriverByIdQuery(driver_id=driver_id))
 
 
-@router.get("/{driver_id}/delivery_jobs", response_model=GenericResponse[DriverDto])
+@router.get(
+    "/{driver_id}/delivery_jobs", response_model=GenericResponse[list[DeliveryJobDto]]
+)
 @rest_endpoint
 async def get_driver_delivery_jobs(
     driver_id: UUID, mediator: Annotated[Mediator, Depends(mediator)]
 ):
     return await mediator.send(GetDriverDeliveryJobsQuery(driver_id=driver_id))
+
+
+@router.post(
+    "/{driver_id}/delivery_jobs/{delivery_job_id}/claim",
+    response_model=GenericResponse[list[DeliveryJobDto]],
+)
+@rest_endpoint
+async def claim_delivery_job(
+    driver_id: UUID,
+    delivery_job_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+):
+    return await mediator.send(
+        ClaimDeliveryJobCommand(driver_id=driver_id,
+                                delivery_job_id=delivery_job_id)
+    )

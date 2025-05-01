@@ -5,22 +5,27 @@ from rmediator import Mediator
 
 from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
 from ed_gateway.application.features.business.handlers.commands import (
-    CreateBusinessAccountCommandHandler, LoginBusinessCommandHandler,
-    LoginBusinessVerifyCommandHandler)
+    CreateBusinessAccountCommandHandler, CreateOrdersCommandHandler,
+    LoginBusinessCommandHandler, LoginBusinessVerifyCommandHandler)
+from ed_gateway.application.features.business.handlers.queries import (
+    GetBusinessOrdersQueryHandler, GetBusinessQueryHandler)
 from ed_gateway.application.features.business.requests.commands import (
-    CreateBusinessAccountCommand, LoginBusinessCommand,
+    CreateBusinessAccountCommand, CreateOrdersCommand, LoginBusinessCommand,
     LoginBusinessVerifyCommand)
-from ed_gateway.application.features.delivery_jobs.handlers.queries import \
-    GetDeliveryJobsQueryHandler
-from ed_gateway.application.features.delivery_jobs.requests.queries import \
-    GetDeliveryJobsQuery
+from ed_gateway.application.features.business.requests.queries import (
+    GetBusinessOrdersQuery, GetBusinessQuery)
+from ed_gateway.application.features.delivery_jobs.handlers.queries import (
+    GetDeliveryJobQueryHandler, GetDeliveryJobsQueryHandler)
+from ed_gateway.application.features.delivery_jobs.requests.queries import (
+    GetDeliveryJobQuery, GetDeliveryJobsQuery)
 from ed_gateway.application.features.drivers.handlers.commands import (
-    CreateDriverAccountCommandHandler, LoginDriverCommandHandler,
-    LoginDriverVerifyCommandHandler)
+    ClaimDeliveryJobCommandHandler, CreateDriverAccountCommandHandler,
+    LoginDriverCommandHandler, LoginDriverVerifyCommandHandler)
 from ed_gateway.application.features.drivers.handlers.queries import (
     GetDriverByIdQueryHandler, GetDriverDeliveryJobsQueryHandler)
 from ed_gateway.application.features.drivers.requests.commands import (
-    CreateDriverAccountCommand, LoginDriverCommand, LoginDriverVerifyCommand)
+    ClaimDeliveryJobCommand, CreateDriverAccountCommand, LoginDriverCommand,
+    LoginDriverVerifyCommand)
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByIdQuery, GetDriverDeliveryJobsQuery)
 from ed_gateway.common.generic_helpers import get_config
@@ -42,12 +47,17 @@ def mediator(api: Annotated[ABCApi, Depends(api)]) -> Mediator:
         (LoginDriverVerifyCommand, LoginDriverVerifyCommandHandler(api)),
         (GetDriverDeliveryJobsQuery, GetDriverDeliveryJobsQueryHandler(api)),
         (GetDriverByIdQuery, GetDriverByIdQueryHandler(api)),
+        (ClaimDeliveryJobCommand, ClaimDeliveryJobCommandHandler(api)),
         # Business features
         (CreateBusinessAccountCommand, CreateBusinessAccountCommandHandler(api)),
         (LoginBusinessCommand, LoginBusinessCommandHandler(api)),
         (LoginBusinessVerifyCommand, LoginBusinessVerifyCommandHandler(api)),
+        (GetBusinessOrdersQuery, GetBusinessOrdersQueryHandler(api)),
+        (CreateOrdersCommand, CreateOrdersCommandHandler(api)),
+        (GetBusinessQuery, GetBusinessQueryHandler(api)),
         # Delivery features
         (GetDeliveryJobsQuery, GetDeliveryJobsQueryHandler(api)),
+        (GetDeliveryJobQuery, GetDeliveryJobQueryHandler(api)),
     ]
 
     for request, handler in features:

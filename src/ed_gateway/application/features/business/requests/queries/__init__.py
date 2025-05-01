@@ -1,8 +1,6 @@
-from ed_gateway.application.features.drivers.requests.queries.get_delivery_job_by_id_query import (
-    GetDeliveryJobByIdQuery,
-)
-from ed_gateway.application.features.drivers.requests.queries.get_delivery_jobs_query import (
-    GetDeliveryJobsQuery,
-)
+from ed_gateway.application.features.business.requests.queries.get_business_orders_query import \
+    GetBusinessOrdersQuery
+from ed_gateway.application.features.business.requests.queries.get_business_query import \
+    GetBusinessQuery
 
-__all__ = ["GetDeliveryJobsQuery", "GetDeliveryJobByIdQuery"]
+__all__ = ["GetBusinessOrdersQuery", "GetBusinessQuery"]

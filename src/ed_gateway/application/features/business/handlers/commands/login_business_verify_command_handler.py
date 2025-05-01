@@ -1,4 +1,3 @@
-from ed_core.documentation.abc_core_api_client import BusinessDto
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -41,6 +40,6 @@ class LoginBusinessVerifyCommandHandler(RequestHandler):
                 get_business_response["errors"],
             )
 
-        return BaseResponse[BusinessDto].success(
+        return BaseResponse[BusinessAccountDto].success(
             "Business logged in successfully", get_business_response["data"]
         )

@@ -1,16 +1,20 @@
 from typing import Annotated
+from uuid import UUID
 
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
-from ed_core.documentation.abc_core_api_client import BusinessDto
+from ed_core.documentation.abc_core_api_client import (BusinessDto,
+                                                       CreateOrdersDto)
 from fastapi import APIRouter, Depends
 from rmediator import Mediator
 
 from ed_gateway.application.features.business.dtos import (
     BusinessAccountDto, CreateBusinessAccountDto, LoginBusinessDto)
 from ed_gateway.application.features.business.requests.commands import (
-    CreateBusinessAccountCommand, LoginBusinessCommand,
+    CreateBusinessAccountCommand, CreateOrdersCommand, LoginBusinessCommand,
     LoginBusinessVerifyCommand)
+from ed_gateway.application.features.business.requests.queries import (
+    GetBusinessOrdersQuery, GetBusinessQuery)
 from ed_gateway.common.logging_helpers import get_logger
 from ed_gateway.webapi.common.helpers import GenericResponse, rest_endpoint
 from ed_gateway.webapi.dependency_setup import mediator
@@ -29,7 +33,7 @@ async def create_account(
 
 @router.post("/login/get-otp", response_model=GenericResponse[UnverifiedUserDto])
 @rest_endpoint
-async def login_driver(
+async def login_business(
     request: LoginBusinessDto, mediator: Annotated[Mediator, Depends(mediator)]
 ):
     return await mediator.send(LoginBusinessCommand(dto=request))
@@ -37,7 +41,37 @@ async def login_driver(
 
 @router.post("/login/verify", response_model=GenericResponse[BusinessDto])
 @rest_endpoint
-async def login_driver_verify(
+async def login_business_verify(
     request: LoginUserVerifyDto, mediator: Annotated[Mediator, Depends(mediator)]
 ):
     return await mediator.send(LoginBusinessVerifyCommand(dto=request))
+
+
+@router.get("/{business_id}", response_model=GenericResponse[BusinessAccountDto])
+@rest_endpoint
+async def get_business(
+    business_id: UUID, mediator: Annotated[Mediator, Depends(mediator)]
+):
+    return await mediator.send(GetBusinessQuery(business_id=business_id))
+
+
+@router.post(
+    "/{business_id}/orders", response_model=GenericResponse[BusinessAccountDto]
+)
+@rest_endpoint
+async def create_orders(
+    business_id: UUID,
+    request: CreateOrdersDto,
+    mediator: Annotated[Mediator, Depends(mediator)],
+):
+    return await mediator.send(
+        CreateOrdersCommand(business_id=business_id, dto=request)
+    )
+
+
+@router.get("/{business_id}/orders", response_model=GenericResponse[BusinessAccountDto])
+@rest_endpoint
+async def get_orders(
+    business_id: UUID, mediator: Annotated[Mediator, Depends(mediator)]
+):
+    return await mediator.send(GetBusinessOrdersQuery(business_id=business_id))
