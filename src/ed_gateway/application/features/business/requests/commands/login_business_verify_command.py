@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 
 from ed_auth.application.features.auth.dtos import LoginUserVerifyDto
-from ed_core.documentation.abc_core_api_client import DriverDto
 from rmediator.decorators import request
 from rmediator.mediator import Request
 
 from ed_gateway.application.common.responses.base_response import BaseResponse
+from ed_gateway.application.features.business.dtos import BusinessAccountDto
 
 
-@request(BaseResponse[DriverDto])
+@request(BaseResponse[BusinessAccountDto])
 @dataclass
-class LoginDriverVerifyCommand(Request):
+class LoginBusinessVerifyCommand(Request):
     dto: LoginUserVerifyDto
