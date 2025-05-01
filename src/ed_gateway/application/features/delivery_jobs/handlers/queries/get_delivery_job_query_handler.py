@@ -25,14 +25,16 @@ class GetDeliveryJobQueryHandler(RequestHandler):
 
         if not response["is_success"]:
             LOG.error(
-                "Failed to fetch driver.",
+            LOG.error(
+                "Failed to fetch delivery job.",
                 request.delivery_job_id,
                 response["errors"],
             )
             raise ApplicationException(
                 Exceptions.InternalServerException,
-                "Driver not found.",
+                "Delivery job not found.",
                 response["errors"],
+            )
             )
 
         return BaseResponse[DeliveryJobDto].success(
