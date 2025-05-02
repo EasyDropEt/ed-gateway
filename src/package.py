@@ -1,3 +1,5 @@
+from fastapi.middleware.cors import CORSMiddleware
+
 from ed_gateway.common.logging_helpers import get_logger
 from ed_gateway.webapi.api import API
 
@@ -10,6 +12,13 @@ class Package:
             title="ED Gateway API",
             description="ED Gateway API Documentation",
             version="1.0.0",
+        )
+        self._api.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
         )
 
     def start(self) -> None:

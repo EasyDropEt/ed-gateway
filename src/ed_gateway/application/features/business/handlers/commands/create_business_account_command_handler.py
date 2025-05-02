@@ -37,41 +37,28 @@ class CreateBusinessAccountCommandHandler(RequestHandler):
                 create_user_response["errors"],
             )
 
-        try:
-            create_business_response = self._api_handler.core_api.create_business(
-                {
-                    "user_id": create_user_response["data"]["id"],
-                    "business_name": request.dto["business_name"],
-                    "owner_first_name": request.dto["owner_first_name"],
-                    "owner_last_name": request.dto["owner_last_name"],
-                    "phone_number": request.dto["phone_number"],
-                    "email": request.dto["email"],
-                    "location": request.dto["location"],
-                    "billing_details": request.dto["billing_details"],
-                }
-            )
-            if create_business_response["is_success"] is False:
-                self._api_handler.auth_api.delete_user(
-                    create_user_response["data"]["id"]
-                )
-                raise ApplicationException(
-                    Exceptions.InternalServerException,
-                    "Failed to create business account",
-                    create_business_response["errors"],
-                )
-
-            return BaseResponse[BusinessDto].success(
-                "Business account created successfully",
-                create_business_response["data"],
-            )
-
-        except Exception as e:
-            LOG.error(
-                "Error occurred while creating business account: %s", str(e))
+        create_business_response = self._api_handler.core_api.create_business(
+            {
+                "user_id": create_user_response["data"]["id"],
+                "business_name": request.dto["business_name"],
+                "owner_first_name": request.dto["owner_first_name"],
+                "owner_last_name": request.dto["owner_last_name"],
+                "phone_number": request.dto["phone_number"],
+                "email": request.dto["email"],
+                "location": request.dto["location"],
+                "billing_details": request.dto["billing_details"],
+            }
+        )
+        if create_business_response["is_success"] is False:
             self._api_handler.auth_api.delete_user(
                 create_user_response["data"]["id"])
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to create business account",
-                [str(e)],
+                create_business_response["errors"],
             )
+
+        return BaseResponse[BusinessDto].success(
+            "Business account created successfully",
+            create_business_response["data"],
+        )

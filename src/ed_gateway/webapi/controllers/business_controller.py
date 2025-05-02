@@ -69,7 +69,7 @@ async def login_business_verify(
 
 @router.get(
     "/me",
-    response_model=GenericResponse[BusinessAccountDto],
+    response_model=GenericResponse[BusinessDto],
     tags=["Business Features"],
 )
 @rest_endpoint
