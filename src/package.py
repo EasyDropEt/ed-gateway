@@ -6,7 +6,11 @@ LOG = get_logger()
 
 class Package:
     def __init__(self) -> None:
-        self._api = API(title="ED Gateway API", version="1.0.0")
+        self._api = API(
+            title="ED Gateway API",
+            description="ED Gateway API Documentation",
+            version="1.0.0",
+        )
 
     def start(self) -> None:
         self._api.start()

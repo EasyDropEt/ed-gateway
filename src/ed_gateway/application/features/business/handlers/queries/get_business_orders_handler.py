@@ -6,7 +6,7 @@ from ed_gateway.application.common.responses.base_response import BaseResponse
 from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
 from ed_gateway.application.features.business.requests.queries import \
     GetBusinessOrdersQuery
-from ed_gateway.common.exception_helpers import (ApplicationException,
+from ed_domain.common.exceptions import (ApplicationException,
                                                  Exceptions)
 from ed_gateway.common.logging_helpers import get_logger
 

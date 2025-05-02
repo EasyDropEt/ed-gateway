@@ -1,8 +1,8 @@
 import uvicorn
+from ed_domain.common.exceptions import ApplicationException
 from fastapi import FastAPI, Request
 from starlette.responses import JSONResponse
 
-from ed_gateway.common.exception_helpers import ApplicationException
 from ed_gateway.common.logging_helpers import get_logger
 from ed_gateway.webapi.common.helpers import GenericResponse
 from ed_gateway.webapi.controllers import (business_controller,
@@ -39,6 +39,9 @@ class API(FastAPI):
         async def application_exception_handler(
             request: Request, exception: ApplicationException
         ) -> JSONResponse:
+            LOG.error(
+                f"ApplicationException occurred: {exception.message} while handling {request.url}"
+            )
             return JSONResponse(
                 status_code=exception.error_code,
                 content=GenericResponse(

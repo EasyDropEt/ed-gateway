@@ -7,7 +7,7 @@ from ed_gateway.application.features.drivers.dtos.driver_account_dto import \
     DriverAccountDto
 from ed_gateway.application.features.drivers.requests.commands.create_driver_account_command import \
     CreateDriverAccountCommand
-from ed_gateway.common.exception_helpers import (ApplicationException,
+from ed_domain.common.exceptions import (ApplicationException,
                                                  Exceptions)
 from ed_gateway.common.logging_helpers import get_logger
 

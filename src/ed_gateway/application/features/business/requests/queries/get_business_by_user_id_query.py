@@ -5,11 +5,9 @@ from rmediator.decorators import request
 from rmediator.mediator import Request
 
 from ed_gateway.application.common.responses.base_response import BaseResponse
-from ed_gateway.application.features.business.dtos import \
-    CreateBusinessAccountDto
 
 
 @request(BaseResponse[BusinessDto])
 @dataclass
-class CreateBusinessAccountCommand(Request):
-    dto: CreateBusinessAccountDto
+class GetBusinessByUserIdQuery(Request):
+    user_id: str

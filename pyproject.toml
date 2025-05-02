@@ -20,7 +20,7 @@ requests = "^2.32.3"
 pre-commit = "^4.2.0"
 ed-domain = "^0.2.12"
 ed-auth = "^0.1.2"
-ed-core = "^0.1.10"
+ed-core = "0.1.13"
 
 
 [tool.poetry.group.test.dependencies]

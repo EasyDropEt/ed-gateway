@@ -1,26 +1,25 @@
+from ed_core.documentation.abc_core_api_client import BusinessDto
+from ed_domain.common.exceptions import ApplicationException, Exceptions
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
 from ed_gateway.application.common.responses.base_response import BaseResponse
 from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
-from ed_gateway.application.features.business.dtos import BusinessAccountDto
 from ed_gateway.application.features.business.requests.commands import \
     CreateBusinessAccountCommand
-from ed_gateway.common.exception_helpers import (ApplicationException,
-                                                 Exceptions)
 from ed_gateway.common.logging_helpers import get_logger
 
 LOG = get_logger()
 
 
-@request_handler(CreateBusinessAccountCommand, BaseResponse[BusinessAccountDto])
+@request_handler(CreateBusinessAccountCommand, BaseResponse[BusinessDto])
 class CreateBusinessAccountCommandHandler(RequestHandler):
     def __init__(self, api_handler: ABCApi):
         self._api_handler = api_handler
 
     async def handle(
         self, request: CreateBusinessAccountCommand
-    ) -> BaseResponse[BusinessAccountDto]:
+    ) -> BaseResponse[BusinessDto]:
         LOG.info("Handling CreateBusinessAccountCommand")
         create_user_response = self._api_handler.auth_api.create_get_otp(
             {
@@ -38,27 +37,41 @@ class CreateBusinessAccountCommandHandler(RequestHandler):
                 create_user_response["errors"],
             )
 
-        create_business_response = self._api_handler.core_api.create_business(
-            {
-                "user_id": create_user_response["data"]["id"],
-                "business_name": request.dto["business_name"],
-                "owner_first_name": request.dto["owner_first_name"],
-                "owner_last_name": request.dto["owner_last_name"],
-                "phone_number": request.dto["phone_number"],
-                "email": request.dto["email"],
-                "location": request.dto["location"],
-                "billing_details": request.dto["billing_details"],
-            }
-        )
-        if create_business_response["is_success"] is False:
+        try:
+            create_business_response = self._api_handler.core_api.create_business(
+                {
+                    "user_id": create_user_response["data"]["id"],
+                    "business_name": request.dto["business_name"],
+                    "owner_first_name": request.dto["owner_first_name"],
+                    "owner_last_name": request.dto["owner_last_name"],
+                    "phone_number": request.dto["phone_number"],
+                    "email": request.dto["email"],
+                    "location": request.dto["location"],
+                    "billing_details": request.dto["billing_details"],
+                }
+            )
+            if create_business_response["is_success"] is False:
+                self._api_handler.auth_api.delete_user(
+                    create_user_response["data"]["id"]
+                )
+                raise ApplicationException(
+                    Exceptions.InternalServerException,
+                    "Failed to create business account",
+                    create_business_response["errors"],
+                )
+
+            return BaseResponse[BusinessDto].success(
+                "Business account created successfully",
+                create_business_response["data"],
+            )
+
+        except Exception as e:
+            LOG.error(
+                "Error occurred while creating business account: %s", str(e))
             self._api_handler.auth_api.delete_user(
                 create_user_response["data"]["id"])
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to create business account",
-                create_business_response["errors"],
+                [str(e)],
             )
-
-        return BaseResponse[BusinessAccountDto].success(
-            "Business account created successfully", create_business_response["data"]
-        )
