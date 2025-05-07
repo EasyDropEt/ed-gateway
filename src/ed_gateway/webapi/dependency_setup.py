@@ -5,6 +5,8 @@ from fastapi.security import OAuth2PasswordBearer
 from rmediator import Mediator
 
 from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
+from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uploader import \
+    ABCImageUploader
 from ed_gateway.application.features.business.handlers.commands import (
     CreateBusinessAccountCommandHandler, CreateOrdersCommandHandler,
     LoginBusinessCommandHandler, LoginBusinessVerifyCommandHandler)
@@ -34,6 +36,13 @@ from ed_gateway.application.features.drivers.requests.queries import (
 from ed_gateway.common.generic_helpers import get_config
 from ed_gateway.common.typing.config import Config
 from ed_gateway.infrastructure.api.api import Api
+from ed_gateway.infrastructure.image_upload.image_uploader import ImageUploader
+
+
+def get_image_uploader(
+    config: Annotated[Config, Depends(get_config)],
+) -> ABCImageUploader:
+    return ImageUploader(config["cloudinary"])
 
 
 def api(config: Annotated[Config, Depends(get_config)]) -> ABCApi:
@@ -49,12 +58,18 @@ def oauth_scheme(
     )
 
 
-def mediator(api: Annotated[ABCApi, Depends(api)]) -> Mediator:
+def mediator(
+    image_uploader: Annotated[ABCImageUploader, Depends(get_image_uploader)],
+    api: Annotated[ABCApi, Depends(api)],
+) -> Mediator:
     mediator = Mediator()
 
     features = [
         # Driver features
-        (CreateDriverAccountCommand, CreateDriverAccountCommandHandler(api)),
+        (
+            CreateDriverAccountCommand,
+            CreateDriverAccountCommandHandler(api, image_uploader),
+        ),
         (LoginDriverCommand, LoginDriverCommandHandler(api)),
         (LoginDriverVerifyCommand, LoginDriverVerifyCommandHandler(api)),
         (GetDriverDeliveryJobsQuery, GetDriverDeliveryJobsQueryHandler(api)),

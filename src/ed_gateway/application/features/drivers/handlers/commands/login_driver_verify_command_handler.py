@@ -1,3 +1,4 @@
+from ed_domain.common.exceptions import ApplicationException, Exceptions
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -6,8 +7,6 @@ from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
 from ed_gateway.application.features.drivers.dtos import DriverAccountDto
 from ed_gateway.application.features.drivers.requests.commands import \
     LoginDriverVerifyCommand
-from ed_domain.common.exceptions import (ApplicationException,
-                                                 Exceptions)
 from ed_gateway.common.logging_helpers import get_logger
 
 LOG = get_logger()
@@ -21,11 +20,12 @@ class LoginDriverVerifyCommandHandler(RequestHandler):
     async def handle(
         self, request: LoginDriverVerifyCommand
     ) -> BaseResponse[DriverAccountDto]:
+        LOG.info("Handling LoginDriverVerifyCommand")
         verify_response = self._api.auth_api.login_verify_otp(request.dto)
         if verify_response["is_success"] is False:
             raise ApplicationException(
                 Exceptions.InternalServerException,
-                "Failed to verify OTP for log-in",
+                "Driver login failed.",
                 verify_response["errors"],
             )
 
@@ -35,7 +35,7 @@ class LoginDriverVerifyCommandHandler(RequestHandler):
         if get_driver_response["is_success"] is False:
             raise ApplicationException(
                 Exceptions.InternalServerException,
-                "Failed to get driver data",
+                "Driver login failed.",
                 get_driver_response["errors"],
             )
 

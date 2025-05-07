@@ -3,11 +3,15 @@ from uuid import UUID
 
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
+from ed_core.application.features.driver.dtos.create_driver_dto import (
+    CreateCarDto, CreateLocationDto)
 from ed_core.documentation.abc_core_api_client import DeliveryJobDto, DriverDto
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, Form, UploadFile
 from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator
 
+from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uploader import \
+    InputImage
 from ed_gateway.application.features.drivers.dtos import (
     CreateDriverAccountDto, DriverAccountDto, LoginDriverDto)
 from ed_gateway.application.features.drivers.requests.commands import (
@@ -36,9 +40,14 @@ oauth2_scheme = JWTBearer(api_dep.auth_api)
 )
 @rest_endpoint
 async def create_account(
-    request: CreateDriverAccountDto, mediator: Annotated[Mediator, Depends(mediator)]
+    mediator: Annotated[Mediator, Depends(mediator)],
+    request: CreateDriverAccountDto,
 ):
-    return await mediator.send(CreateDriverAccountCommand(dto=request))
+    return await mediator.send(
+        CreateDriverAccountCommand(
+            dto=request,
+        )
+    )
 
 
 @router.post(
