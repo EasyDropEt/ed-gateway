@@ -12,7 +12,7 @@ from ed_gateway.webapi.common.helpers import GenericResponse, rest_endpoint
 from ed_gateway.webapi.dependency_setup import mediator
 
 LOG = get_logger()
-router = APIRouter(prefix="/delivery_job", tags=["Delivery Job Features"])
+router = APIRouter(prefix="/delivery_jobs", tags=["Delivery Job Features"])
 
 
 @router.get("", response_model=GenericResponse[list[DeliveryJobDto]])
