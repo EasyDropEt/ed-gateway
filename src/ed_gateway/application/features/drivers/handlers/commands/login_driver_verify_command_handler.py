@@ -39,8 +39,12 @@ class LoginDriverVerifyCommandHandler(RequestHandler):
                 get_driver_response["errors"],
             )
 
+        print("GET DRIVER RESPONSE", get_driver_response)
+
         return BaseResponse[DriverAccountDto].success(
             "Driver logged in successfully",
             DriverAccountDto(
-                **get_driver_response["data"], token=user["token"]),
+                **get_driver_response["data"],  # type: ignore
+                token=user["token"],
+            ),
         )
