@@ -26,7 +26,7 @@ class GetBusinessByUserIdQueryHandler(RequestHandler):
 
             raise ApplicationException(
                 Exceptions.InternalServerException,
-                "Driver not found.",
+                "Business not found.",
                 response["errors"],
             )
 
