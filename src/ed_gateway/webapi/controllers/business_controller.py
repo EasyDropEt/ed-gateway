@@ -6,11 +6,11 @@ from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
 from ed_core.documentation.abc_core_api_client import (BusinessDto,
                                                        CreateOrdersDto,
                                                        OrderDto)
+from ed_domain.common.exceptions import ApplicationException, Exceptions
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator
 
-from ed_gateway.application.common.responses.base_response import BaseResponse
 from ed_gateway.application.features.business.dtos import (
     BusinessAccountDto, CreateBusinessAccountDto, LoginBusinessDto)
 from ed_gateway.application.features.business.requests.commands import (
@@ -116,11 +116,7 @@ async def get_orders(
 
 @router.post(
     "/me/orders/{order_id}/cancel",
-@router.post(
-    "/me/orders/{order_id}/cancel",
     response_model=GenericResponse[OrderDto],
-    tags=["Business Features"],
-)
     tags=["Business Features"],
 )
 @rest_endpoint
@@ -136,9 +132,19 @@ async def cancel_order(
 
 
 async def _get_business_id(user_id: str, mediator: Mediator) -> UUID:
-
-    business = (
+    response = (
         await mediator.send(GetBusinessByUserIdQuery(user_id=user_id))
     ).to_dict()
 
-    return business["data"]["id"]
+    if (
+        not response["is_success"]
+        or "data" not in response
+        or "id" not in response["data"]
+    ):
+        raise ApplicationException(
+            Exceptions.NotFoundException,
+            "Business not found.",
+            response.get("errors", ["Failed to retrieve driver."]),
+        )
+
+    return response["data"]["id"]

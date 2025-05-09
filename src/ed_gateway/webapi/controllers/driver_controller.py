@@ -4,6 +4,7 @@ from uuid import UUID
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
 from ed_core.documentation.abc_core_api_client import DeliveryJobDto, DriverDto
+from ed_domain.common.exceptions import ApplicationException, Exceptions
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator
@@ -118,11 +119,15 @@ async def _get_driver_id(user_id: str, mediator: Mediator) -> UUID:
 
     response = (await mediator.send(GetDriverByUserIdQuery(user_id=user_id))).to_dict()
 
-    if not response["is_success"] or "data" not in response or "id" not in response["data"]:
+    if (
+        not response["is_success"]
+        or "data" not in response
+        or "id" not in response["data"]
+    ):
         raise ApplicationException(
             Exceptions.NotFoundException,
             "Driver not found.",
-            response.get("errors", ["Failed to retrieve driver."])
+            response.get("errors", ["Failed to retrieve driver."]),
         )
 
     return response["data"]["id"]
