@@ -3,15 +3,11 @@ from uuid import UUID
 
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
-from ed_core.application.features.driver.dtos.create_driver_dto import (
-    CreateCarDto, CreateLocationDto)
 from ed_core.documentation.abc_core_api_client import DeliveryJobDto, DriverDto
-from fastapi import APIRouter, Depends, File, Form, UploadFile
+from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator
 
-from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uploader import \
-    InputImage
 from ed_gateway.application.features.drivers.dtos import (
     CreateDriverAccountDto, DriverAccountDto, LoginDriverDto)
 from ed_gateway.application.features.drivers.requests.commands import (
@@ -93,11 +89,9 @@ async def get_driver_delivery_jobs(
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
-    driver = (await mediator.send(GetDriverByUserIdQuery(user_id=auth.credentials)))[
-        "data"
-    ]
-    print(driver)
-    return await mediator.send(GetDriverDeliveryJobsQuery(driver_id=driver["id"]))
+
+    driver_id = await _get_driver_id(auth.credentials, mediator)
+    return await mediator.send(GetDriverDeliveryJobsQuery(driver_id=driver_id))
 
 
 @router.post(
@@ -111,11 +105,17 @@ async def claim_delivery_job(
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
-    driver = (await mediator.send(GetDriverByUserIdQuery(user_id=auth.credentials)))[
-        "data"
-    ]
-    print(driver)
+    driver_id = await _get_driver_id(auth.credentials, mediator)
     return await mediator.send(
         ClaimDeliveryJobCommand(
-            driver_id=driver["id"], delivery_job_id=delivery_job_id)
+            driver_id=driver_id,
+            delivery_job_id=delivery_job_id,
+        )
     )
+
+
+async def _get_driver_id(user_id: str, mediator: Mediator) -> UUID:
+
+    business = (await mediator.send(GetDriverByUserIdQuery(user_id=user_id))).to_dict()
+
+    return business["data"]["id"]
