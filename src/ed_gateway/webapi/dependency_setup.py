@@ -18,6 +18,16 @@ from ed_gateway.application.features.business.requests.commands import (
     LoginBusinessVerifyCommand)
 from ed_gateway.application.features.business.requests.queries import (
     GetBusinessByUserIdQuery, GetBusinessOrdersQuery, GetBusinessQuery)
+from ed_gateway.application.features.consumers.handlers.commands import (
+    CreateConsumerCommandHandler, LoginConsumerCommandHandler,
+    LoginConsumerVerifyCommandHandler)
+from ed_gateway.application.features.consumers.handlers.queries import (
+    GetConsumerByUserIdQueryHandler, GetConsumerOrdersQueryHandler,
+    GetConsumerQueryHandler)
+from ed_gateway.application.features.consumers.requests.commands import (
+    CreateConsumerCommand, LoginConsumerCommand, LoginConsumerVerifyCommand)
+from ed_gateway.application.features.consumers.requests.queries import (
+    GetConsumerByUserIdQuery, GetConsumerOrdersQuery, GetConsumerQuery)
 from ed_gateway.application.features.delivery_jobs.handlers.queries import (
     GetDeliveryJobQueryHandler, GetDeliveryJobsQueryHandler)
 from ed_gateway.application.features.delivery_jobs.requests.queries import (
@@ -87,6 +97,13 @@ def mediator(
         # Delivery features
         (GetDeliveryJobsQuery, GetDeliveryJobsQueryHandler(api)),
         (GetDeliveryJobQuery, GetDeliveryJobQueryHandler(api)),
+        # Consumer features
+        (CreateConsumerCommand, CreateConsumerCommandHandler(api, image_uploader)),
+        (LoginConsumerCommand, LoginConsumerCommandHandler(api)),
+        (LoginConsumerVerifyCommand, LoginConsumerVerifyCommandHandler(api)),
+        (GetConsumerByUserIdQuery, GetConsumerByUserIdQueryHandler(api)),
+        (GetConsumerQuery, GetConsumerQueryHandler(api)),
+        (GetConsumerOrdersQuery, GetConsumerOrdersQueryHandler(api)),
     ]
 
     for request, handler in features:
