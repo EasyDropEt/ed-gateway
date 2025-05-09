@@ -116,7 +116,11 @@ async def get_orders(
 
 @router.post(
     "/me/orders/{order_id}/cancel",
-    response_model=GenericResponse[list[OrderDto]],
+@router.post(
+    "/me/orders/{order_id}/cancel",
+    response_model=GenericResponse[OrderDto],
+    tags=["Business Features"],
+)
     tags=["Business Features"],
 )
 @rest_endpoint
