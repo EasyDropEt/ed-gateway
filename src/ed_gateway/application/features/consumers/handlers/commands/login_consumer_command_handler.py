@@ -21,9 +21,7 @@ class LoginConsumerCommandHandler(RequestHandler):
         self, request: LoginConsumerCommand
     ) -> BaseResponse[UnverifiedUserDto]:
         LOG.info("Handling LoginConsumerCommand")
-        response = self._api.auth_api.login_get_otp(
-            {"phone_number": request.dto["phone_number"]}
-        )
+        response = self._api.auth_api.login_get_otp({**request.dto})
         print("RESPONSE", response)
         if not response["is_success"]:
             raise ApplicationException(
