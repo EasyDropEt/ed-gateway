@@ -1,4 +1,5 @@
 from typing import Annotated
+from uuid import UUID
 
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
@@ -9,11 +10,12 @@ from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator
 
+from ed_gateway.application.common.responses.base_response import BaseResponse
 from ed_gateway.application.features.business.dtos import (
     BusinessAccountDto, CreateBusinessAccountDto, LoginBusinessDto)
 from ed_gateway.application.features.business.requests.commands import (
-    CreateBusinessAccountCommand, CreateOrdersCommand, LoginBusinessCommand,
-    LoginBusinessVerifyCommand)
+    CancelBusinessOrderCommand, CreateBusinessAccountCommand,
+    CreateOrdersCommand, LoginBusinessCommand, LoginBusinessVerifyCommand)
 from ed_gateway.application.features.business.requests.queries import (
     GetBusinessByUserIdQuery, GetBusinessOrdersQuery)
 from ed_gateway.common.generic_helpers import get_config
@@ -91,11 +93,10 @@ async def create_orders(
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
-    business = (
-        await mediator.send(GetBusinessByUserIdQuery(user_id=auth.credentials))
-    )["data"]
+
+    business_id = await _get_business_id(auth.credentials, mediator)
     return await mediator.send(
-        CreateOrdersCommand(business_id=business["id"], dto=request)
+        CreateOrdersCommand(business_id=business_id, dto=request)
     )
 
 
@@ -109,7 +110,31 @@ async def get_orders(
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
+    business_id = await _get_business_id(auth.credentials, mediator)
+    return await mediator.send(GetBusinessOrdersQuery(business_id=business_id))
+
+
+@router.post(
+    "/me/orders/{order_id}/cancel",
+    response_model=GenericResponse[list[OrderDto]],
+    tags=["Business Features"],
+)
+@rest_endpoint
+async def cancel_order(
+    order_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    business_id = await _get_business_id(auth.credentials, mediator)
+    return await mediator.send(
+        CancelBusinessOrderCommand(business_id=business_id, order_id=order_id)
+    )
+
+
+async def _get_business_id(user_id: str, mediator: Mediator) -> UUID:
+
     business = (
-        await mediator.send(GetBusinessByUserIdQuery(user_id=auth.credentials))
-    )["data"]
-    return await mediator.send(GetBusinessOrdersQuery(business_id=business["id"]))
+        await mediator.send(GetBusinessByUserIdQuery(user_id=user_id))
+    ).to_dict()
+
+    return business["data"]["id"]

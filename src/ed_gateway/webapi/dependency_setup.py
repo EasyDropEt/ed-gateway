@@ -8,14 +8,15 @@ from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
 from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uploader import \
     ABCImageUploader
 from ed_gateway.application.features.business.handlers.commands import (
-    CreateBusinessAccountCommandHandler, CreateOrdersCommandHandler,
-    LoginBusinessCommandHandler, LoginBusinessVerifyCommandHandler)
+    CancelBusinessOrderCommandHandler, CreateBusinessAccountCommandHandler,
+    CreateOrdersCommandHandler, LoginBusinessCommandHandler,
+    LoginBusinessVerifyCommandHandler)
 from ed_gateway.application.features.business.handlers.queries import (
     GetBusinessByUserIdQueryHandler, GetBusinessOrdersQueryHandler,
     GetBusinessQueryHandler)
 from ed_gateway.application.features.business.requests.commands import (
-    CreateBusinessAccountCommand, CreateOrdersCommand, LoginBusinessCommand,
-    LoginBusinessVerifyCommand)
+    CancelBusinessOrderCommand, CreateBusinessAccountCommand,
+    CreateOrdersCommand, LoginBusinessCommand, LoginBusinessVerifyCommand)
 from ed_gateway.application.features.business.requests.queries import (
     GetBusinessByUserIdQuery, GetBusinessOrdersQuery, GetBusinessQuery)
 from ed_gateway.application.features.consumers.handlers.commands import (
@@ -94,6 +95,7 @@ def mediator(
         (CreateOrdersCommand, CreateOrdersCommandHandler(api)),
         (GetBusinessQuery, GetBusinessQueryHandler(api)),
         (GetBusinessByUserIdQuery, GetBusinessByUserIdQueryHandler(api)),
+        (CancelBusinessOrderCommand, CancelBusinessOrderCommandHandler(api)),
         # Delivery features
         (GetDeliveryJobsQuery, GetDeliveryJobsQueryHandler(api)),
         (GetDeliveryJobQuery, GetDeliveryJobQueryHandler(api)),
