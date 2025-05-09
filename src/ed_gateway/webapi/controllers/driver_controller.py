@@ -116,6 +116,13 @@ async def claim_delivery_job(
 
 async def _get_driver_id(user_id: str, mediator: Mediator) -> UUID:
 
-    business = (await mediator.send(GetDriverByUserIdQuery(user_id=user_id))).to_dict()
+    response = (await mediator.send(GetDriverByUserIdQuery(user_id=user_id))).to_dict()
 
-    return business["data"]["id"]
+    if not response["is_success"] or "data" not in response or "id" not in response["data"]:
+        raise ApplicationException(
+            Exceptions.NotFoundException,
+            "Driver not found.",
+            response.get("errors", ["Failed to retrieve driver."])
+        )
+
+    return response["data"]["id"]
