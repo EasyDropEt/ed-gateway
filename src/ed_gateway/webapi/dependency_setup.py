@@ -44,6 +44,10 @@ from ed_gateway.application.features.drivers.requests.commands import (
     LoginDriverVerifyCommand)
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByIdQuery, GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery)
+from ed_gateway.application.features.order.handlers.queries import \
+    TrackOrderQueryHandler
+from ed_gateway.application.features.order.requests.queries import \
+    TrackOrderQuery
 from ed_gateway.common.generic_helpers import get_config
 from ed_gateway.common.typing.config import Config
 from ed_gateway.infrastructure.api.api import Api
@@ -106,6 +110,8 @@ def mediator(
         (GetConsumerByUserIdQuery, GetConsumerByUserIdQueryHandler(api)),
         (GetConsumerQuery, GetConsumerQueryHandler(api)),
         (GetConsumerOrdersQuery, GetConsumerOrdersQueryHandler(api)),
+        # Order features
+        (TrackOrderQuery, TrackOrderQueryHandler(api)),
     ]
 
     for request, handler in features:
