@@ -3,9 +3,11 @@ from uuid import UUID
 
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
-from ed_core.documentation.abc_core_api_client import DeliveryJobDto, DriverDto
+from ed_core.documentation.abc_core_api_client import (DeliveryJobDto,
+                                                       DriverDto,
+                                                       UpdateLocationDto)
 from ed_domain.common.exceptions import ApplicationException, Exceptions
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, WebSocket
 from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator
 
@@ -13,7 +15,7 @@ from ed_gateway.application.features.drivers.dtos import (
     CreateDriverAccountDto, DriverAccountDto, LoginDriverDto)
 from ed_gateway.application.features.drivers.requests.commands import (
     ClaimDeliveryJobCommand, CreateDriverAccountCommand, LoginDriverCommand,
-    LoginDriverVerifyCommand)
+    LoginDriverVerifyCommand, UpdateDriverCurrentLocationCommand)
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery)
 from ed_gateway.common.generic_helpers import get_config
@@ -131,3 +133,20 @@ async def _get_driver_id(user_id: str, mediator: Mediator) -> UUID:
         )
 
     return response["data"]["id"]
+
+
+@router.websocket("/{driver_id}/location")
+async def websocket_endpoint(
+    driver_id: UUID,
+    websocket: WebSocket,
+    mediator: Annotated[Mediator, Depends(mediator)],
+):
+    await websocket.accept()
+
+    while True:
+        dto: UpdateLocationDto = await websocket.receive_json()
+        response = await mediator.send(
+            UpdateDriverCurrentLocationCommand(driver_id, dto)
+        )
+
+        await websocket.send_json(response.to_dict())

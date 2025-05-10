@@ -6,10 +6,13 @@ from ed_gateway.application.features.drivers.handlers.commands.login_driver_comm
     LoginDriverCommandHandler
 from ed_gateway.application.features.drivers.handlers.commands.login_driver_verify_command_handler import \
     LoginDriverVerifyCommandHandler
+from ed_gateway.application.features.drivers.handlers.commands.update_driver_current_location_command_handler import \
+    UpdateDriverCurrentLocationCommandHandler
 
 __all__ = [
     "ClaimDeliveryJobCommandHandler",
     "LoginDriverCommandHandler",
     "CreateDriverAccountCommandHandler",
     "LoginDriverVerifyCommandHandler",
+    "UpdateDriverCurrentLocationCommandHandler",
 ]

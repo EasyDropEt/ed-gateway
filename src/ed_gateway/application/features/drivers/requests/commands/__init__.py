@@ -6,10 +6,13 @@ from ed_gateway.application.features.drivers.requests.commands.login_driver_comm
     LoginDriverCommand
 from ed_gateway.application.features.drivers.requests.commands.login_driver_verify_command import \
     LoginDriverVerifyCommand
+from ed_gateway.application.features.drivers.requests.commands.update_driver_current_location_command import \
+    UpdateDriverCurrentLocationCommand
 
 __all__ = [
     "ClaimDeliveryJobCommand",
     "LoginDriverCommand",
     "CreateDriverAccountCommand",
     "LoginDriverVerifyCommand",
+    "UpdateDriverCurrentLocationCommand",
 ]

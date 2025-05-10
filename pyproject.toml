@@ -20,7 +20,7 @@ requests = "^2.32.3"
 pre-commit = "^4.2.0"
 ed-domain = "^0.2.20"
 ed-auth = "^0.1.6"
-ed-core = "^0.2.3"
+ed-core = "0.2.4"
 cloudinary = "^1.44.0"
 python-multipart = "^0.0.20"
 
