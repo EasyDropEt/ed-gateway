@@ -5,6 +5,7 @@ from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
 from ed_core.documentation.abc_core_api_client import (BusinessDto,
                                                        CreateOrdersDto,
+                                                       NotificationDto,
                                                        OrderDto)
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from fastapi import APIRouter, Depends
@@ -18,6 +19,8 @@ from ed_gateway.application.features.business.requests.commands import (
     CreateOrdersCommand, LoginBusinessCommand, LoginBusinessVerifyCommand)
 from ed_gateway.application.features.business.requests.queries import (
     GetBusinessByUserIdQuery, GetBusinessOrdersQuery)
+from ed_gateway.application.features.notifications.requests.queries import \
+    GetNotificationsQuery
 from ed_gateway.common.generic_helpers import get_config
 from ed_gateway.common.logging_helpers import get_logger
 from ed_gateway.webapi.common.helpers import GenericResponse, rest_endpoint
@@ -81,6 +84,24 @@ async def get_business(
 ):
     return await mediator.send(GetBusinessByUserIdQuery(user_id=auth.credentials))
 
+
+@router.get(
+    "/me/notifications",
+    response_model=GenericResponse[list[NotificationDto]],
+@router.get(
+    "/me/notifications",
+    response_model=GenericResponse[list[NotificationDto]],
+    tags=["Business Features"],
+)
+)
+@rest_endpoint
+# Notifications are scoped to the user account (user_id), not to a business.
+async def get_business_notifications(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+
+    return await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
 
 @router.post(
     "/me/orders",
