@@ -5,6 +5,7 @@ from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
 from ed_core.documentation.abc_core_api_client import (DeliveryJobDto,
                                                        DriverDto,
+                                                       NotificationDto,
                                                        UpdateLocationDto)
 from ed_core.documentation.core_api_client import (DropOffOrderDto,
                                                    DropOffOrderVerifyDto,
@@ -24,6 +25,8 @@ from ed_gateway.application.features.drivers.requests.commands import (
     PickUpOrderVerifyCommand, UpdateDriverCurrentLocationCommand)
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery)
+from ed_gateway.application.features.notifications.requests.queries import \
+    GetNotificationsQuery
 from ed_gateway.common.generic_helpers import get_config
 from ed_gateway.common.logging_helpers import get_logger
 from ed_gateway.webapi.common.helpers import GenericResponse, rest_endpoint
@@ -101,6 +104,20 @@ async def get_driver_delivery_jobs(
 
     driver_id = await _get_driver_id(auth.credentials, mediator)
     return await mediator.send(GetDriverDeliveryJobsQuery(driver_id))
+
+
+@router.get(
+    "/me/notifications",
+    response_model=GenericResponse[list[NotificationDto]],
+    tags=["Driver Features"],
+)
+@rest_endpoint
+async def get_driver_notifications(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+
+    return await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
 
 
 @router.post(
