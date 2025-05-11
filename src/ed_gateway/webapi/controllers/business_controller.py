@@ -88,7 +88,11 @@ async def get_business(
 @router.get(
     "/me/notifications",
     response_model=GenericResponse[list[NotificationDto]],
-    tags=["Driver Features"],
+@router.get(
+    "/me/notifications",
+    response_model=GenericResponse[list[NotificationDto]],
+    tags=["Business Features"],
+)
 )
 @rest_endpoint
 # Notifications are scoped to the user account (user_id), not to a business.
