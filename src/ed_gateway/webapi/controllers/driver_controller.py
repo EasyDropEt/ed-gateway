@@ -117,8 +117,8 @@ async def get_driver_notifications(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
 
+    # Notifications are user-scoped (user_id), not driver-scoped—hence no _get_driver_id call
     return await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
-
 
 @router.post(
     "/me/delivery_jobs/{delivery_job_id}/claim",
