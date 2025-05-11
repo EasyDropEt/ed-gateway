@@ -6,7 +6,9 @@ from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
 from ed_core.documentation.abc_core_api_client import (DeliveryJobDto,
                                                        DriverDto,
                                                        UpdateLocationDto)
-from ed_core.documentation.core_api_client import (DropOffOrderVerifyDto,
+from ed_core.documentation.core_api_client import (DropOffOrderDto,
+                                                   DropOffOrderVerifyDto,
+                                                   PickUpOrderDto,
                                                    PickUpOrderVerifyDto)
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from fastapi import APIRouter, Depends, WebSocket
@@ -103,7 +105,7 @@ async def get_driver_delivery_jobs(
 
 @router.post(
     "/me/delivery_jobs/{delivery_job_id}/claim",
-    response_model=GenericResponse[list[DeliveryJobDto]],
+    response_model=GenericResponse[DeliveryJobDto],
     tags=["Driver Features"],
 )
 @rest_endpoint
@@ -123,7 +125,7 @@ async def claim_delivery_job(
 
 @router.post(
     "/me/delivery_jobs/{delivery_job_id}/cancel",
-    response_model=GenericResponse[list[DeliveryJobDto]],
+    response_model=GenericResponse[DeliveryJobDto],
     tags=["Driver Features"],
 )
 @rest_endpoint
@@ -138,7 +140,7 @@ async def cancel_delivery_job(
 
 @router.post(
     "/me/delivery_jobs/{delivery_job_id}/orders/{order_id}/pick-up",
-    response_model=GenericResponse[list[DeliveryJobDto]],
+    response_model=GenericResponse[PickUpOrderDto],
     tags=["Driver Features"],
 )
 @rest_endpoint
@@ -154,7 +156,7 @@ async def initiate_order_pick_up(
 
 @router.post(
     "/me/delivery_jobs/{delivery_job_id}/orders/{order_id}/pick-up/verify",
-    response_model=GenericResponse[list[DeliveryJobDto]],
+    response_model=GenericResponse[None],
     tags=["Driver Features"],
 )
 @rest_endpoint
@@ -173,7 +175,7 @@ async def verify_order_pick_up(
 
 @router.post(
     "/me/delivery_jobs/{delivery_job_id}/orders/{order_id}/drop-off",
-    response_model=GenericResponse[list[DeliveryJobDto]],
+    response_model=GenericResponse[DropOffOrderDto],
     tags=["Driver Features"],
 )
 @rest_endpoint
@@ -191,7 +193,7 @@ async def initiate_order_drop_off(
 
 @router.post(
     "/me/delivery_jobs/{delivery_job_id}/orders/{order_id}/drop-off/verify",
-    response_model=GenericResponse[list[DeliveryJobDto]],
+    response_model=GenericResponse[None],
     tags=["Driver Features"],
 )
 @rest_endpoint

@@ -25,14 +25,14 @@ class DropOffOrderVerifyCommandHandler(RequestHandler):
         )
         if response["is_success"] is False:
             LOG.error(
-                "Failed to drop off order.",
+                "Failed to verify drop off order.",
                 request.driver_id,
                 request.delivery_job_id,
                 response["errors"],
             )
             raise ApplicationException(
                 Exceptions.InternalServerException,
-                "Failed to drop off order.",
+                "Failed to verify drop off order.",
                 response["errors"],
             )
 
