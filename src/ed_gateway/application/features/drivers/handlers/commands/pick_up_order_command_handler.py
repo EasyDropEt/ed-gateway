@@ -24,18 +24,18 @@ class PickUpOrderCommandHandler(RequestHandler):
         )
         if response["is_success"] is False:
             LOG.error(
-                "Failed to drop off order.",
+                "Failed to pick up order.",
                 request.driver_id,
                 request.delivery_job_id,
                 response["errors"],
             )
             raise ApplicationException(
                 Exceptions.InternalServerException,
-                "Failed to drop off order.",
+                "Failed to pick up order.",
                 response["errors"],
             )
 
         return BaseResponse[PickUpOrderDto].success(
-            "Order drop off initiated successfully. Veirification OTP sent to consumer.",
+            "Order pick up initiated successfully. Verification OTP sent to consumer.",
             response["data"],
         )
