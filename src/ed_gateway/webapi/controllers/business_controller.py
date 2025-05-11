@@ -91,13 +91,13 @@ async def get_business(
     tags=["Driver Features"],
 )
 @rest_endpoint
+# Notifications are scoped to the user account (user_id), not to a business.
 async def get_business_notifications(
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
 
     return await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
-
 
 @router.post(
     "/me/orders",
