@@ -794,13 +794,13 @@ dev = ["check-manifest"]
 
 [[package]]
 name = "ed-core"
-version = "0.2.4"
+version = "0.2.5"
 description = "EasyDrop auth model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_core-0.2.4-py3-none-any.whl", hash = "sha256:076ca59eabe09b921dc9ec66066ffef17167d204ccc757685d99c8b9e78c9b13"},
+    {file = "ed_core-0.2.5-py3-none-any.whl", hash = "sha256:3965ca32696c839069df3aba9565469c5fcbf6e8c701f29b9f5e49b48fec0e80"},
 ]
 
 [package.extras]
@@ -808,13 +808,13 @@ dev = ["check-manifest"]
 
 [[package]]
 name = "ed-domain"
-version = "0.2.20"
+version = "0.2.22"
 description = "EasyDrop domain model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_domain-0.2.20-py3-none-any.whl", hash = "sha256:e045cd424c3d76189a4dc8d60be158fa39bdc332d0a2706dbf1cb4ae3aef99f2"},
+    {file = "ed_domain-0.2.22-py3-none-any.whl", hash = "sha256:d38122eed79d0aff7019e3a397f9a80946a0359fdb1dbf0670108ff5074a655a"},
 ]
 
 [package.extras]
@@ -3265,4 +3265,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "e41de5f26c12780addea35847d0b22e813a91768e2793f72bf7043953da4f0dd"
+content-hash = "3c52959891375e222073cab52e8553355191ad5b1840b1b8b7320e4c291e21ea"

@@ -6,6 +6,10 @@ from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
 from ed_core.documentation.abc_core_api_client import (DeliveryJobDto,
                                                        DriverDto,
                                                        UpdateLocationDto)
+from ed_core.documentation.core_api_client import (DropOffOrderDto,
+                                                   DropOffOrderVerifyDto,
+                                                   PickUpOrderDto,
+                                                   PickUpOrderVerifyDto)
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from fastapi import APIRouter, Depends, WebSocket
 from fastapi.security import HTTPAuthorizationCredentials
@@ -14,8 +18,10 @@ from rmediator import Mediator
 from ed_gateway.application.features.drivers.dtos import (
     CreateDriverAccountDto, DriverAccountDto, LoginDriverDto)
 from ed_gateway.application.features.drivers.requests.commands import (
-    ClaimDeliveryJobCommand, CreateDriverAccountCommand, LoginDriverCommand,
-    LoginDriverVerifyCommand, UpdateDriverCurrentLocationCommand)
+    CancelDeliveryJobCommand, ClaimDeliveryJobCommand,
+    CreateDriverAccountCommand, DropOffOrderCommand, DropOffOrderVerifyCommand,
+    LoginDriverCommand, LoginDriverVerifyCommand, PickUpOrderCommand,
+    PickUpOrderVerifyCommand, UpdateDriverCurrentLocationCommand)
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery)
 from ed_gateway.common.generic_helpers import get_config
@@ -94,12 +100,12 @@ async def get_driver_delivery_jobs(
 ):
 
     driver_id = await _get_driver_id(auth.credentials, mediator)
-    return await mediator.send(GetDriverDeliveryJobsQuery(driver_id=driver_id))
+    return await mediator.send(GetDriverDeliveryJobsQuery(driver_id))
 
 
 @router.post(
     "/me/delivery_jobs/{delivery_job_id}/claim",
-    response_model=GenericResponse[list[DeliveryJobDto]],
+    response_model=GenericResponse[DeliveryJobDto],
     tags=["Driver Features"],
 )
 @rest_endpoint
@@ -114,6 +120,93 @@ async def claim_delivery_job(
             driver_id=driver_id,
             delivery_job_id=delivery_job_id,
         )
+    )
+
+
+@router.post(
+    "/me/delivery_jobs/{delivery_job_id}/cancel",
+    response_model=GenericResponse[DeliveryJobDto],
+    tags=["Driver Features"],
+)
+@rest_endpoint
+async def cancel_delivery_job(
+    delivery_job_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    driver_id = await _get_driver_id(auth.credentials, mediator)
+    return await mediator.send(CancelDeliveryJobCommand(driver_id, delivery_job_id))
+
+
+@router.post(
+    "/me/delivery_jobs/{delivery_job_id}/orders/{order_id}/pick-up",
+    response_model=GenericResponse[PickUpOrderDto],
+    tags=["Driver Features"],
+)
+@rest_endpoint
+async def initiate_order_pick_up(
+    delivery_job_id: UUID,
+    order_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    driver_id = await _get_driver_id(auth.credentials, mediator)
+    return await mediator.send(PickUpOrderCommand(driver_id, delivery_job_id, order_id))
+
+
+@router.post(
+    "/me/delivery_jobs/{delivery_job_id}/orders/{order_id}/pick-up/verify",
+    response_model=GenericResponse[None],
+    tags=["Driver Features"],
+)
+@rest_endpoint
+async def verify_order_pick_up(
+    delivery_job_id: UUID,
+    order_id: UUID,
+    dto: PickUpOrderVerifyDto,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    driver_id = await _get_driver_id(auth.credentials, mediator)
+    return await mediator.send(
+        PickUpOrderVerifyCommand(driver_id, delivery_job_id, order_id, dto)
+    )
+
+
+@router.post(
+    "/me/delivery_jobs/{delivery_job_id}/orders/{order_id}/drop-off",
+    response_model=GenericResponse[DropOffOrderDto],
+    tags=["Driver Features"],
+)
+@rest_endpoint
+async def initiate_order_drop_off(
+    delivery_job_id: UUID,
+    order_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    driver_id = await _get_driver_id(auth.credentials, mediator)
+    return await mediator.send(
+        DropOffOrderCommand(driver_id, delivery_job_id, order_id)
+    )
+
+
+@router.post(
+    "/me/delivery_jobs/{delivery_job_id}/orders/{order_id}/drop-off/verify",
+    response_model=GenericResponse[None],
+    tags=["Driver Features"],
+)
+@rest_endpoint
+async def verify_order_drop_off(
+    delivery_job_id: UUID,
+    order_id: UUID,
+    dto: DropOffOrderVerifyDto,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    driver_id = await _get_driver_id(auth.credentials, mediator)
+    return await mediator.send(
+        DropOffOrderVerifyCommand(driver_id, delivery_job_id, order_id, dto)
     )
 
 
