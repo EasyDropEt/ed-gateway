@@ -9,5 +9,4 @@ from ed_gateway.application.common.responses.base_response import BaseResponse
 
 @request(BaseResponse[list[DeliveryJobDto]])
 @dataclass
-class GetDeliveryJobsQuery(Request):
-    ...
+class GetDeliveryJobsQuery(Request): ...

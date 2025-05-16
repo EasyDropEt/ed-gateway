@@ -20,8 +20,7 @@ class CancelBusinessOrderCommandHandler(RequestHandler):
     async def handle(
         self, request: CancelBusinessOrderCommand
     ) -> BaseResponse[OrderDto]:
-        get_order_response = self._api.core_api.get_order(
-            str(request.order_id))
+        get_order_response = self._api.core_api.get_order(str(request.order_id))
         if get_order_response["is_success"] is False:
             raise ApplicationException(
                 Exceptions.InternalServerException,
@@ -37,8 +36,7 @@ class CancelBusinessOrderCommandHandler(RequestHandler):
                 ["Order does not belong to the business."],
             )
 
-        cancel_response = self._api.core_api.cancel_order(
-            str(request.order_id))
+        cancel_response = self._api.core_api.cancel_order(str(request.order_id))
         if cancel_response["is_success"] is False:
             raise ApplicationException(
                 Exceptions.InternalServerException,

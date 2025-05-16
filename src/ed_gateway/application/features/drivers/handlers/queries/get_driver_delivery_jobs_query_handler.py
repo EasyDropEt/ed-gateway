@@ -20,8 +20,7 @@ class GetDriverDeliveryJobsQueryHandler(RequestHandler):
     async def handle(
         self, request: GetDriverDeliveryJobsQuery
     ) -> BaseResponse[list[DeliveryJobDto]]:
-        response = self._api.core_api.get_driver_delivery_jobs(
-            str(request.driver_id))
+        response = self._api.core_api.get_driver_delivery_jobs(str(request.driver_id))
 
         if not response["is_success"]:
             LOG.error(

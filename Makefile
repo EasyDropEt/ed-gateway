@@ -27,11 +27,11 @@ test_coverage:
 
 docker.build: lint
 	@echo "Make: Building a docker image... (Might be minutes)"
-	@docker build -t package:dev .
+	@docker build -t ed-gateway:dev .
 
 docker.build.quite: lint
 	@echo "Make: Building a docker image... (Might be minutes)"
-	@docker build -q -t package:dev .
+	@docker build -q -t ed-gateway:dev .
 
 docker.run: docker.build.quite
 	@echo "Make: Running docker container..."

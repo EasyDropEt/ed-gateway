@@ -18,8 +18,7 @@ class GetDriverByUserIdQueryHandler(RequestHandler):
         self._api = api
 
     async def handle(self, request: GetDriverByUserIdQuery) -> BaseResponse[DriverDto]:
-        response = self._api.core_api.get_driver_by_user_id(
-            str(request.user_id))
+        response = self._api.core_api.get_driver_by_user_id(str(request.user_id))
 
         if not response["is_success"]:
             raise ApplicationException(

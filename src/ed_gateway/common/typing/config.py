@@ -14,5 +14,4 @@ class Config(TypedDict):
     cloudinary: CloudinaryConfig
 
 
-class TestMessage(TypedDict):
-    ...
+class TestMessage(TypedDict): ...

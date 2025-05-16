@@ -120,6 +120,7 @@ async def get_driver_notifications(
     # Notifications are user-scoped (user_id), not driver-scoped—hence no _get_driver_id call
     return await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
 
+
 @router.post(
     "/me/delivery_jobs/{delivery_job_id}/claim",
     response_model=GenericResponse[DeliveryJobDto],

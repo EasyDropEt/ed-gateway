@@ -20,8 +20,7 @@ class GetConsumerByUserIdQueryHandler(RequestHandler):
     async def handle(
         self, request: GetConsumerByUserIdQuery
     ) -> BaseResponse[ConsumerDto]:
-        response = self._api.core_api.get_consumer_by_user_id(
-            str(request.user_id))
+        response = self._api.core_api.get_consumer_by_user_id(str(request.user_id))
 
         if not response["is_success"]:
             raise ApplicationException(

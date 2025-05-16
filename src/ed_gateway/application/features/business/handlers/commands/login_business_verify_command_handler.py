@@ -42,6 +42,5 @@ class LoginBusinessVerifyCommandHandler(RequestHandler):
 
         return BaseResponse[BusinessAccountDto].success(
             "Business logged in successfully",
-            BusinessAccountDto(
-                **get_business_response["data"], token=user["token"]),
+            BusinessAccountDto(**get_business_response["data"], token=user["token"]),
         )

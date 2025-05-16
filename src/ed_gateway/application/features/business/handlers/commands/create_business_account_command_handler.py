@@ -50,8 +50,7 @@ class CreateBusinessAccountCommandHandler(RequestHandler):
             }
         )
         if create_business_response["is_success"] is False:
-            self._api_handler.auth_api.delete_user(
-                create_user_response["data"]["id"])
+            self._api_handler.auth_api.delete_user(create_user_response["data"]["id"])
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to create business account",

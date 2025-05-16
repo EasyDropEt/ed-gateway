@@ -1,4 +1,3 @@
-from ed_core.documentation.abc_core_api_client import DeliveryJobDto
 from ed_core.documentation.core_api_client import DropOffOrderDto
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from rmediator.decorators import request_handler
@@ -22,8 +21,7 @@ class DropOffOrderCommandHandler(RequestHandler):
         self, request: DropOffOrderCommand
     ) -> BaseResponse[DropOffOrderDto]:
         response = self._api.core_api.initiate_order_drop_off(
-            str(request.driver_id), str(
-                request.delivery_job_id), str(request.order_id)
+            str(request.driver_id), str(request.delivery_job_id), str(request.order_id)
         )
         if response["is_success"] is False:
             LOG.error(

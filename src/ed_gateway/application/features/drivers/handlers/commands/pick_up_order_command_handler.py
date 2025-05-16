@@ -19,8 +19,7 @@ class PickUpOrderCommandHandler(RequestHandler):
 
     async def handle(self, request: PickUpOrderCommand) -> BaseResponse[PickUpOrderDto]:
         response = self._api.core_api.initiate_order_pick_up(
-            str(request.driver_id), str(
-                request.delivery_job_id), str(request.order_id)
+            str(request.driver_id), str(request.delivery_job_id), str(request.order_id)
         )
         if response["is_success"] is False:
             LOG.error(

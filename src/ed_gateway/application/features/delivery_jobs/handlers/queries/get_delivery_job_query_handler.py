@@ -20,8 +20,7 @@ class GetDeliveryJobQueryHandler(RequestHandler):
     async def handle(
         self, request: GetDeliveryJobQuery
     ) -> BaseResponse[DeliveryJobDto]:
-        response = self._api.core_api.get_delivery_job(
-            str(request.delivery_job_id))
+        response = self._api.core_api.get_delivery_job(str(request.delivery_job_id))
 
         if not response["is_success"]:
             LOG.error(

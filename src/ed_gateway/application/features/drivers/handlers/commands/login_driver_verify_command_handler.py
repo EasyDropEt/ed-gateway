@@ -30,8 +30,7 @@ class LoginDriverVerifyCommandHandler(RequestHandler):
             )
 
         user = verify_response["data"]
-        get_driver_response = self._api.core_api.get_driver_by_user_id(
-            str(user["id"]))
+        get_driver_response = self._api.core_api.get_driver_by_user_id(str(user["id"]))
         if get_driver_response["is_success"] is False:
             raise ApplicationException(
                 Exceptions.InternalServerException,
