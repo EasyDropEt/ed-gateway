@@ -2,7 +2,6 @@ from typing import TypedDict
 
 from ed_core.application.features.business.dtos.create_location_dto import \
     CreateLocationDto
-from ed_domain.core.entities.business import BillingDetail
 
 
 class CreateBusinessAccountDto(TypedDict):
@@ -12,5 +11,4 @@ class CreateBusinessAccountDto(TypedDict):
     phone_number: str
     email: str
     location: CreateLocationDto
-    billing_details: list[BillingDetail]
     password: str

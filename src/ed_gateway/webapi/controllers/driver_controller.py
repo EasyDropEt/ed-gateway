@@ -6,8 +6,10 @@ from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
 from ed_core.documentation.abc_core_api_client import (DeliveryJobDto,
                                                        DriverDto,
                                                        NotificationDto,
+                                                       OrderDto,
                                                        UpdateLocationDto)
-from ed_core.documentation.core_api_client import (DropOffOrderDto,
+from ed_core.documentation.core_api_client import (DriverHeldFundsDto,
+                                                   DropOffOrderDto,
                                                    DropOffOrderVerifyDto,
                                                    PickUpOrderDto,
                                                    PickUpOrderVerifyDto)
@@ -24,7 +26,8 @@ from ed_gateway.application.features.drivers.requests.commands import (
     LoginDriverCommand, LoginDriverVerifyCommand, PickUpOrderCommand,
     PickUpOrderVerifyCommand, UpdateDriverCurrentLocationCommand)
 from ed_gateway.application.features.drivers.requests.queries import (
-    GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery)
+    GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery,
+    GetDriverHeldFundsQuery, GetDriverOrdersQuery)
 from ed_gateway.application.features.notifications.requests.queries import \
     GetNotificationsQuery
 from ed_gateway.common.generic_helpers import get_config
@@ -104,6 +107,36 @@ async def get_driver_delivery_jobs(
 
     driver_id = await _get_driver_id(auth.credentials, mediator)
     return await mediator.send(GetDriverDeliveryJobsQuery(driver_id))
+
+
+@router.get(
+    "/me/orders",
+    response_model=GenericResponse[list[OrderDto]],
+    tags=["Driver Features"],
+)
+@rest_endpoint
+async def get_driver_orders(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+
+    driver_id = await _get_driver_id(auth.credentials, mediator)
+    return await mediator.send(GetDriverOrdersQuery(driver_id))
+
+
+@router.get(
+    "/me/driver-held-funds",
+    response_model=GenericResponse[DriverHeldFundsDto],
+    tags=["Driver Features"],
+)
+@rest_endpoint
+async def get_driver_held_funds(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+
+    driver_id = await _get_driver_id(auth.credentials, mediator)
+    return await mediator.send(GetDriverHeldFundsQuery(driver_id))
 
 
 @router.get(
