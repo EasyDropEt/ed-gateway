@@ -39,7 +39,8 @@ from ed_gateway.application.features.drivers.handlers.commands import (
     UpdateDriverCurrentLocationCommandHandler)
 from ed_gateway.application.features.drivers.handlers.queries import (
     GetDriverByIdQueryHandler, GetDriverByUserIdQueryHandler,
-    GetDriverDeliveryJobsQueryHandler, GetDriverOrdersQueryHandler)
+    GetDriverDeliveryJobsQueryHandler, GetDriverHeldFundsQueryHandler,
+    GetDriverOrdersQueryHandler)
 from ed_gateway.application.features.drivers.requests.commands import (
     ClaimDeliveryJobCommand, CreateDriverAccountCommand, LoginDriverCommand,
     LoginDriverVerifyCommand, UpdateDriverCurrentLocationCommand)
@@ -96,7 +97,7 @@ def mediator(
         (GetDriverDeliveryJobsQuery, GetDriverDeliveryJobsQueryHandler(api)),
         (GetDriverByIdQuery, GetDriverByIdQueryHandler(api)),
         (GetDriverByUserIdQuery, GetDriverByUserIdQueryHandler(api)),
-        (GetDriverHeldFundsQuery, GetDriverOrdersQueryHandler(api)),
+        (GetDriverHeldFundsQuery, GetDriverHeldFundsQueryHandler(api)),
         (GetDriverOrdersQuery, GetDriverOrdersQueryHandler(api)),
         (ClaimDeliveryJobCommand, ClaimDeliveryJobCommandHandler(api)),
         (

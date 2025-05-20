@@ -24,7 +24,6 @@ class LoginDriverCommandHandler(RequestHandler):
     ) -> BaseResponse[UnverifiedUserDto]:
         LOG.info("Handling LoginDriverCommand")
         response = self._api.auth_api.login_get_otp({**request.dto})
-        print("Response:", response)
         if not response["is_success"]:
             raise ApplicationException(
                 Exceptions.InternalServerException,
