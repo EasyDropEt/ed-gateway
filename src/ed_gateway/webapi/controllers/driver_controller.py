@@ -5,14 +5,15 @@ from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
 from ed_core.documentation.abc_core_api_client import (DeliveryJobDto,
                                                        DriverDto,
+                                                       DriverHeldFundsDto,
+                                                       DriverPaymentSummaryDto,
+                                                       DropOffOrderDto,
+                                                       DropOffOrderVerifyDto,
                                                        NotificationDto,
                                                        OrderDto,
+                                                       PickUpOrderDto,
+                                                       PickUpOrderVerifyDto,
                                                        UpdateLocationDto)
-from ed_core.documentation.core_api_client import (DriverHeldFundsDto,
-                                                   DropOffOrderDto,
-                                                   DropOffOrderVerifyDto,
-                                                   PickUpOrderDto,
-                                                   PickUpOrderVerifyDto)
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from fastapi import APIRouter, Depends, WebSocket
 from fastapi.security import HTTPAuthorizationCredentials
@@ -27,7 +28,8 @@ from ed_gateway.application.features.drivers.requests.commands import (
     PickUpOrderVerifyCommand, UpdateDriverCurrentLocationCommand)
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery,
-    GetDriverHeldFundsQuery, GetDriverOrdersQuery)
+    GetDriverHeldFundsQuery, GetDriverOrdersQuery,
+    GetDriverPaymentSummaryQuery)
 from ed_gateway.application.features.notifications.requests.queries import \
     GetNotificationsQuery
 from ed_gateway.common.generic_helpers import get_config
@@ -125,7 +127,22 @@ async def get_driver_orders(
 
 
 @router.get(
-    "/me/driver-held-funds",
+    "/me/payment/summary",
+    response_model=GenericResponse[DriverPaymentSummaryDto],
+    tags=["Driver Features"],
+)
+@rest_endpoint
+async def get_driver_payment_summary(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+
+    driver_id = await _get_driver_id(auth.credentials, mediator)
+    return await mediator.send(GetDriverPaymentSummaryQuery(driver_id))
+
+
+@router.get(
+    "/me/payment/held-funds",
     response_model=GenericResponse[DriverHeldFundsDto],
     tags=["Driver Features"],
 )
