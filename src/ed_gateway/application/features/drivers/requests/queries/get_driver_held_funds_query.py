@@ -8,7 +8,7 @@ from rmediator.mediator import Request
 from ed_gateway.application.common.responses.base_response import BaseResponse
 
 
-@request(BaseResponse[list[DriverHeldFundsDto]])
+@request(BaseResponse[DriverHeldFundsDto])
 @dataclass
 class GetDriverHeldFundsQuery(Request):
     driver_id: UUID
