@@ -45,6 +45,9 @@ oauth2_scheme = JWTBearer(api_dep.auth_api)
 async def create_account(
     request: CreateBusinessAccountDto, mediator: Annotated[Mediator, Depends(mediator)]
 ):
+    LOG.info(
+        "Sending CreateBusinessAccountCommand to mediator with request: %s", request
+    )
     return await mediator.send(CreateBusinessAccountCommand(dto=request))
 
 
@@ -57,6 +60,7 @@ async def create_account(
 async def login_business(
     request: LoginBusinessDto, mediator: Annotated[Mediator, Depends(mediator)]
 ):
+    LOG.info("Sending LoginBusinessCommand to mediator with request: %s", request)
     return await mediator.send(LoginBusinessCommand(dto=request))
 
 
@@ -69,6 +73,8 @@ async def login_business(
 async def login_business_verify(
     request: LoginUserVerifyDto, mediator: Annotated[Mediator, Depends(mediator)]
 ):
+    LOG.info(
+        "Sending LoginBusinessVerifyCommand to mediator with request: %s", request)
     return await mediator.send(LoginBusinessVerifyCommand(dto=request))
 
 
@@ -82,6 +88,10 @@ async def get_business(
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
+    LOG.info(
+        "Sending GetBusinessByUserIdQuery to mediator with user_id: %s",
+        auth.credentials,
+    )
     return await mediator.send(GetBusinessByUserIdQuery(user_id=auth.credentials))
 
 
@@ -97,6 +107,9 @@ async def get_business_notifications(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
 
+    LOG.info(
+        "Sending GetNotificationsQuery to mediator with user_id: %s", auth.credentials
+    )
     return await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
 
 
@@ -113,6 +126,11 @@ async def create_orders(
 ):
 
     business_id = await _get_business_id(auth.credentials, mediator)
+    LOG.info(
+        "Sending CreateOrdersCommand to mediator with business_id: %s and request: %s",
+        business_id,
+        request,
+    )
     return await mediator.send(
         CreateOrdersCommand(business_id=business_id, dto=request)
     )
@@ -129,6 +147,9 @@ async def get_orders(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     business_id = await _get_business_id(auth.credentials, mediator)
+    LOG.info(
+        "Sending GetBusinessOrdersQuery to mediator with business_id: %s", business_id
+    )
     return await mediator.send(GetBusinessOrdersQuery(business_id=business_id))
 
 
