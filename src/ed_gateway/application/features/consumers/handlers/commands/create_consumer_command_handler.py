@@ -32,8 +32,8 @@ class CreateConsumerCommandHandler(RequestHandler):
             }
         )
 
-        LOG.info(
-            f"Received response from create_get_otp: {create_user_response}")
+        LOG.info("Received response from create_get_otp - success: %s",
+                 create_user_response.get("is_success"))
         if not create_user_response["is_success"]:
             raise ApplicationException(
                 Exceptions.InternalServerException,
