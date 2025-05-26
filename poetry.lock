@@ -780,13 +780,13 @@ pgp = ["gpg"]
 
 [[package]]
 name = "ed-auth"
-version = "0.1.9"
+version = "0.1.11"
 description = "EasyDrop auth model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_auth-0.1.9-py3-none-any.whl", hash = "sha256:62258273fbc41948ea4704560232dfb0472aeb4e240792bcfff8ede1b1dd4c62"},
+    {file = "ed_auth-0.1.11-py3-none-any.whl", hash = "sha256:0b7ba27ddff099ca8e4d802927d749ae298051c703de524c781c2e2b97f8f959"},
 ]
 
 [package.extras]
@@ -794,13 +794,13 @@ dev = ["check-manifest"]
 
 [[package]]
 name = "ed-core"
-version = "0.2.12"
+version = "0.2.15"
 description = "EasyDrop auth model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_core-0.2.12-py3-none-any.whl", hash = "sha256:d3dcf0dedfd695841028059872288576d88846931eddf50bf1e02252a9b3a650"},
+    {file = "ed_core-0.2.15-py3-none-any.whl", hash = "sha256:76ca930a9102b89f0f8180d598fd9fb7f78a90db74db53496434865f11d8b7cf"},
 ]
 
 [package.extras]
@@ -808,13 +808,27 @@ dev = ["check-manifest"]
 
 [[package]]
 name = "ed-domain"
-version = "0.3.3"
+version = "0.3.4"
 description = "EasyDrop domain model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_domain-0.3.3-py3-none-any.whl", hash = "sha256:84c8d411f9b0958cbf6ae0ab7ca6dbeebf346406e3a3f07f13a1ba0df89bf3c8"},
+    {file = "ed_domain-0.3.4-py3-none-any.whl", hash = "sha256:f625a7a77f8fa735268e6f4a125fe8d2cd7434d084df97bf249ea3a3810880e0"},
+]
+
+[package.extras]
+dev = ["check-manifest"]
+
+[[package]]
+name = "ed-infrastructure"
+version = "0.1.12"
+description = "EasyDrop infrastructure Package"
+optional = false
+python-versions = ">=3.12"
+groups = ["main"]
+files = [
+    {file = "ed_infrastructure-0.1.12-py3-none-any.whl", hash = "sha256:1f114398f25a10941c4843bbabc3ac306659f14ffa6480d4824b28abdbac2fc6"},
 ]
 
 [package.extras]
@@ -3061,4 +3075,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "f15ff3e710e3195dbd17bb79a27d97461f78de66bf7bf357331fe0f342b9a907"
+content-hash = "f147c19088a7f12a93bf4b37bbc8ba46dcdcd00e3eda4dcec81060e060bd0685"

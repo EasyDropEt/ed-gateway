@@ -20,8 +20,7 @@ class GetDriverHeldFundsQueryHandler(RequestHandler):
     async def handle(
         self, request: GetDriverHeldFundsQuery
     ) -> BaseResponse[DriverHeldFundsDto]:
-        response = self._api.core_api.get_driver_held_funds(
-            str(request.driver_id))
+        response = self._api.core_api.get_driver_held_funds(str(request.driver_id))
 
         if not response["is_success"]:
             LOG.error(

@@ -20,8 +20,7 @@ class GetDriverPaymentSummaryQueryHandler(RequestHandler):
     async def handle(
         self, request: GetDriverPaymentSummaryQuery
     ) -> BaseResponse[DriverPaymentSummaryDto]:
-        response = self._api.core_api.get_driver_payment_summary(
-            str(request.driver_id))
+        response = self._api.core_api.get_driver_payment_summary(str(request.driver_id))
 
         if not response["is_success"]:
             LOG.error(
