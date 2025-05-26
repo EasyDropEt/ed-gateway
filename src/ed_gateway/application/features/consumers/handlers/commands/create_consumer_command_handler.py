@@ -41,8 +41,8 @@ class CreateConsumerCommandHandler(RequestHandler):
                 create_user_response["errors"],
             )
 
-        LOG.info(
-            f"Calling core create_consumer API with request: {request.dto}")
+        LOG.info("Calling core create_consumer API for user: %s %s",
+                 request.dto.get("first_name"), request.dto.get("last_name"))
         create_consumer_response = self._api_handler.core_api.create_consumer(
             {
                 "user_id": create_user_response["data"]["id"],
