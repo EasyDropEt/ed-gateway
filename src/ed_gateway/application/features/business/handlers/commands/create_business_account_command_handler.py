@@ -20,7 +20,8 @@ class CreateBusinessAccountCommandHandler(RequestHandler):
     async def handle(
         self, request: CreateBusinessAccountCommand
     ) -> BaseResponse[BusinessDto]:
-        LOG.info("Handling CreateBusinessAccountCommand")
+        LOG.info(
+            f"Calling auth create_get_otp API with request: {request.dto}")
         create_user_response = self._api_handler.auth_api.create_get_otp(
             {
                 "first_name": request.dto["owner_first_name"],
@@ -30,6 +31,9 @@ class CreateBusinessAccountCommandHandler(RequestHandler):
                 "password": request.dto["password"],
             }
         )
+
+        LOG.info(
+            f"Received response from create_get_otp: {create_user_response}")
         if not create_user_response["is_success"]:
             raise ApplicationException(
                 Exceptions.InternalServerException,
@@ -37,6 +41,8 @@ class CreateBusinessAccountCommandHandler(RequestHandler):
                 create_user_response["errors"],
             )
 
+        LOG.info(
+            f"Calling core create_business API with request: {request.dto}")
         create_business_response = self._api_handler.core_api.create_business(
             {
                 "user_id": create_user_response["data"]["id"],
@@ -46,11 +52,14 @@ class CreateBusinessAccountCommandHandler(RequestHandler):
                 "phone_number": request.dto["phone_number"],
                 "email": request.dto["email"],
                 "location": request.dto["location"],
-                "billing_details": request.dto["billing_details"],
             }
         )
+
+        LOG.info(
+            f"Received response from create_business: {create_business_response}")
         if create_business_response["is_success"] is False:
-            self._api_handler.auth_api.delete_user(create_user_response["data"]["id"])
+            self._api_handler.auth_api.delete_user(
+                create_user_response["data"]["id"])
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to create business account",

@@ -20,14 +20,15 @@ class GetDriverPaymentSummaryQueryHandler(RequestHandler):
     async def handle(
         self, request: GetDriverPaymentSummaryQuery
     ) -> BaseResponse[DriverPaymentSummaryDto]:
-        response = self._api.core_api.get_driver_payment_summary(str(request.driver_id))
+        LOG.info(
+            "Calling core get_driver_payment_summary API with driver_id: %s",
+            request.driver_id,
+        )
+        response = self._api.core_api.get_driver_payment_summary(
+            str(request.driver_id))
 
+        LOG.info("Received response from get_driver_payment_summary: %s", response)
         if not response["is_success"]:
-            LOG.error(
-                "Failed to fetch driver payment summary for driver %s: %s",
-                request.driver_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to fetch driver payment summary.",

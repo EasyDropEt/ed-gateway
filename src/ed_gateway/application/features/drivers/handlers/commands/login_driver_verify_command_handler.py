@@ -20,8 +20,11 @@ class LoginDriverVerifyCommandHandler(RequestHandler):
     async def handle(
         self, request: LoginDriverVerifyCommand
     ) -> BaseResponse[DriverAccountDto]:
-        LOG.info("Handling LoginDriverVerifyCommand")
+        LOG.info(
+            f"Calling auth login_verify_otp API with request: {request.dto}")
         verify_response = self._api.auth_api.login_verify_otp(request.dto)
+
+        LOG.info(f"Received response from login_verify_otp: {verify_response}")
         if verify_response["is_success"] is False:
             raise ApplicationException(
                 Exceptions.InternalServerException,
@@ -30,15 +33,20 @@ class LoginDriverVerifyCommandHandler(RequestHandler):
             )
 
         user = verify_response["data"]
-        get_driver_response = self._api.core_api.get_driver_by_user_id(str(user["id"]))
+
+        LOG.info(
+            f"Calling core_api.get_driver_by_user_id with user ID: {user['id']}")
+        get_driver_response = self._api.core_api.get_driver_by_user_id(
+            str(user["id"]))
+
+        LOG.info(
+            f"Received response from get_driver_by_user_id: {get_driver_response}")
         if get_driver_response["is_success"] is False:
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Driver login failed.",
                 get_driver_response["errors"],
             )
-
-        print("GET DRIVER RESPONSE", get_driver_response)
 
         return BaseResponse[DriverAccountDto].success(
             "Driver logged in successfully",

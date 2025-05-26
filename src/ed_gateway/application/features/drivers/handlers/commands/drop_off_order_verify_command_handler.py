@@ -17,19 +17,20 @@ class DropOffOrderVerifyCommandHandler(RequestHandler):
         self._api = api
 
     async def handle(self, request: DropOffOrderVerifyCommand) -> BaseResponse[None]:
+        LOG.info(
+            f"Calling core verify_order_drop_off API with driver_id: {request.driver_id}, "
+            f"delivery_job_id: {request.delivery_job_id}, order_id: {request.order_id}, "
+            f"dto: {request.dto}"
+        )
         response = self._api.core_api.verify_order_drop_off(
             str(request.driver_id),
             str(request.delivery_job_id),
             str(request.order_id),
             request.dto,
         )
+
+        LOG.info(f"Received response from verify_order_drop_off: {response}")
         if response["is_success"] is False:
-            LOG.error(
-                "Failed to verify drop off order.",
-                request.driver_id,
-                request.delivery_job_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to verify drop off order.",

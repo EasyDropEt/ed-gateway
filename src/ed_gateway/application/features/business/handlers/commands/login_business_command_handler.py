@@ -22,8 +22,10 @@ class LoginBusinessCommandHandler(RequestHandler):
     async def handle(
         self, request: LoginBusinessCommand
     ) -> BaseResponse[UnverifiedUserDto]:
-        LOG.info("Handling LoginBusinessCommand")
+        LOG.info(f"Calling auth login_get_otp API with request: {request.dto}")
         response = self._api.auth_api.login_get_otp({**request.dto})
+
+        LOG.info(f"Received response from login_get_otp: {response}")
         if not response["is_success"]:
             raise ApplicationException(
                 Exceptions.InternalServerException,

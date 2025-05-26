@@ -20,14 +20,13 @@ class GetDriverOrdersQueryHandler(RequestHandler):
     async def handle(
         self, request: GetDriverOrdersQuery
     ) -> BaseResponse[list[OrderDto]]:
+        LOG.info(
+            f"Calling core get_driver_orders API with driver_id: {request.driver_id}"
+        )
         response = self._api.core_api.get_driver_orders(str(request.driver_id))
 
+        LOG.info(f"Received response from get_driver_orders: {response}")
         if not response["is_success"]:
-            LOG.error(
-                "Failed to fetch orders for driver %s: %s",
-                request.driver_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to fetch orders.",

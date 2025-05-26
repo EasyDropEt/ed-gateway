@@ -23,7 +23,8 @@ class CreateDriverAccountCommandHandler(RequestHandler):
     async def handle(
         self, request: CreateDriverAccountCommand
     ) -> BaseResponse[DriverDto]:
-        LOG.info("Handling CreateDriverAccountCommand")
+        LOG.info(
+            f"Calling auth create_get_otp API with request: {request.dto}")
         create_user_response = self._api_handler.auth_api.create_get_otp(
             {
                 "first_name": request.dto["first_name"],
@@ -33,6 +34,9 @@ class CreateDriverAccountCommandHandler(RequestHandler):
                 "password": request.dto["password"],
             }
         )
+
+        LOG.info(
+            f"Received response from create_get_otp: {create_user_response}")
         if not create_user_response["is_success"]:
             raise ApplicationException(
                 Exceptions.InternalServerException,
@@ -40,6 +44,7 @@ class CreateDriverAccountCommandHandler(RequestHandler):
                 create_user_response["errors"],
             )
 
+        LOG.info(f"Calling core create_driver API with request: {request.dto}")
         create_driver_response = self._api_handler.core_api.create_driver(
             {
                 "user_id": create_user_response["data"]["id"],
@@ -52,8 +57,12 @@ class CreateDriverAccountCommandHandler(RequestHandler):
                 "car": request.dto["car"],
             }
         )
+
+        LOG.info(
+            f"Received response from create_driver: {create_driver_response}")
         if create_driver_response["is_success"] is False:
-            self._api_handler.auth_api.delete_user(create_user_response["data"]["id"])
+            self._api_handler.auth_api.delete_user(
+                create_user_response["data"]["id"])
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to create driver account",

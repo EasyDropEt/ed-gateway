@@ -20,14 +20,14 @@ class GetDeliveryJobQueryHandler(RequestHandler):
     async def handle(
         self, request: GetDeliveryJobQuery
     ) -> BaseResponse[DeliveryJobDto]:
-        response = self._api.core_api.get_delivery_job(str(request.delivery_job_id))
+        LOG.info(
+            f"Calling core get_delivery_job API with delivery_job_id: {request.delivery_job_id}"
+        )
+        response = self._api.core_api.get_delivery_job(
+            str(request.delivery_job_id))
 
+        LOG.info(f"Received response from get_delivery_job: {response}")
         if not response["is_success"]:
-            LOG.error(
-                "Failed to fetch delivery job.",
-                request.delivery_job_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Delivery job not found.",

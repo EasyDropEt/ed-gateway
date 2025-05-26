@@ -20,23 +20,11 @@ class CancelBusinessOrderCommandHandler(RequestHandler):
     async def handle(
         self, request: CancelBusinessOrderCommand
     ) -> BaseResponse[OrderDto]:
-        get_order_response = self._api.core_api.get_order(str(request.order_id))
-        if get_order_response["is_success"] is False:
-            raise ApplicationException(
-                Exceptions.InternalServerException,
-                "Failed to cancel order.",
-                get_order_response["errors"],
-            )
+        LOG.info(f"Calling cancel_order API with order_id: {request.order_id}")
+        cancel_response = self._api.core_api.cancel_order(
+            str(request.order_id))
 
-        order = get_order_response["data"]
-        if order.business.id != str(request.business_id):
-            raise ApplicationException(
-                Exceptions.UnauthorizedException,
-                "Failed to cancel order.",
-                ["Order does not belong to the business."],
-            )
-
-        cancel_response = self._api.core_api.cancel_order(str(request.order_id))
+        LOG.info(f"Received response from cancel_order API: {cancel_response}")
         if cancel_response["is_success"] is False:
             raise ApplicationException(
                 Exceptions.InternalServerException,
