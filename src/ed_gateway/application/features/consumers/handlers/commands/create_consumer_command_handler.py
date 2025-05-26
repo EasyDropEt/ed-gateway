@@ -21,7 +21,8 @@ class CreateConsumerCommandHandler(RequestHandler):
         self._image_uploader = image_uploader
 
     async def handle(self, request: CreateConsumerCommand) -> BaseResponse[ConsumerDto]:
-        LOG.info("Handling CreateConsumerCommand")
+        LOG.info(
+            f"Calling auth create_get_otp API with request: {request.dto}")
         create_user_response = self._api_handler.auth_api.create_get_otp(
             {
                 "first_name": request.dto["first_name"],
@@ -30,6 +31,9 @@ class CreateConsumerCommandHandler(RequestHandler):
                 "phone_number": request.dto["phone_number"],
             }
         )
+
+        LOG.info("Received response from create_get_otp - success: %s",
+                 create_user_response.get("is_success"))
         if not create_user_response["is_success"]:
             raise ApplicationException(
                 Exceptions.InternalServerException,
@@ -37,6 +41,8 @@ class CreateConsumerCommandHandler(RequestHandler):
                 create_user_response["errors"],
             )
 
+        LOG.info("Calling core create_consumer API for user: %s %s",
+                 request.dto.get("first_name"), request.dto.get("last_name"))
         create_consumer_response = self._api_handler.core_api.create_consumer(
             {
                 "user_id": create_user_response["data"]["id"],
@@ -47,8 +53,12 @@ class CreateConsumerCommandHandler(RequestHandler):
                 "location": request.dto["location"],
             }
         )
+
+        LOG.info(
+            f"Received response from create_consumer: {create_consumer_response}")
         if create_consumer_response["is_success"] is False:
-            self._api_handler.auth_api.delete_user(create_user_response["data"]["id"])
+            self._api_handler.auth_api.delete_user(
+                create_user_response["data"]["id"])
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to create consumer account",

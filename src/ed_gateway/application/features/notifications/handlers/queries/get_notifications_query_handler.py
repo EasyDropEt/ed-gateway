@@ -20,8 +20,13 @@ class GetNotificationsQueryHandler(RequestHandler):
     async def handle(
         self, request: GetNotificationsQuery
     ) -> BaseResponse[list[NotificationDto]]:
-        response = self._api.core_api.get_user_notifications(str(request.user_id))
+        LOG.info(
+            f"Calling core get_user_notifications API with user_id: {request.user_id}"
+        )
+        response = self._api.core_api.get_user_notifications(
+            str(request.user_id))
 
+        LOG.info(f"Received response from get_user_notifications. Success: {response.get('is_success')}, Data count: {len(response.get('data', []))}")
         if not response["is_success"]:
             raise ApplicationException(
                 Exceptions.InternalServerException,

@@ -20,10 +20,15 @@ class GetConsumerOrdersQueryHandler(RequestHandler):
     async def handle(
         self, request: GetConsumerOrdersQuery
     ) -> BaseResponse[list[OrderDto]]:
+        LOG.info(
+            f"Calling core get_consumer_delivery_jobs API with consumer_id: {request.consumer_id}"
+        )
         response = self._api.core_api.get_consumer_delivery_jobs(
             str(request.consumer_id)
         )
 
+        LOG.info(
+            f"Received response from get_consumer_delivery_jobs: {response}")
         if not response["is_success"]:
             LOG.error(
                 "Failed to fetch orders for consumer %s: %s",

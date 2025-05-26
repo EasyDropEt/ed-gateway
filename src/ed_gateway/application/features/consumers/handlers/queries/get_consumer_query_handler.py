@@ -18,8 +18,12 @@ class GetConsumerQueryHandler(RequestHandler):
         self._api = api
 
     async def handle(self, request: GetConsumerQuery) -> BaseResponse[ConsumerDto]:
+        LOG.info(
+            f"Calling core get_consumer API with consumer_id: {request.consumer_id}"
+        )
         response = self._api.core_api.get_consumer(str(request.consumer_id))
 
+        LOG.info(f"Received response from get_consumer: {response}")
         if not response["is_success"]:
             LOG.error(
                 "Failed to fetch consumer.",

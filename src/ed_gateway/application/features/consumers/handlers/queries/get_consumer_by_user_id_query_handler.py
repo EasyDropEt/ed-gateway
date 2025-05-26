@@ -20,8 +20,13 @@ class GetConsumerByUserIdQueryHandler(RequestHandler):
     async def handle(
         self, request: GetConsumerByUserIdQuery
     ) -> BaseResponse[ConsumerDto]:
-        response = self._api.core_api.get_consumer_by_user_id(str(request.user_id))
+        LOG.info(
+            f"Calling core get_consumer_by_user_id API with user_id: {request.user_id}"
+        )
+        response = self._api.core_api.get_consumer_by_user_id(
+            str(request.user_id))
 
+        LOG.info(f"Received response from get_consumer_by_user_id: {response}")
         if not response["is_success"]:
             raise ApplicationException(
                 Exceptions.InternalServerException,

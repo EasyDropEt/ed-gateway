@@ -20,16 +20,16 @@ class DropOffOrderCommandHandler(RequestHandler):
     async def handle(
         self, request: DropOffOrderCommand
     ) -> BaseResponse[DropOffOrderDto]:
-        response = self._api.core_api.initiate_order_drop_off(
-            str(request.driver_id), str(request.delivery_job_id), str(request.order_id)
+        LOG.info(
+            f"Calling core initiate_order_drop_off API with driver_id: {request.driver_id}, delivery_job_id: {request.delivery_job_id}, order_id: {request.order_id}"
         )
+        response = self._api.core_api.initiate_order_drop_off(
+            str(request.driver_id), str(
+                request.delivery_job_id), str(request.order_id)
+        )
+
+        LOG.info(f"Received response from initiate_order_drop_off: {response}")
         if response["is_success"] is False:
-            LOG.error(
-                "Failed to drop off order.",
-                request.driver_id,
-                request.delivery_job_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to drop off order.",

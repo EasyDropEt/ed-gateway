@@ -40,6 +40,7 @@ async def create_account(
     mediator: Annotated[Mediator, Depends(mediator)],
     request: CreateConsumerDto,
 ):
+    LOG.info("Sending CreateConsumerCommand to mediator with request: %s", request)
     return await mediator.send(
         CreateConsumerCommand(
             dto=request,
@@ -56,6 +57,7 @@ async def create_account(
 async def login_consumer(
     request: LoginConsumerDto, mediator: Annotated[Mediator, Depends(mediator)]
 ):
+    LOG.info("Sending LoginConsumerCommand to mediator with request: %s", request)
     return await mediator.send(LoginConsumerCommand(dto=request))
 
 
@@ -68,6 +70,8 @@ async def login_consumer(
 async def login_consumer_verify(
     request: LoginUserVerifyDto, mediator: Annotated[Mediator, Depends(mediator)]
 ):
+    LOG.info(
+        "Sending LoginConsumerVerifyCommand to mediator with request: %s", request)
     return await mediator.send(LoginConsumerVerifyCommand(dto=request))
 
 
@@ -79,6 +83,10 @@ async def get_consumer(
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
+    LOG.info(
+        "Sending GetConsumerByUserIdQuery to mediator with user_id: %s",
+        auth.credentials,
+    )
     return await mediator.send(GetConsumerByUserIdQuery(user_id=auth.credentials))
 
 
@@ -96,4 +104,8 @@ async def get_consumer_delivery_jobs(
         await mediator.send(GetConsumerByUserIdQuery(user_id=auth.credentials))
     )["data"]
     print(consumer)
+    LOG.info(
+        "Sending GetConsumerOrdersQuery to mediator with consumer_id: %s",
+        consumer["id"],
+    )
     return await mediator.send(GetConsumerOrdersQuery(consumer_id=consumer["id"]))

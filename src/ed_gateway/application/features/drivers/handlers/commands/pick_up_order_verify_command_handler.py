@@ -17,19 +17,19 @@ class PickUpOrderVerifyCommandHandler(RequestHandler):
         self._api = api
 
     async def handle(self, request: PickUpOrderVerifyCommand) -> BaseResponse[None]:
+        LOG.info(
+            f"Calling core verify_order_pick_up API with driver_id: {request.driver_id}, "
+            f"delivery_job_id: {request.delivery_job_id}, order_id: {request.order_id}"
+        )
         response = self._api.core_api.verify_order_pick_up(
             str(request.driver_id),
             str(request.delivery_job_id),
             str(request.order_id),
             request.dto,
         )
+
+        LOG.info(f"Received response from verify_order_pick_up: {response}")
         if response["is_success"] is False:
-            LOG.error(
-                "Failed to verify pick up order.",
-                request.driver_id,
-                request.delivery_job_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to verify pick up order.",

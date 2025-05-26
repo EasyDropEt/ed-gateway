@@ -18,6 +18,7 @@ router = APIRouter(prefix="/delivery_jobs", tags=["Delivery Job Features"])
 @router.get("", response_model=GenericResponse[list[DeliveryJobDto]])
 @rest_endpoint
 async def get_delivery_jobs(mediator: Annotated[Mediator, Depends(mediator)]):
+    LOG.info("Sending GetDeliveryJobsQuery to mediator")
     return await mediator.send(GetDeliveryJobsQuery())
 
 
@@ -26,4 +27,8 @@ async def get_delivery_jobs(mediator: Annotated[Mediator, Depends(mediator)]):
 async def get_delivery_job(
     delivery_job_id: UUID, mediator: Annotated[Mediator, Depends(mediator)]
 ):
+    LOG.info(
+        "Sending GetDeliveryJobQuery to mediator with delivery_job_id: %s",
+        delivery_job_id,
+    )
     return await mediator.send(GetDeliveryJobQuery(delivery_job_id=delivery_job_id))

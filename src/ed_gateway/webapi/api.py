@@ -14,12 +14,21 @@ LOG = get_logger()
 
 
 class API(FastAPI):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._routers = [
+            driver_controller,
+            business_controller,
+            delivery_job_controller,
+            consumer_controller,
+            order_controller,
+        ]
+
     @property
     def app(self):
         return self
 
     def start(self) -> None:
-        """Start the API server."""
         LOG.info("Starting api...")
         self._include_routers()
         self._contain_exceptions()
@@ -31,11 +40,10 @@ class API(FastAPI):
 
     def _include_routers(self) -> None:
         LOG.info("Including routers...")
-        self.include_router(driver_controller.router)
-        self.include_router(business_controller.router)
-        self.include_router(delivery_job_controller.router)
-        self.include_router(consumer_controller.router)
-        self.include_router(order_controller.router)
+
+        for router in self._routers:
+            LOG.info(f"Including router: {router.__name__}")
+            self.include_router(router.router)
 
     def _contain_exceptions(self) -> None:
         @self.exception_handler(ApplicationException)
@@ -43,7 +51,9 @@ class API(FastAPI):
             request: Request, exception: ApplicationException
         ) -> JSONResponse:
             LOG.error(
-                f"ApplicationException occurred: {exception.message} while handling {request.url}"
+                f"ApplicationException occurred: {exception.message} while handling {request.url}",
+                f"with error code {exception.error_code}",
+                f"with the following errors {exception.errors}",
             )
             return JSONResponse(
                 status_code=exception.error_code,

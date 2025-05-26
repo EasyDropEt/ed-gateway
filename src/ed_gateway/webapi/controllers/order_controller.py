@@ -31,4 +31,5 @@ async def get_driver(
     order_id: UUID,
     mediator: Annotated[Mediator, Depends(mediator)],
 ):
+    LOG.info("Sending TrackOrderQuery to mediator with order_id: %s", order_id)
     return await mediator.send(TrackOrderQuery(order_id=order_id))

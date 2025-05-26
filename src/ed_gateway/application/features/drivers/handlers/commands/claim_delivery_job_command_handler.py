@@ -20,16 +20,15 @@ class ClaimDeliveryJobCommandHandler(RequestHandler):
     async def handle(
         self, request: ClaimDeliveryJobCommand
     ) -> BaseResponse[DeliveryJobDto]:
+        LOG.info(
+            f"Calling core claim_delivery_job API with driver_id: {request.driver_id}, delivery_job_id: {request.delivery_job_id}"
+        )
         response = self._api.core_api.claim_delivery_job(
             str(request.driver_id), str(request.delivery_job_id)
         )
+
+        LOG.info(f"Received response from claim_delivery_job: {response}")
         if response["is_success"] is False:
-            LOG.error(
-                "Failed to claim delivery job.",
-                request.driver_id,
-                request.delivery_job_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to claim delivery job.",

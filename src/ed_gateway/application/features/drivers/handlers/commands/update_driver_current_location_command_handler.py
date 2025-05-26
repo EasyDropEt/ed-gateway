@@ -19,9 +19,15 @@ class UpdateDriverCurrentLocationCommandHandler(RequestHandler):
     async def handle(
         self, request: UpdateDriverCurrentLocationCommand
     ) -> BaseResponse[None]:
-        LOG.info("Handling UpdateDriverCurrentLocationCommand")
+        LOG.info(
+            f"Calling core update_driver_current_location API with request: {request.dto}"
+        )
         update_response = self._api.core_api.update_driver_current_location(
             driver_id=str(request.driver_id), update_location_dto=request.dto
+        )
+
+        LOG.info(
+            f"Received response from update_driver_current_location: {update_response}"
         )
         if not update_response["is_success"]:
             raise ApplicationException(

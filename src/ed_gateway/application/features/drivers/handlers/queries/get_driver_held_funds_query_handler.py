@@ -20,14 +20,14 @@ class GetDriverHeldFundsQueryHandler(RequestHandler):
     async def handle(
         self, request: GetDriverHeldFundsQuery
     ) -> BaseResponse[DriverHeldFundsDto]:
-        response = self._api.core_api.get_driver_held_funds(str(request.driver_id))
+        LOG.info(
+            f"Calling core get_driver_held_funds API with driver_id: {request.driver_id}"
+        )
+        response = self._api.core_api.get_driver_held_funds(
+            str(request.driver_id))
 
+        LOG.info(f"Received response from get_driver_held_funds: {response}")
         if not response["is_success"]:
-            LOG.error(
-                "Failed to fetch driver held fundss for driver %s: %s",
-                request.driver_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to fetch driver held fundss.",

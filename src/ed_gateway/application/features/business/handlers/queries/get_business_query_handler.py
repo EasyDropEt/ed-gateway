@@ -18,14 +18,13 @@ class GetBusinessQueryHandler(RequestHandler):
         self._api = api
 
     async def handle(self, request: GetBusinessQuery) -> BaseResponse[BusinessDto]:
+        LOG.info(
+            f"Calling core get_business API with business_id: {request.business_id}"
+        )
         response = self._api.core_api.get_business(str(request.business_id))
 
+        LOG.info(f"Received response from get_business: {response}")
         if not response["is_success"]:
-            LOG.error(
-                "Failed to fetch business.",
-                request.business_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Driver not found.",

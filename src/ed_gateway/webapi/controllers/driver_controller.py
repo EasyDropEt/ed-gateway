@@ -56,6 +56,8 @@ async def create_account(
     mediator: Annotated[Mediator, Depends(mediator)],
     request: CreateDriverAccountDto,
 ):
+    LOG.info(
+        "Sending CreateDriverAccountCommand to mediator with request: %s", request)
     return await mediator.send(
         CreateDriverAccountCommand(
             dto=request,
@@ -72,6 +74,7 @@ async def create_account(
 async def login_driver(
     request: LoginDriverDto, mediator: Annotated[Mediator, Depends(mediator)]
 ):
+    LOG.info("Sending LoginDriverCommand to mediator with request: %s", request)
     return await mediator.send(LoginDriverCommand(dto=request))
 
 
@@ -84,6 +87,7 @@ async def login_driver(
 async def login_driver_verify(
     request: LoginUserVerifyDto, mediator: Annotated[Mediator, Depends(mediator)]
 ):
+    LOG.info("Sending LoginDriverVerifyCommand to mediator with request: %s", request)
     return await mediator.send(LoginDriverVerifyCommand(dto=request))
 
 
@@ -93,6 +97,9 @@ async def get_driver(
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
+    LOG.info(
+        "Sending GetDriverByUserIdQuery to mediator with user_id: %s", auth.credentials
+    )
     return await mediator.send(GetDriverByUserIdQuery(user_id=auth.credentials))
 
 
@@ -108,6 +115,9 @@ async def get_driver_delivery_jobs(
 ):
 
     driver_id = await _get_driver_id(auth.credentials, mediator)
+    LOG.info(
+        "Sending GetDriverDeliveryJobsQuery to mediator with driver_id: %s", driver_id
+    )
     return await mediator.send(GetDriverDeliveryJobsQuery(driver_id))
 
 
@@ -123,6 +133,7 @@ async def get_driver_orders(
 ):
 
     driver_id = await _get_driver_id(auth.credentials, mediator)
+    LOG.info("Sending GetDriverOrdersQuery to mediator with driver_id: %s", driver_id)
     return await mediator.send(GetDriverOrdersQuery(driver_id))
 
 
@@ -138,6 +149,9 @@ async def get_driver_payment_summary(
 ):
 
     driver_id = await _get_driver_id(auth.credentials, mediator)
+    LOG.info(
+        "Sending GetDriverPaymentSummaryQuery to mediator with driver_id: %s", driver_id
+    )
     return await mediator.send(GetDriverPaymentSummaryQuery(driver_id))
 
 
@@ -153,6 +167,9 @@ async def get_driver_held_funds(
 ):
 
     driver_id = await _get_driver_id(auth.credentials, mediator)
+    LOG.info(
+        "Sending GetDriverHeldFundsQuery to mediator with driver_id: %s", driver_id
+    )
     return await mediator.send(GetDriverHeldFundsQuery(driver_id))
 
 
@@ -168,6 +185,9 @@ async def get_driver_notifications(
 ):
 
     # Notifications are user-scoped (user_id), not driver-scoped—hence no _get_driver_id call
+    LOG.info(
+        "Sending GetNotificationsQuery to mediator with user_id: %s", auth.credentials
+    )
     return await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
 
 
@@ -203,6 +223,11 @@ async def cancel_delivery_job(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     driver_id = await _get_driver_id(auth.credentials, mediator)
+    LOG.info(
+        "Sending CancelDeliveryJobCommand to mediator with driver_id: %s and delivery_job_id: %s",
+        driver_id,
+        delivery_job_id,
+    )
     return await mediator.send(CancelDeliveryJobCommand(driver_id, delivery_job_id))
 
 
@@ -219,6 +244,12 @@ async def initiate_order_pick_up(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     driver_id = await _get_driver_id(auth.credentials, mediator)
+    LOG.info(
+        "Sending PickUpOrderCommand to mediator with driver_id: %s, delivery_job_id: %s, and order_id: %s",
+        driver_id,
+        delivery_job_id,
+        order_id,
+    )
     return await mediator.send(PickUpOrderCommand(driver_id, delivery_job_id, order_id))
 
 
@@ -306,6 +337,11 @@ async def websocket_endpoint(
 
     while True:
         dto: UpdateLocationDto = await websocket.receive_json()
+        LOG.info(
+            "Sending UpdateDriverCurrentLocationCommand to mediator with driver_id: %s and dto: %s",
+            driver_id,
+            dto,
+        )
         response = await mediator.send(
             UpdateDriverCurrentLocationCommand(driver_id, dto)
         )

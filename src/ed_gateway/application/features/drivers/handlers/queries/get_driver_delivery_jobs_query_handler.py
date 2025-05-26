@@ -20,14 +20,15 @@ class GetDriverDeliveryJobsQueryHandler(RequestHandler):
     async def handle(
         self, request: GetDriverDeliveryJobsQuery
     ) -> BaseResponse[list[DeliveryJobDto]]:
-        response = self._api.core_api.get_driver_delivery_jobs(str(request.driver_id))
+        LOG.info(
+            f"Calling core get_driver_delivery_jobs API with driver_id: {request.driver_id}"
+        )
+        response = self._api.core_api.get_driver_delivery_jobs(
+            str(request.driver_id))
 
+        LOG.info(
+            f"Received response from get_driver_delivery_jobs: {response}")
         if not response["is_success"]:
-            LOG.error(
-                "Failed to fetch delivery jobs for driver %s: %s",
-                request.driver_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to fetch delivery jobs.",

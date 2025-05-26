@@ -18,16 +18,17 @@ class PickUpOrderCommandHandler(RequestHandler):
         self._api = api
 
     async def handle(self, request: PickUpOrderCommand) -> BaseResponse[PickUpOrderDto]:
-        response = self._api.core_api.initiate_order_pick_up(
-            str(request.driver_id), str(request.delivery_job_id), str(request.order_id)
+        LOG.info(
+            f"Calling core initiate_order_pick_up API with driver_id: {request.driver_id}, "
+            f"delivery_job_id: {request.delivery_job_id}, order_id: {request.order_id}"
         )
+        response = self._api.core_api.initiate_order_pick_up(
+            str(request.driver_id), str(
+                request.delivery_job_id), str(request.order_id)
+        )
+
+        LOG.info(f"Received response from initiate_order_pick_up: {response}")
         if response["is_success"] is False:
-            LOG.error(
-                "Failed to pick up order.",
-                request.driver_id,
-                request.delivery_job_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to pick up order.",

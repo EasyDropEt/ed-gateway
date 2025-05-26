@@ -20,15 +20,15 @@ class GetBusinessOrdersQueryHandler(RequestHandler):
     async def handle(
         self, request: GetBusinessOrdersQuery
     ) -> BaseResponse[list[OrderDto]]:
+        LOG.info(
+            f"Calling core get_business_orders API with business_id: {request.business_id}"
+        )
         response = self._api.core_api.get_business_orders(
             str(request.business_id),
         )
+
+        LOG.info(f"Received response from get_business_orders: {response}")
         if response["is_success"] is False:
-            LOG.error(
-                "Failed to fetch orders.",
-                request.business_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 Exceptions.InternalServerException,
                 "Failed to fetch orders.",

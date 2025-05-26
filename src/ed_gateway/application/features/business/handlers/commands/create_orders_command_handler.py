@@ -20,10 +20,14 @@ class CreateOrdersCommandHandler(RequestHandler):
     async def handle(
         self, request: CreateOrdersCommand
     ) -> BaseResponse[list[OrderDto]]:
-        LOG.info("Handling CreateOrdersCommand")
+        LOG.info(
+            f"Callign core create_business_orders API for business id: {request.business_id} with orders: {request.dto}"
+        )
         response = self._api_handler.core_api.create_business_orders(
             str(request.business_id), request.dto
         )
+
+        LOG.info(f"Received response from create_business_orders: {response}")
         if not response["is_success"]:
             LOG.error(
                 "Failed to create an order.",
