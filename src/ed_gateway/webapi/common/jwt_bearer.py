@@ -1,4 +1,4 @@
-from ed_auth.documentation.auth_api_client import ABCAuthApiClient
+from ed_auth.documentation.api.auth_api_client import ABCAuthApiClient
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from fastapi import Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer

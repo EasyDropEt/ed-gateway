@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from ed_core.documentation.abc_core_api_client import PickUpOrderVerifyDto
+from ed_core.documentation.api.abc_core_api_client import PickUpOrderVerifyDto
 from rmediator.decorators import request
 from rmediator.mediator import Request
 

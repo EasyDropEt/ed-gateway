@@ -1,7 +1,7 @@
-from ed_auth.documentation.abc_auth_api_client import ABCAuthApiClient
-from ed_auth.documentation.auth_api_client import AuthApiClient
-from ed_core.documentation.abc_core_api_client import ABCCoreApiClient
-from ed_core.documentation.core_api_client import CoreApiClient
+from ed_auth.documentation.api.abc_auth_api_client import ABCAuthApiClient
+from ed_auth.documentation.api.auth_api_client import AuthApiClient
+from ed_core.documentation.api.abc_core_api_client import ABCCoreApiClient
+from ed_core.documentation.api.core_api_client import CoreApiClient
 
 from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
 

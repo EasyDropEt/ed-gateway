@@ -1,4 +1,4 @@
-from ed_auth.documentation.auth_api_client import UnverifiedUserDto
+from ed_auth.documentation.api.auth_api_client import UnverifiedUserDto
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler

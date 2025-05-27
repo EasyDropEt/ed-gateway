@@ -3,17 +3,10 @@ from uuid import UUID
 
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
-from ed_core.documentation.abc_core_api_client import (DeliveryJobDto,
-                                                       DriverDto,
-                                                       DriverHeldFundsDto,
-                                                       DriverPaymentSummaryDto,
-                                                       DropOffOrderDto,
-                                                       DropOffOrderVerifyDto,
-                                                       NotificationDto,
-                                                       OrderDto,
-                                                       PickUpOrderDto,
-                                                       PickUpOrderVerifyDto,
-                                                       UpdateLocationDto)
+from ed_core.documentation.api.abc_core_api_client import (
+    DeliveryJobDto, DriverDto, DriverHeldFundsDto, DriverPaymentSummaryDto,
+    DropOffOrderDto, DropOffOrderVerifyDto, NotificationDto, OrderDto,
+    PickUpOrderDto, PickUpOrderVerifyDto, UpdateLocationDto)
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from fastapi import APIRouter, Depends, WebSocket
 from fastapi.security import HTTPAuthorizationCredentials

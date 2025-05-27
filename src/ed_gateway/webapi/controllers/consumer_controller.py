@@ -2,9 +2,9 @@ from typing import Annotated
 
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
-from ed_core.documentation.abc_core_api_client import \
+from ed_core.documentation.api.abc_core_api_client import \
     ConsumerDto as CoreConsumerDto
-from ed_core.documentation.abc_core_api_client import OrderDto
+from ed_core.documentation.api.abc_core_api_client import OrderDto
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator

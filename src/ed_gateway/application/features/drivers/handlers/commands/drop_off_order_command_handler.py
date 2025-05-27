@@ -1,4 +1,4 @@
-from ed_core.documentation.core_api_client import DropOffOrderDto
+from ed_core.documentation.api.core_api_client import DropOffOrderDto
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler

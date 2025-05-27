@@ -1,4 +1,4 @@
-from ed_core.documentation.abc_core_api_client import OrderDto
+from ed_core.documentation.api.abc_core_api_client import OrderDto
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler

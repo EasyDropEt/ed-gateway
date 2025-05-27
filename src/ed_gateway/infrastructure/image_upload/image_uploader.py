@@ -1,9 +1,9 @@
 import cloudinary
 import cloudinary.uploader
-from ed_core.common.typing.config import CloudinaryConfig
 
 from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uploader import (
     ABCImageUploader, InputImage, UploadedImage)
+from ed_gateway.common.typing.config import CloudinaryConfig
 
 
 class ImageUploader(ABCImageUploader):

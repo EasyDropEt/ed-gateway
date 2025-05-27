@@ -1,7 +1,7 @@
 from typing import Annotated
 from uuid import UUID
 
-from ed_core.documentation.core_api_client import DeliveryJobDto
+from ed_core.documentation.api.core_api_client import DeliveryJobDto
 from fastapi import APIRouter, Depends
 from rmediator import Mediator
 
