@@ -16,12 +16,13 @@ aiohttp = "^3.11.18"
 jsons = "^1.6.3"
 requests = "^2.32.3"
 pre-commit = "^4.2.0"
-ed-domain = "^0.3.4"
-ed-auth = "^0.1.11"
-ed-core = "^0.2.17"
+ed-domain = "^0.3.10"
+ed-auth = "^0.1.13"
+ed-core = "^0.2.21"
 cloudinary = "^1.44.0"
 python-multipart = "^0.0.20"
-ed-infrastructure = "^0.1.12"
+ed-infrastructure = "0.1.18"
+ed-notification = "^0.1.10"
 
 
 [tool.poetry.group.test.dependencies]

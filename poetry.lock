@@ -780,13 +780,13 @@ pgp = ["gpg"]
 
 [[package]]
 name = "ed-auth"
-version = "0.1.11"
+version = "0.1.13"
 description = "EasyDrop auth model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_auth-0.1.11-py3-none-any.whl", hash = "sha256:0b7ba27ddff099ca8e4d802927d749ae298051c703de524c781c2e2b97f8f959"},
+    {file = "ed_auth-0.1.13-py3-none-any.whl", hash = "sha256:08b5b276bd364648494cded0d02f90168844481d6d791ee7f1b71c2bc051c084"},
 ]
 
 [package.extras]
@@ -794,13 +794,13 @@ dev = ["check-manifest"]
 
 [[package]]
 name = "ed-core"
-version = "0.2.17"
+version = "0.2.21"
 description = "EasyDrop auth model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_core-0.2.17-py3-none-any.whl", hash = "sha256:731fc281b736bd8a2b4d2cd6964408a981d254809cc508aa3a7841bbd962ae24"},
+    {file = "ed_core-0.2.21-py3-none-any.whl", hash = "sha256:f13cbffc9c5fe3dbc874cdc8f9942b81b2d3e60e805bdd942042ccf4cd698848"},
 ]
 
 [package.extras]
@@ -808,13 +808,13 @@ dev = ["check-manifest"]
 
 [[package]]
 name = "ed-domain"
-version = "0.3.4"
+version = "0.3.10"
 description = "EasyDrop domain model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_domain-0.3.4-py3-none-any.whl", hash = "sha256:f625a7a77f8fa735268e6f4a125fe8d2cd7434d084df97bf249ea3a3810880e0"},
+    {file = "ed_domain-0.3.10-py3-none-any.whl", hash = "sha256:8316fc208ce1e54229c1f07e0e3611e517d315ed10ad9afafaae580b6e404f3e"},
 ]
 
 [package.extras]
@@ -822,13 +822,27 @@ dev = ["check-manifest"]
 
 [[package]]
 name = "ed-infrastructure"
-version = "0.1.12"
+version = "0.1.18"
 description = "EasyDrop infrastructure Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_infrastructure-0.1.12-py3-none-any.whl", hash = "sha256:1f114398f25a10941c4843bbabc3ac306659f14ffa6480d4824b28abdbac2fc6"},
+    {file = "ed_infrastructure-0.1.18-py3-none-any.whl", hash = "sha256:19769910d677e67bd9d5b5e8b7f007ca05a35e07edd240a38e682809fc6ed9fb"},
+]
+
+[package.extras]
+dev = ["check-manifest"]
+
+[[package]]
+name = "ed-notification"
+version = "0.1.10"
+description = "EasyDrop notification model Package"
+optional = false
+python-versions = ">=3.12"
+groups = ["main"]
+files = [
+    {file = "ed_notification-0.1.10-py3-none-any.whl", hash = "sha256:fc919e2a68404038565802b6bdeb2e0590b2485e25fe2adea3fd570006aa7447"},
 ]
 
 [package.extras]
@@ -3075,4 +3089,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "6b39a5037c3645f572dae4a6045e13d60a573460cc4188374857941aeca1da10"
+content-hash = "311384c8b922a0f2b369a5a4c7fe6e3603e884312a2fa97c65822d55d31e93d7"
