@@ -1,5 +1,5 @@
 from ed_core.application.features.common.dtos import TrackOrderDto
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -25,7 +25,7 @@ class TrackOrderQueryHandler(RequestHandler):
         LOG.info(f"Received response from track_order API: {response}")
         if response["is_success"] is False:
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Failed to fetch orders.",
                 response["errors"],
             )

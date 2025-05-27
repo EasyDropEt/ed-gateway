@@ -1,5 +1,5 @@
 from ed_core.documentation.api.abc_core_api_client import ConsumerDto
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -31,7 +31,7 @@ class GetConsumerQueryHandler(RequestHandler):
                 response["errors"],
             )
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Consumer not found.",
                 response["errors"],
             )

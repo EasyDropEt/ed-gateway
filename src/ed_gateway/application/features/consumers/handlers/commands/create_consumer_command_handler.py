@@ -1,5 +1,5 @@
 from ed_core.documentation.api.abc_core_api_client import ConsumerDto
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -36,7 +36,7 @@ class CreateConsumerCommandHandler(RequestHandler):
                  create_user_response.get("is_success"))
         if not create_user_response["is_success"]:
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Failed to create consumer account.",
                 create_user_response["errors"],
             )
@@ -60,7 +60,7 @@ class CreateConsumerCommandHandler(RequestHandler):
             self._api_handler.auth_api.delete_user(
                 create_user_response["data"]["id"])
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Failed to create consumer account",
                 create_consumer_response["errors"],
             )

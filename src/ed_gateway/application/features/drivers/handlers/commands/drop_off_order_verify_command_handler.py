@@ -1,4 +1,4 @@
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -32,7 +32,7 @@ class DropOffOrderVerifyCommandHandler(RequestHandler):
         LOG.info(f"Received response from verify_order_drop_off: {response}")
         if response["is_success"] is False:
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Failed to verify drop off order.",
                 response["errors"],
             )

@@ -1,5 +1,5 @@
 from ed_core.documentation.api.abc_core_api_client import OrderDto
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -28,7 +28,7 @@ class GetDriverOrdersQueryHandler(RequestHandler):
         LOG.info(f"Received response from get_driver_orders: {response}")
         if not response["is_success"]:
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Failed to fetch orders.",
                 response["errors"],
             )

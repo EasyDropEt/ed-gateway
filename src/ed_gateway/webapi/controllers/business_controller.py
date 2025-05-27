@@ -7,7 +7,7 @@ from ed_core.documentation.api.abc_core_api_client import (BusinessDto,
                                                            CreateOrdersDto,
                                                            NotificationDto,
                                                            OrderDto)
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator

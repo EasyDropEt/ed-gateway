@@ -1,5 +1,5 @@
 from ed_core.documentation.api.abc_core_api_client import DeliveryJobDto
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -27,7 +27,7 @@ class GetDeliveryJobsQueryHandler(RequestHandler):
         if not response["is_success"]:
             LOG.error("Failed to fetch delivery jobs.")
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Failed to fetch delivery jobs.",
                 response["errors"],
             )

@@ -1,4 +1,4 @@
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -31,7 +31,7 @@ class PickUpOrderVerifyCommandHandler(RequestHandler):
         LOG.info(f"Received response from verify_order_pick_up: {response}")
         if response["is_success"] is False:
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Failed to verify pick up order.",
                 response["errors"],
             )

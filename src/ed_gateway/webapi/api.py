@@ -17,11 +17,11 @@ class API(FastAPI):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._routers = [
-            driver_controller,
-            business_controller,
-            delivery_job_controller,
-            consumer_controller,
-            order_controller,
+            driver_controller.router,
+            business_controller.router,
+            delivery_job_controller.router,
+            consumer_controller.router,
+            order_controller.router,
         ]
 
     @property
@@ -42,8 +42,8 @@ class API(FastAPI):
         LOG.info("Including routers...")
 
         for router in self._routers:
-            LOG.info(f"Including router: {router.__name__}")
-            self.include_router(router.router)
+            LOG.info(f"Including router: {router.prefix}")
+            self.include_router(router)
 
     def _contain_exceptions(self) -> None:
         @self.exception_handler(ApplicationException)

@@ -1,4 +1,4 @@
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -31,7 +31,7 @@ class UpdateDriverCurrentLocationCommandHandler(RequestHandler):
         )
         if not update_response["is_success"]:
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Driver location update failed.",
                 update_response["errors"],
             )

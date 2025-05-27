@@ -1,4 +1,4 @@
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -24,7 +24,7 @@ class LoginConsumerVerifyCommandHandler(RequestHandler):
         verify_response = self._api.auth_api.login_verify_otp(request.dto)
         if verify_response["is_success"] is False:
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Consumer login failed.",
                 verify_response["errors"],
             )
@@ -35,7 +35,7 @@ class LoginConsumerVerifyCommandHandler(RequestHandler):
         )
         if get_consumer_response["is_success"] is False:
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Consumer login failed.",
                 get_consumer_response["errors"],
             )

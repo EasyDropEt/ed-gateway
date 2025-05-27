@@ -1,5 +1,5 @@
 from ed_core.documentation.api.abc_core_api_client import DeliveryJobDto
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -30,7 +30,7 @@ class CancelDeliveryJobCommandHandler(RequestHandler):
         LOG.info(f"Received response from cancel_delivery_job: {response}")
         if not response["is_success"]:
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Failed to cancel delivery job.",
                 response["errors"],
             )

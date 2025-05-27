@@ -1,5 +1,5 @@
 from ed_core.documentation.api.abc_core_api_client import NotificationDto
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -29,7 +29,7 @@ class GetNotificationsQueryHandler(RequestHandler):
         LOG.info(f"Received response from get_user_notifications. Success: {response.get('is_success')}, Data count: {len(response.get('data', []))}")
         if not response["is_success"]:
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Failed to fetch notifications.",
                 response["errors"],
             )

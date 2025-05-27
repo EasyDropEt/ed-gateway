@@ -1,5 +1,5 @@
 from ed_core.documentation.api.abc_core_api_client import DriverDto
-from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -39,7 +39,7 @@ class CreateDriverAccountCommandHandler(RequestHandler):
             f"Received response from create_get_otp: {create_user_response}")
         if not create_user_response["is_success"]:
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Failed to create user account",
                 create_user_response["errors"],
             )
@@ -64,7 +64,7 @@ class CreateDriverAccountCommandHandler(RequestHandler):
             self._api_handler.auth_api.delete_user(
                 create_user_response["data"]["id"])
             raise ApplicationException(
-                Exceptions.InternalServerException,
+                EXCEPTION_NAMES[response["http_status_code"]],
                 "Failed to create driver account",
                 create_driver_response["errors"],
             )
