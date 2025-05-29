@@ -35,15 +35,19 @@ from ed_gateway.application.features.delivery_jobs.requests.queries import (
     GetDeliveryJobQuery, GetDeliveryJobsQuery)
 from ed_gateway.application.features.drivers.handlers.commands import (
     ClaimDeliveryJobCommandHandler, CreateDriverAccountCommandHandler,
+    DropOffOrderCommandHandler, DropOffOrderVerifyCommandHandler,
     LoginDriverCommandHandler, LoginDriverVerifyCommandHandler,
+    PickUpOrderCommandHandler, PickUpOrderVerifyCommandHandler,
     UpdateDriverCurrentLocationCommandHandler)
 from ed_gateway.application.features.drivers.handlers.queries import (
     GetDriverByIdQueryHandler, GetDriverByUserIdQueryHandler,
     GetDriverDeliveryJobsQueryHandler, GetDriverHeldFundsQueryHandler,
     GetDriverOrdersQueryHandler, GetDriverPaymentSummaryQueryHandler)
 from ed_gateway.application.features.drivers.requests.commands import (
-    ClaimDeliveryJobCommand, CreateDriverAccountCommand, LoginDriverCommand,
-    LoginDriverVerifyCommand, UpdateDriverCurrentLocationCommand)
+    ClaimDeliveryJobCommand, CreateDriverAccountCommand, DropOffOrderCommand,
+    DropOffOrderVerifyCommand, LoginDriverCommand, LoginDriverVerifyCommand,
+    PickUpOrderCommand, PickUpOrderVerifyCommand,
+    UpdateDriverCurrentLocationCommand)
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByIdQuery, GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery,
     GetDriverHeldFundsQuery, GetDriverOrdersQuery,
@@ -106,6 +110,10 @@ def mediator(
             UpdateDriverCurrentLocationCommand,
             UpdateDriverCurrentLocationCommandHandler(api),
         ),
+        (PickUpOrderCommand, PickUpOrderCommandHandler(api)),
+        (PickUpOrderVerifyCommand, PickUpOrderVerifyCommandHandler(api)),
+        (DropOffOrderCommand, DropOffOrderCommandHandler(api)),
+        (DropOffOrderVerifyCommand, DropOffOrderVerifyCommandHandler(api)),
         # Business features
         (CreateBusinessAccountCommand, CreateBusinessAccountCommandHandler(api)),
         (LoginBusinessCommand, LoginBusinessCommandHandler(api)),
