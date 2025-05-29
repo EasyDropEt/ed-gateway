@@ -22,7 +22,7 @@ class GetNotificationsQueryHandler(RequestHandler):
         self, request: GetNotificationsQuery
     ) -> BaseResponse[list[NotificationDto]]:
         LOG.info(
-            f"Calling core get_user_notifications API with user_id: {request.user_id}"
+            f"Calling notification get_user_notifications API with user_id: {request.user_id}"
         )
         response = self._api.notification_api.get_notifications_for_user(
             request.user_id
