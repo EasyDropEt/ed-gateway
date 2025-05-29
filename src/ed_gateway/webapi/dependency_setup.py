@@ -69,7 +69,7 @@ def get_image_uploader(
 
 
 def api(config: Annotated[Config, Depends(get_config)]) -> ABCApi:
-    return Api(config["core_api"], config["auth_api"])
+    return Api(config)
 
 
 def oauth_scheme(

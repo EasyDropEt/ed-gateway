@@ -1,5 +1,6 @@
-from ed_core.documentation.api.abc_core_api_client import NotificationDto
-from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
+from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
+from ed_notification.documentation.api.abc_notification_api_client import \
+    NotificationDto
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -23,10 +24,11 @@ class GetNotificationsQueryHandler(RequestHandler):
         LOG.info(
             f"Calling core get_user_notifications API with user_id: {request.user_id}"
         )
-        response = self._api.core_api.get_user_notifications(
-            str(request.user_id))
+        response = self._api.notification_api.get_notifications_for_user(
+            request.user_id
+        )
 
-        LOG.info(f"Received response from get_user_notifications. Success: {response.get('is_success')}, Data count: {len(response.get('data', []))}")
+        LOG.info(f"Received response from get_user_notifications {response}")
         if not response["is_success"]:
             raise ApplicationException(
                 EXCEPTION_NAMES[response["http_status_code"]],

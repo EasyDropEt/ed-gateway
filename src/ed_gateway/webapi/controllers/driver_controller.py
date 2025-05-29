@@ -5,9 +5,11 @@ from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
 from ed_core.documentation.api.abc_core_api_client import (
     DeliveryJobDto, DriverDto, DriverHeldFundsDto, DriverPaymentSummaryDto,
-    DropOffOrderDto, DropOffOrderVerifyDto, NotificationDto, OrderDto,
-    PickUpOrderDto, PickUpOrderVerifyDto, UpdateLocationDto)
-from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
+    DropOffOrderDto, DropOffOrderVerifyDto, OrderDto, PickUpOrderDto,
+    PickUpOrderVerifyDto, UpdateLocationDto)
+from ed_domain.common.exceptions import ApplicationException, Exceptions
+from ed_notification.documentation.api.abc_notification_api_client import \
+    NotificationDto
 from fastapi import APIRouter, Depends, WebSocket
 from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator
