@@ -1,5 +1,5 @@
 from ed_auth.documentation.api.auth_api_client import ABCAuthApiClient
-from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
+from ed_domain.common.exceptions import ApplicationException, Exceptions
 from fastapi import Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
@@ -16,7 +16,7 @@ class JWTBearer(HTTPBearer):
 
         if not credentials:
             raise ApplicationException(
-                EXCEPTION_NAMES[response["http_status_code"]],
+                Exceptions.UnauthorizedException,
                 "Internal server error.",
                 ["Authorization code not found."],
             )
