@@ -305,7 +305,6 @@ async def verify_order_drop_off(
 
 
 async def _get_driver_id(user_id: str, mediator: Mediator) -> UUID:
-
     response = (await mediator.send(GetDriverByUserIdQuery(user_id=user_id))).to_dict()
 
     if (
@@ -329,7 +328,6 @@ async def notfication_websocket(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     await websocket.accept()
-    driver_id = await _get_driver_id(auth.credentials, mediator)
 
     while True:
         # Notifications are user-scoped (user_id), not driver-scoped—hence no _get_driver_id call
@@ -337,7 +335,7 @@ async def notfication_websocket(
             "Sending GetNotificationsQuery to mediator with user_id: %s",
             auth.credentials,
         )
-        response = await mediator.send(GetNotificationsQuery(driver_id))
+        response = await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
 
         await websocket.send_json(response.to_dict())
 
