@@ -40,3 +40,17 @@ class JWTBearer(HTTPBearer):
             scheme=credentials.scheme,
             credentials=str(response["data"]["id"]),
         )
+
+    async def verify_token(self, token: str) -> HTTPAuthorizationCredentials:
+        response = self._api.verify_token({"token": token})
+        if not response["is_success"]:
+            raise ApplicationException(
+                Exceptions.UnauthorizedException,
+                "Invalid authorization token.",
+                response["errors"],
+            )
+
+        return HTTPAuthorizationCredentials(
+            scheme="Bearer",
+            credentials=str(response["data"]["id"]),
+        )

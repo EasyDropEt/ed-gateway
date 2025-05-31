@@ -304,6 +304,43 @@ async def verify_order_drop_off(
     )
 
 
+@router.websocket("/me/notifications")
+async def notfication_websocket(
+    websocket: WebSocket,
+    mediator: Annotated[Mediator, Depends(mediator)],
+):
+    auth = await _get_auth_credentials(websocket)
+    await websocket.accept()
+
+    while True:
+        response = await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
+        await websocket.send_json(response.to_dict())
+
+
+@router.websocket("/me/location")
+async def websocket_endpoint(
+    websocket: WebSocket,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    auth = await _get_auth_credentials(websocket)
+    driver_id = await _get_driver_id(auth.credentials, mediator)
+    await websocket.accept()
+
+    while True:
+        dto: UpdateLocationDto = await websocket.receive_json()
+        LOG.info(
+            "Sending UpdateDriverCurrentLocationCommand to mediator with driver_id: %s and dto: %s",
+            driver_id,
+            dto,
+        )
+        response = await mediator.send(
+            UpdateDriverCurrentLocationCommand(driver_id, dto)
+        )
+
+        await websocket.send_json(response.to_dict())
+
+
 async def _get_driver_id(user_id: str, mediator: Mediator) -> UUID:
     response = (await mediator.send(GetDriverByUserIdQuery(user_id=user_id))).to_dict()
 
@@ -321,43 +358,21 @@ async def _get_driver_id(user_id: str, mediator: Mediator) -> UUID:
     return response["data"]["id"]
 
 
-@router.websocket("/me/notification")
-async def notfication_websocket(
-    websocket: WebSocket,
-    mediator: Annotated[Mediator, Depends(mediator)],
-    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
-):
-    await websocket.accept()
-
-    while True:
-        # Notifications are user-scoped (user_id), not driver-scoped—hence no _get_driver_id call
-        LOG.info(
-            "Sending GetNotificationsQuery to mediator with user_id: %s",
-            auth.credentials,
-        )
-        response = await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
-
-        await websocket.send_json(response.to_dict())
-
-
-@router.websocket("/me/location")
-async def websocket_endpoint(
-    websocket: WebSocket,
-    mediator: Annotated[Mediator, Depends(mediator)],
-    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
-):
-    await websocket.accept()
-    driver_id = await _get_driver_id(auth.credentials, mediator)
-
-    while True:
-        dto: UpdateLocationDto = await websocket.receive_json()
-        LOG.info(
-            "Sending UpdateDriverCurrentLocationCommand to mediator with driver_id: %s and dto: %s",
-            driver_id,
-            dto,
-        )
-        response = await mediator.send(
-            UpdateDriverCurrentLocationCommand(driver_id, dto)
+async def _get_auth_credentials(websocket: WebSocket) -> HTTPAuthorizationCredentials:
+    authorization_header = websocket.headers.get("Authorization")
+    if not authorization_header:
+        raise ApplicationException(
+            Exceptions.UnauthorizedException,
+            "Authorization header missing.",
+            ["Please provide a valid Authorization header."],
         )
 
-        await websocket.send_json(response.to_dict())
+    scheme, _, token = authorization_header.partition(" ")
+    if scheme.lower() != "bearer":
+        raise ApplicationException(
+            Exceptions.UnauthorizedException,
+            "Invalid authorization scheme.",
+            ["Use Bearer token for authentication."],
+        )
+
+    return await oauth2_scheme.verify_token(token)
