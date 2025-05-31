@@ -322,13 +322,34 @@ async def _get_driver_id(user_id: str, mediator: Mediator) -> UUID:
     return response["data"]["id"]
 
 
-@router.websocket("/{driver_id}/location")
-async def websocket_endpoint(
-    driver_id: UUID,
+@router.websocket("/me/notification")
+async def notfication_websocket(
     websocket: WebSocket,
     mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     await websocket.accept()
+    driver_id = await _get_driver_id(auth.credentials, mediator)
+
+    while True:
+        # Notifications are user-scoped (user_id), not driver-scoped—hence no _get_driver_id call
+        LOG.info(
+            "Sending GetNotificationsQuery to mediator with user_id: %s",
+            auth.credentials,
+        )
+        response = await mediator.send(GetNotificationsQuery(driver_id))
+
+        await websocket.send_json(response.to_dict())
+
+
+@router.websocket("/me/location")
+async def websocket_endpoint(
+    websocket: WebSocket,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    await websocket.accept()
+    driver_id = await _get_driver_id(auth.credentials, mediator)
 
     while True:
         dto: UpdateLocationDto = await websocket.receive_json()
