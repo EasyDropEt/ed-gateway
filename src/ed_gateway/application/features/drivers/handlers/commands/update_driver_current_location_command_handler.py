@@ -22,7 +22,7 @@ class UpdateDriverCurrentLocationCommandHandler(RequestHandler):
         LOG.info(
             f"Calling core update_driver_current_location API with request: {request.dto}"
         )
-        update_response = self._api.core_api.update_driver_current_location(
+        update_response = await self._api.core_api.update_driver_current_location(
             driver_id=str(request.driver_id), update_location_dto=request.dto
         )
 

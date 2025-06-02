@@ -24,7 +24,7 @@ class GetDriverPaymentSummaryQueryHandler(RequestHandler):
             "Calling core get_driver_payment_summary API with driver_id: %s",
             request.driver_id,
         )
-        response = self._api.core_api.get_driver_payment_summary(
+        response = await self._api.core_api.get_driver_payment_summary(
             str(request.driver_id))
 
         LOG.info("Received response from get_driver_payment_summary: %s", response)

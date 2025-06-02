@@ -22,7 +22,7 @@ class PickUpOrderCommandHandler(RequestHandler):
             f"Calling core initiate_order_pick_up API with driver_id: {request.driver_id}, "
             f"delivery_job_id: {request.delivery_job_id}, order_id: {request.order_id}"
         )
-        response = self._api.core_api.initiate_order_pick_up(
+        response = await self._api.core_api.initiate_order_pick_up(
             str(request.driver_id), str(
                 request.delivery_job_id), str(request.order_id)
         )

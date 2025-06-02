@@ -23,7 +23,7 @@ class GetBusinessOrdersQueryHandler(RequestHandler):
         LOG.info(
             f"Calling core get_business_orders API with business_id: {request.business_id}"
         )
-        response = self._api.core_api.get_business_orders(
+        response = await self._api.core_api.get_business_orders(
             str(request.business_id),
         )
 

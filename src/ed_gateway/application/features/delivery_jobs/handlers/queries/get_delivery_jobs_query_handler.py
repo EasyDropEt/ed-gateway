@@ -21,7 +21,7 @@ class GetDeliveryJobsQueryHandler(RequestHandler):
         self, request: GetDeliveryJobsQuery
     ) -> BaseResponse[list[DeliveryJobDto]]:
         LOG.info(f"Calling core get_delivery_jobs API for request: {request}")
-        response = self._api.core_api.get_delivery_jobs()
+        response = await self._api.core_api.get_delivery_jobs()
 
         LOG.info(f"Received response from get_delivery_jobs: {response}")
         if not response["is_success"]:

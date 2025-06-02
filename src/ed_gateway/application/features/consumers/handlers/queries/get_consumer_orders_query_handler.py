@@ -23,7 +23,7 @@ class GetConsumerOrdersQueryHandler(RequestHandler):
         LOG.info(
             f"Calling core get_consumer_delivery_jobs API with consumer_id: {request.consumer_id}"
         )
-        response = self._api.core_api.get_consumer_delivery_jobs(
+        response = await self._api.core_api.get_consumer_delivery_jobs(
             str(request.consumer_id)
         )
 

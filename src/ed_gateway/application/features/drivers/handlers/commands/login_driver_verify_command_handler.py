@@ -36,8 +36,9 @@ class LoginDriverVerifyCommandHandler(RequestHandler):
 
         LOG.info(
             f"Calling core_api.get_driver_by_user_id with user ID: {user['id']}")
-        get_driver_response = self._api.core_api.get_driver_by_user_id(
-            str(user["id"]))
+        get_driver_response = await self._api.core_api.get_driver_by_user_id(
+            str(user["id"])
+        )
 
         LOG.info(
             f"Received response from get_driver_by_user_id: {get_driver_response}")

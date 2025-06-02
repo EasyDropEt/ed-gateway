@@ -30,7 +30,7 @@ class LoginConsumerVerifyCommandHandler(RequestHandler):
             )
 
         user = verify_response["data"]
-        get_consumer_response = self._api.core_api.get_consumer_by_user_id(
+        get_consumer_response = await self._api.core_api.get_consumer_by_user_id(
             str(user["id"])
         )
         if get_consumer_response["is_success"] is False:

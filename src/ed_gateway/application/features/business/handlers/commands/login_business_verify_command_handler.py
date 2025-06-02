@@ -36,7 +36,7 @@ class LoginBusinessVerifyCommandHandler(RequestHandler):
         user = verify_response["data"]
         LOG.info(
             f"Calling core_api.get_business_by_user_id with user ID: {user['id']}")
-        get_business_response = self._api.core_api.get_business_by_user_id(
+        get_business_response = await self._api.core_api.get_business_by_user_id(
             str(user["id"])
         )
 

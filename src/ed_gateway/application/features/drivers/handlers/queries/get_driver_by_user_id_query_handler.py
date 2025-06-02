@@ -21,7 +21,7 @@ class GetDriverByUserIdQueryHandler(RequestHandler):
         LOG.info(
             f"Calling core get_driver_by_user_id API with user_id: {request.user_id}"
         )
-        response = self._api.core_api.get_driver_by_user_id(
+        response = await self._api.core_api.get_driver_by_user_id(
             str(request.user_id))
 
         LOG.info(f"Received response from get_driver_by_user_id: {response}")

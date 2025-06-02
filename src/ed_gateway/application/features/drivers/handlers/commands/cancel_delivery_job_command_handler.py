@@ -23,7 +23,7 @@ class CancelDeliveryJobCommandHandler(RequestHandler):
         LOG.info(
             f"Calling core cancel_delivery_job API with driver_id: {request.driver_id}, delivery_job_id: {request.delivery_job_id}"
         )
-        response = self._api.core_api.cancel_delivery_job(
+        response = await self._api.core_api.cancel_delivery_job(
             str(request.driver_id), str(request.delivery_job_id)
         )
 

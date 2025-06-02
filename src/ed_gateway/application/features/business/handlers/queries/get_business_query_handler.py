@@ -21,7 +21,7 @@ class GetBusinessQueryHandler(RequestHandler):
         LOG.info(
             f"Calling core get_business API with business_id: {request.business_id}"
         )
-        response = self._api.core_api.get_business(str(request.business_id))
+        response = await self._api.core_api.get_business(str(request.business_id))
 
         LOG.info(f"Received response from get_business: {response}")
         if not response["is_success"]:

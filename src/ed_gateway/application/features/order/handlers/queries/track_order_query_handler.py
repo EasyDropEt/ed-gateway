@@ -20,7 +20,7 @@ class TrackOrderQueryHandler(RequestHandler):
     async def handle(self, request: TrackOrderQuery) -> BaseResponse[TrackOrderDto]:
         LOG.info(
             f"Calling core track_order API with order_id: {request.order_id}")
-        response = self._api.core_api.track_order(str(request.order_id))
+        response = await self._api.core_api.track_order(str(request.order_id))
 
         LOG.info(f"Received response from track_order API: {response}")
         if response["is_success"] is False:

@@ -23,7 +23,7 @@ class GetDriverDeliveryJobsQueryHandler(RequestHandler):
         LOG.info(
             f"Calling core get_driver_delivery_jobs API with driver_id: {request.driver_id}"
         )
-        response = self._api.core_api.get_driver_delivery_jobs(
+        response = await self._api.core_api.get_driver_delivery_jobs(
             str(request.driver_id))
 
         LOG.info(

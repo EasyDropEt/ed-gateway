@@ -20,7 +20,7 @@ class GetDriverByIdQueryHandler(RequestHandler):
     async def handle(self, request: GetDriverByIdQuery) -> BaseResponse[DriverDto]:
         LOG.info(
             f"Calling core get_driver API with driver_id: {request.driver_id}")
-        response = self._api.core_api.get_driver(str(request.driver_id))
+        response = await self._api.core_api.get_driver(str(request.driver_id))
 
         LOG.info(f"Received response from get_driver: {response}")
         if not response["is_success"]:

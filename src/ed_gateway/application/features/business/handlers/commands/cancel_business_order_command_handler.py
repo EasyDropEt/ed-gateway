@@ -21,7 +21,7 @@ class CancelBusinessOrderCommandHandler(RequestHandler):
         self, request: CancelBusinessOrderCommand
     ) -> BaseResponse[OrderDto]:
         LOG.info(f"Calling cancel_order API with order_id: {request.order_id}")
-        cancel_response = self._api.core_api.cancel_order(
+        cancel_response = await self._api.core_api.cancel_order(
             str(request.order_id))
 
         LOG.info(f"Received response from cancel_order API: {cancel_response}")

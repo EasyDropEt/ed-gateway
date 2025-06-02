@@ -23,7 +23,7 @@ class GetBusinessByUserIdQueryHandler(RequestHandler):
         LOG.info(
             f"Calling core get_business_by_user_id API with user_id: {request.user_id}"
         )
-        response = self._api.core_api.get_business_by_user_id(request.user_id)
+        response = await self._api.core_api.get_business_by_user_id(request.user_id)
 
         LOG.info(f"Received response from get_business_by_user_id: {response}")
         if not response["is_success"]:

@@ -22,7 +22,7 @@ class DropOffOrderVerifyCommandHandler(RequestHandler):
             f"delivery_job_id: {request.delivery_job_id}, order_id: {request.order_id}, "
             f"dto: {request.dto}"
         )
-        response = self._api.core_api.verify_order_drop_off(
+        response = await self._api.core_api.verify_order_drop_off(
             str(request.driver_id),
             str(request.delivery_job_id),
             str(request.order_id),

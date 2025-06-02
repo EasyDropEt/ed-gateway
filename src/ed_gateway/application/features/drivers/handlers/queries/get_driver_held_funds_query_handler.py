@@ -23,7 +23,7 @@ class GetDriverHeldFundsQueryHandler(RequestHandler):
         LOG.info(
             f"Calling core get_driver_held_funds API with driver_id: {request.driver_id}"
         )
-        response = self._api.core_api.get_driver_held_funds(
+        response = await self._api.core_api.get_driver_held_funds(
             str(request.driver_id))
 
         LOG.info(f"Received response from get_driver_held_funds: {response}")
