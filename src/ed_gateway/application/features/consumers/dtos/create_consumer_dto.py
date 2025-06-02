@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from ed_core.application.features.consumer.dtos.create_consumer_dto import \
+from ed_core.application.features.common.dtos.create_consumer_dto import \
     CreateLocationDto
 
 
