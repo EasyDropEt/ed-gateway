@@ -1,4 +1,4 @@
-from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
+from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -22,12 +22,12 @@ class LoginDriverVerifyCommandHandler(RequestHandler):
     ) -> BaseResponse[DriverAccountDto]:
         LOG.info(
             f"Calling auth login_verify_otp API with request: {request.dto}")
-        verify_response = self._api.auth_api.login_verify_otp(request.dto)
+        verify_response = await self._api.auth_api.login_verify_otp(request.dto)
 
         LOG.info(f"Received response from login_verify_otp: {verify_response}")
         if verify_response["is_success"] is False:
             raise ApplicationException(
-                EXCEPTION_NAMES[response["http_status_code"]],
+                EXCEPTION_NAMES[verify_response["http_status_code"]],
                 "Driver login failed.",
                 verify_response["errors"],
             )
@@ -43,7 +43,7 @@ class LoginDriverVerifyCommandHandler(RequestHandler):
             f"Received response from get_driver_by_user_id: {get_driver_response}")
         if get_driver_response["is_success"] is False:
             raise ApplicationException(
-                EXCEPTION_NAMES[response["http_status_code"]],
+                EXCEPTION_NAMES[get_driver_response["http_status_code"]],
                 "Driver login failed.",
                 get_driver_response["errors"],
             )

@@ -1,5 +1,5 @@
 from ed_auth.documentation.api.auth_api_client import UnverifiedUserDto
-from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
+from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -23,7 +23,7 @@ class LoginBusinessCommandHandler(RequestHandler):
         self, request: LoginBusinessCommand
     ) -> BaseResponse[UnverifiedUserDto]:
         LOG.info(f"Calling auth login_get_otp API with request: {request.dto}")
-        response = self._api.auth_api.login_get_otp({**request.dto})
+        response = await self._api.auth_api.login_get_otp({**request.dto})
 
         LOG.info(f"Received response from login_get_otp: {response}")
         if not response["is_success"]:

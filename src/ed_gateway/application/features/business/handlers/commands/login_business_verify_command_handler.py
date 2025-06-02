@@ -1,4 +1,4 @@
-from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
+from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -23,12 +23,12 @@ class LoginBusinessVerifyCommandHandler(RequestHandler):
     ) -> BaseResponse[BusinessAccountDto]:
         LOG.info(
             f"Calling auth login_verify_otp API with request: {request.dto}")
-        verify_response = self._api.auth_api.login_verify_otp(request.dto)
+        verify_response = await self._api.auth_api.login_verify_otp(request.dto)
 
         LOG.info(f"Received response from login_verify_otp: {verify_response}")
         if verify_response["is_success"] is False:
             raise ApplicationException(
-                EXCEPTION_NAMES[response["http_status_code"]],
+                EXCEPTION_NAMES[verify_response["http_status_code"]],
                 "Login failed.",
                 verify_response["errors"],
             )
@@ -45,7 +45,7 @@ class LoginBusinessVerifyCommandHandler(RequestHandler):
         )
         if get_business_response["is_success"] is False:
             raise ApplicationException(
-                EXCEPTION_NAMES[response["http_status_code"]],
+                EXCEPTION_NAMES[get_business_response["http_status_code"]],
                 "Login failed.",
                 get_business_response["errors"],
             )

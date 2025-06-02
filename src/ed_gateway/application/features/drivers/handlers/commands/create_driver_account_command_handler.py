@@ -1,5 +1,5 @@
 from ed_core.documentation.api.abc_core_api_client import DriverDto
-from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
+from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -25,7 +25,7 @@ class CreateDriverAccountCommandHandler(RequestHandler):
     ) -> BaseResponse[DriverDto]:
         LOG.info(
             f"Calling auth create_get_otp API with request: {request.dto}")
-        create_user_response = self._api_handler.auth_api.create_get_otp(
+        create_user_response = await self._api_handler.auth_api.create_get_otp(
             {
                 "first_name": request.dto["first_name"],
                 "last_name": request.dto["last_name"],
@@ -39,7 +39,7 @@ class CreateDriverAccountCommandHandler(RequestHandler):
             f"Received response from create_get_otp: {create_user_response}")
         if not create_user_response["is_success"]:
             raise ApplicationException(
-                EXCEPTION_NAMES[response["http_status_code"]],
+                EXCEPTION_NAMES[create_user_response["http_status_code"]],
                 "Failed to create user account",
                 create_user_response["errors"],
             )
@@ -61,10 +61,11 @@ class CreateDriverAccountCommandHandler(RequestHandler):
         LOG.info(
             f"Received response from create_driver: {create_driver_response}")
         if create_driver_response["is_success"] is False:
-            self._api_handler.auth_api.delete_user(
-                create_user_response["data"]["id"])
+            await self._api_handler.auth_api.delete_user(
+                create_user_response["data"]["id"]
+            )
             raise ApplicationException(
-                EXCEPTION_NAMES[response["http_status_code"]],
+                EXCEPTION_NAMES[create_driver_response["http_status_code"]],
                 "Failed to create driver account",
                 create_driver_response["errors"],
             )

@@ -22,7 +22,7 @@ class CreateBusinessAccountCommandHandler(RequestHandler):
     ) -> BaseResponse[BusinessDto]:
         LOG.info(
             f"Calling auth create_get_otp API with request: {request.dto}")
-        create_user_response = self._api_handler.auth_api.create_get_otp(
+        create_user_response = await self._api_handler.auth_api.create_get_otp(
             {
                 "first_name": request.dto["owner_first_name"],
                 "last_name": request.dto["owner_last_name"],
@@ -58,8 +58,9 @@ class CreateBusinessAccountCommandHandler(RequestHandler):
         LOG.info(
             f"Received response from create_business: {create_business_response}")
         if create_business_response["is_success"] is False:
-            self._api_handler.auth_api.delete_user(
-                create_user_response["data"]["id"])
+            await self._api_handler.auth_api.delete_user(
+                create_user_response["data"]["id"]
+            )
             raise ApplicationException(
                 EXCEPTION_NAMES[create_user_response["http_status_code"]],
                 "Failed to create business account",
