@@ -4,7 +4,7 @@ from uuid import UUID
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
 from ed_core.documentation.api.abc_core_api_client import (BusinessDto,
-                                                           CreateOrdersDto,
+                                                           CreateOrderDto,
                                                            OrderDto)
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from ed_notification.documentation.api.abc_notification_api_client import \
@@ -17,7 +17,7 @@ from ed_gateway.application.features.business.dtos import (
     BusinessAccountDto, CreateBusinessAccountDto, LoginBusinessDto)
 from ed_gateway.application.features.business.requests.commands import (
     CancelBusinessOrderCommand, CreateBusinessAccountCommand,
-    CreateOrdersCommand, LoginBusinessCommand, LoginBusinessVerifyCommand)
+    CreateOrderCommand, LoginBusinessCommand, LoginBusinessVerifyCommand)
 from ed_gateway.application.features.business.requests.queries import (
     GetBusinessByUserIdQuery, GetBusinessOrdersQuery)
 from ed_gateway.application.features.notifications.requests.queries import \
@@ -120,8 +120,8 @@ async def get_business_notifications(
     tags=["Business Features"],
 )
 @rest_endpoint
-async def create_orders(
-    request: CreateOrdersDto,
+async def create_order(
+    request: CreateOrderDto,
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
@@ -132,9 +132,7 @@ async def create_orders(
         business_id,
         request,
     )
-    return await mediator.send(
-        CreateOrdersCommand(business_id=business_id, dto=request)
-    )
+    return await mediator.send(CreateOrderCommand(business_id=business_id, dto=request))
 
 
 @router.get(

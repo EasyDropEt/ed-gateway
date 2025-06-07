@@ -9,14 +9,14 @@ from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uplo
     ABCImageUploader
 from ed_gateway.application.features.business.handlers.commands import (
     CancelBusinessOrderCommandHandler, CreateBusinessAccountCommandHandler,
-    CreateOrdersCommandHandler, LoginBusinessCommandHandler,
+    CreateOrderCommandHandler, LoginBusinessCommandHandler,
     LoginBusinessVerifyCommandHandler)
 from ed_gateway.application.features.business.handlers.queries import (
     GetBusinessByUserIdQueryHandler, GetBusinessOrdersQueryHandler,
     GetBusinessQueryHandler)
 from ed_gateway.application.features.business.requests.commands import (
     CancelBusinessOrderCommand, CreateBusinessAccountCommand,
-    CreateOrdersCommand, LoginBusinessCommand, LoginBusinessVerifyCommand)
+    CreateOrderCommand, LoginBusinessCommand, LoginBusinessVerifyCommand)
 from ed_gateway.application.features.business.requests.queries import (
     GetBusinessByUserIdQuery, GetBusinessOrdersQuery, GetBusinessQuery)
 from ed_gateway.application.features.consumers.handlers.commands import (
@@ -119,7 +119,7 @@ def mediator(
         (LoginBusinessCommand, LoginBusinessCommandHandler(api)),
         (LoginBusinessVerifyCommand, LoginBusinessVerifyCommandHandler(api)),
         (GetBusinessOrdersQuery, GetBusinessOrdersQueryHandler(api)),
-        (CreateOrdersCommand, CreateOrdersCommandHandler(api)),
+        (CreateOrderCommand, CreateOrderCommandHandler(api)),
         (GetBusinessQuery, GetBusinessQueryHandler(api)),
         (GetBusinessByUserIdQuery, GetBusinessByUserIdQueryHandler(api)),
         (CancelBusinessOrderCommand, CancelBusinessOrderCommandHandler(api)),

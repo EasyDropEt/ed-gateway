@@ -1,15 +1,16 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from ed_core.documentation.api.abc_core_api_client import CreateOrdersDto, OrderDto
+from ed_core.documentation.api.abc_core_api_client import (CreateOrderDto,
+                                                           OrderDto)
 from rmediator.decorators import request
 from rmediator.mediator import Request
 
 from ed_gateway.application.common.responses.base_response import BaseResponse
 
 
-@request(BaseResponse[list[OrderDto]])
+@request(BaseResponse[OrderDto])
 @dataclass
-class CreateOrdersCommand(Request):
+class CreateOrderCommand(Request):
     business_id: UUID
-    dto: CreateOrdersDto
+    dto: CreateOrderDto

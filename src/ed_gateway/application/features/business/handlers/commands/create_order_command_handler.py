@@ -1,29 +1,27 @@
 from ed_core.documentation.api.abc_core_api_client import OrderDto
-from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
+from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
 from ed_gateway.application.common.responses.base_response import BaseResponse
 from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
 from ed_gateway.application.features.business.requests.commands import \
-    CreateOrdersCommand
+    CreateOrderCommand
 from ed_gateway.common.logging_helpers import get_logger
 
 LOG = get_logger()
 
 
-@request_handler(CreateOrdersCommand, BaseResponse[list[OrderDto]])
-class CreateOrdersCommandHandler(RequestHandler):
+@request_handler(CreateOrderCommand, BaseResponse[OrderDto])
+class CreateOrderCommandHandler(RequestHandler):
     def __init__(self, api_handler: ABCApi):
         self._api_handler = api_handler
 
-    async def handle(
-        self, request: CreateOrdersCommand
-    ) -> BaseResponse[list[OrderDto]]:
+    async def handle(self, request: CreateOrderCommand) -> BaseResponse[OrderDto]:
         LOG.info(
             f"Callign core create_business_orders API for business id: {request.business_id} with orders: {request.dto}"
         )
-        response = self._api_handler.core_api.create_business_orders(
+        response = await self._api_handler.core_api.create_business_order(
             str(request.business_id), request.dto
         )
 
@@ -40,6 +38,6 @@ class CreateOrdersCommandHandler(RequestHandler):
                 response["errors"],
             )
 
-        return BaseResponse[list[OrderDto]].success(
+        return BaseResponse[OrderDto].success(
             "Orders created successfully.", response["data"]
         )

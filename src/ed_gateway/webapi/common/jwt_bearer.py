@@ -28,7 +28,7 @@ class JWTBearer(HTTPBearer):
                 ["Provide a Bearer token."],
             )
 
-        response = self._api.verify_token({"token": credentials.credentials})
+        response = await self._api.verify_token({"token": credentials.credentials})
         if not response["is_success"]:
             raise ApplicationException(
                 Exceptions.UnauthorizedException,
@@ -42,7 +42,7 @@ class JWTBearer(HTTPBearer):
         )
 
     async def verify_token(self, token: str) -> HTTPAuthorizationCredentials:
-        response = self._api.verify_token({"token": token})
+        response = await self._api.verify_token({"token": token})
         if not response["is_success"]:
             raise ApplicationException(
                 Exceptions.UnauthorizedException,
