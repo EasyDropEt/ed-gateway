@@ -799,13 +799,13 @@ dev = ["check-manifest"]
 
 [[package]]
 name = "ed-core"
-version = "0.2.33"
+version = "0.2.34"
 description = "EasyDrop auth model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_core-0.2.33-py3-none-any.whl", hash = "sha256:79101e20f8e10bffc101bafcecc78bc04c0320511303d91b119359d5b463fbdb"},
+    {file = "ed_core-0.2.34-py3-none-any.whl", hash = "sha256:c585cf302d5aec914235aa5345ada7c258707ce8d6f03ca5eb8c59428b86ef07"},
 ]
 
 [package.extras]
@@ -3094,4 +3094,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "4e80debfa9f5f533ce1244bd8b143f5aed888618b164e3da97f37186f088b392"
+content-hash = "cb373cfcf02730484e9a0d0ec68c9517535f245e142d52bf78ae8f364b120c88"
