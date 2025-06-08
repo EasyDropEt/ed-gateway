@@ -35,23 +35,22 @@ from ed_gateway.application.features.delivery_jobs.requests.queries import (
     GetDeliveryJobQuery, GetDeliveryJobsQuery)
 from ed_gateway.application.features.drivers.handlers.commands import (
     ClaimDeliveryJobCommandHandler, CreateDriverAccountCommandHandler,
-    DropOffOrderCommandHandler, DropOffOrderVerifyCommandHandler,
+    FinishOrderDeliveryCommandHandler, FinishOrderPickUpCommandHandler,
     LoginDriverCommandHandler, LoginDriverVerifyCommandHandler,
-    PickUpOrderCommandHandler, PickUpOrderVerifyCommandHandler,
+    StartOrderDeliveryCommandHandler, StartOrderPickUpCommandHandler,
     UpdateDriverCurrentLocationCommandHandler)
 from ed_gateway.application.features.drivers.handlers.queries import (
     GetDriverByIdQueryHandler, GetDriverByUserIdQueryHandler,
-    GetDriverDeliveryJobsQueryHandler, GetDriverHeldFundsQueryHandler,
-    GetDriverOrdersQueryHandler, GetDriverPaymentSummaryQueryHandler)
+    GetDriverDeliveryJobsQueryHandler, GetDriverOrdersQueryHandler,
+    GetDriverPaymentSummaryQueryHandler)
 from ed_gateway.application.features.drivers.requests.commands import (
-    ClaimDeliveryJobCommand, CreateDriverAccountCommand, DropOffOrderCommand,
-    DropOffOrderVerifyCommand, LoginDriverCommand, LoginDriverVerifyCommand,
-    PickUpOrderCommand, PickUpOrderVerifyCommand,
-    UpdateDriverCurrentLocationCommand)
+    ClaimDeliveryJobCommand, CreateDriverAccountCommand,
+    FinishOrderDeliveryCommand, FinishOrderPickUpCommand, LoginDriverCommand,
+    LoginDriverVerifyCommand, StartOrderDeliveryCommand,
+    StartOrderPickUpCommand, UpdateDriverCurrentLocationCommand)
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByIdQuery, GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery,
-    GetDriverHeldFundsQuery, GetDriverOrdersQuery,
-    GetDriverPaymentSummaryQuery)
+    GetDriverOrdersQuery, GetDriverPaymentSummaryQuery)
 from ed_gateway.application.features.notifications.handlers.queries import \
     GetNotificationsQueryHandler
 from ed_gateway.application.features.notifications.requests.queries import \
@@ -102,7 +101,6 @@ def mediator(
         (GetDriverDeliveryJobsQuery, GetDriverDeliveryJobsQueryHandler(api)),
         (GetDriverByIdQuery, GetDriverByIdQueryHandler(api)),
         (GetDriverByUserIdQuery, GetDriverByUserIdQueryHandler(api)),
-        (GetDriverHeldFundsQuery, GetDriverHeldFundsQueryHandler(api)),
         (GetDriverOrdersQuery, GetDriverOrdersQueryHandler(api)),
         (GetDriverPaymentSummaryQuery, GetDriverPaymentSummaryQueryHandler(api)),
         (ClaimDeliveryJobCommand, ClaimDeliveryJobCommandHandler(api)),
@@ -110,10 +108,10 @@ def mediator(
             UpdateDriverCurrentLocationCommand,
             UpdateDriverCurrentLocationCommandHandler(api),
         ),
-        (PickUpOrderCommand, PickUpOrderCommandHandler(api)),
-        (PickUpOrderVerifyCommand, PickUpOrderVerifyCommandHandler(api)),
-        (DropOffOrderCommand, DropOffOrderCommandHandler(api)),
-        (DropOffOrderVerifyCommand, DropOffOrderVerifyCommandHandler(api)),
+        (StartOrderPickUpCommand, StartOrderPickUpCommandHandler(api)),
+        (FinishOrderPickUpCommand, FinishOrderPickUpCommandHandler(api)),
+        (StartOrderDeliveryCommand, StartOrderDeliveryCommandHandler(api)),
+        (FinishOrderDeliveryCommand, FinishOrderDeliveryCommandHandler(api)),
         # Business features
         (CreateBusinessAccountCommand, CreateBusinessAccountCommandHandler(api)),
         (LoginBusinessCommand, LoginBusinessCommandHandler(api)),
