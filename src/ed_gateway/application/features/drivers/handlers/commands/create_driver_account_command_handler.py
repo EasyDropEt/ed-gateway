@@ -1,4 +1,5 @@
-from ed_core.documentation.api.abc_core_api_client import DriverDto
+from ed_core.documentation.api.abc_core_api_client import (CreateDriverDto,
+                                                           DriverDto)
 from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
@@ -45,17 +46,17 @@ class CreateDriverAccountCommandHandler(RequestHandler):
             )
 
         LOG.info(f"Calling core create_driver API with request: {request.dto}")
-        create_driver_response = self._api_handler.core_api.create_driver(
-            {
-                "user_id": create_user_response["data"]["id"],
-                "first_name": request.dto["first_name"],
-                "last_name": request.dto["last_name"],
-                "profile_image": "placeholder",
-                "phone_number": request.dto["phone_number"],
-                "email": request.dto["email"],
-                "location": request.dto["location"],
-                "car": request.dto["car"],
-            }
+        create_driver_response = await self._api_handler.core_api.create_driver(
+            CreateDriverDto(
+                user_id=create_user_response["data"]["id"],
+                first_name=request.dto["first_name"],
+                last_name=request.dto["last_name"],
+                profile_image="placeholder",
+                phone_number=request.dto["phone_number"],
+                email=request.dto["email"],
+                location=request.dto["location"],
+                car=request.dto["car"],
+            )
         )
 
         LOG.info(

@@ -1,5 +1,5 @@
 from ed_core.documentation.api.abc_core_api_client import OrderDto
-from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
+from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -21,13 +21,12 @@ class CancelBusinessOrderCommandHandler(RequestHandler):
         self, request: CancelBusinessOrderCommand
     ) -> BaseResponse[OrderDto]:
         LOG.info(f"Calling cancel_order API with order_id: {request.order_id}")
-        cancel_response = await self._api.core_api.cancel_order(
-            str(request.order_id))
+        cancel_response = await self._api.core_api.cancel_order(str(request.order_id))
 
         LOG.info(f"Received response from cancel_order API: {cancel_response}")
         if cancel_response["is_success"] is False:
             raise ApplicationException(
-                EXCEPTION_NAMES[response["http_status_code"]],
+                EXCEPTION_NAMES[cancel_response["http_status_code"]],
                 "Failed to cancel order.",
                 cancel_response["errors"],
             )

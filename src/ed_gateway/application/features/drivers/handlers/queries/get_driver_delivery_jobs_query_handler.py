@@ -1,5 +1,5 @@
 from ed_core.documentation.api.abc_core_api_client import DeliveryJobDto
-from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
+from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -24,7 +24,8 @@ class GetDriverDeliveryJobsQueryHandler(RequestHandler):
             f"Calling core get_driver_delivery_jobs API with driver_id: {request.driver_id}"
         )
         response = await self._api.core_api.get_driver_delivery_jobs(
-            str(request.driver_id))
+            str(request.driver_id)
+        )
 
         LOG.info(
             f"Received response from get_driver_delivery_jobs: {response}")

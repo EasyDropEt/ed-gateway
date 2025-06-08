@@ -24,7 +24,7 @@ class GetNotificationsQueryHandler(RequestHandler):
         LOG.info(
             f"Calling notification get_user_notifications API with user_id: {request.user_id}"
         )
-        response = self._api.notification_api.get_notifications_for_user(
+        response = await self._api.notification_api.get_notifications_for_user(
             request.user_id
         )
 

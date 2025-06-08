@@ -1,4 +1,5 @@
-from ed_core.documentation.api.abc_core_api_client import BusinessDto
+from ed_core.documentation.api.abc_core_api_client import (BusinessDto,
+                                                           CreateBusinessDto)
 from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
@@ -43,16 +44,16 @@ class CreateBusinessAccountCommandHandler(RequestHandler):
 
         LOG.info(
             f"Calling core create_business API with request: {request.dto}")
-        create_business_response = self._api_handler.core_api.create_business(
-            {
-                "user_id": create_user_response["data"]["id"],
-                "business_name": request.dto["business_name"],
-                "owner_first_name": request.dto["owner_first_name"],
-                "owner_last_name": request.dto["owner_last_name"],
-                "phone_number": request.dto["phone_number"],
-                "email": request.dto["email"],
-                "location": request.dto["location"],
-            }
+        create_business_response = await self._api_handler.core_api.create_business(
+            CreateBusinessDto(
+                user_id=create_user_response["data"]["id"],
+                business_name=request.dto["business_name"],
+                owner_first_name=request.dto["owner_first_name"],
+                owner_last_name=request.dto["owner_last_name"],
+                phone_number=request.dto["phone_number"],
+                email=request.dto["email"],
+                location=request.dto["location"],
+            )
         )
 
         LOG.info(
