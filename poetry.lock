@@ -785,13 +785,13 @@ pgp = ["gpg"]
 
 [[package]]
 name = "ed-auth"
-version = "0.2.7"
+version = "0.2.10"
 description = "EasyDrop auth model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_auth-0.2.7-py3-none-any.whl", hash = "sha256:465ab88e08f25bffdf7875b042f808be88e832dd7e67c8f40b70c35f84cd8302"},
+    {file = "ed_auth-0.2.10-py3-none-any.whl", hash = "sha256:6db8365c72883c61d616aaa9619f5517f41572f1fc7ccb9fa8f4411dd55d84a4"},
 ]
 
 [package.extras]
@@ -799,13 +799,13 @@ dev = ["check-manifest"]
 
 [[package]]
 name = "ed-core"
-version = "0.2.34"
+version = "0.2.37"
 description = "EasyDrop auth model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_core-0.2.34-py3-none-any.whl", hash = "sha256:c585cf302d5aec914235aa5345ada7c258707ce8d6f03ca5eb8c59428b86ef07"},
+    {file = "ed_core-0.2.37-py3-none-any.whl", hash = "sha256:5742046c719e82861f06c6040ae1a35010ae49cd162dff6737dcbaf09c484d25"},
 ]
 
 [package.extras]
@@ -813,13 +813,13 @@ dev = ["check-manifest"]
 
 [[package]]
 name = "ed-domain"
-version = "0.3.50"
+version = "0.4.7"
 description = "EasyDrop domain model Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_domain-0.3.50-py3-none-any.whl", hash = "sha256:990ea66b49cff0a7f5c2fc167f3e67394ba54ba340dfcbd55e8a3862163b6157"},
+    {file = "ed_domain-0.4.7-py3-none-any.whl", hash = "sha256:d1eccda0df0ba0f9ee2104b3e140781771dbc0dcc051811d9f64bc7009a19e61"},
 ]
 
 [package.extras]
@@ -827,13 +827,13 @@ dev = ["check-manifest"]
 
 [[package]]
 name = "ed-infrastructure"
-version = "0.3.20"
+version = "0.3.29"
 description = "EasyDrop infrastructure Package"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "ed_infrastructure-0.3.20-py3-none-any.whl", hash = "sha256:0e850a24fb85a72d026ca9727dc6cc1a39c153de518160994d5ddacce1680388"},
+    {file = "ed_infrastructure-0.3.29-py3-none-any.whl", hash = "sha256:12fe661f48ed8d69b0ff638e90128166daa636b88427b1ade9c75f11c5dbf458"},
 ]
 
 [package.extras]
@@ -3094,4 +3094,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "cb373cfcf02730484e9a0d0ec68c9517535f245e142d52bf78ae8f364b120c88"
+content-hash = "1aaf116c9449c49e2accc7356171bb5eba49c45cfaee25d2c0a26d7489797bc0"
