@@ -43,7 +43,7 @@ oauth2_scheme = JWTBearer(api_dep.auth_api)
 
 @router.post(
     "/register",
-    response_model=GenericResponse[DriverAccountDto],
+    response_model=GenericResponse[DriverDto],
     tags=["Driver Auth"],
 )
 @rest_endpoint

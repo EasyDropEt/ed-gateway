@@ -5,6 +5,8 @@ from fastapi.security import OAuth2PasswordBearer
 from rmediator import Mediator
 
 from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
+from ed_gateway.application.contracts.infrastructure.email.abc_email_templater import \
+    ABCEmailTemplater
 from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uploader import \
     ABCImageUploader
 from ed_gateway.application.features.business.handlers.commands import (
@@ -62,6 +64,7 @@ from ed_gateway.application.features.order.requests.queries import \
 from ed_gateway.common.generic_helpers import get_config
 from ed_gateway.common.typing.config import Config
 from ed_gateway.infrastructure.api.api import Api
+from ed_gateway.infrastructure.email.email_templater import EmailTemplater
 from ed_gateway.infrastructure.image_upload.image_uploader import ImageUploader
 
 
@@ -75,6 +78,10 @@ def api(config: Annotated[Config, Depends(get_config)]) -> ABCApi:
     return Api(config)
 
 
+def email_templater() -> ABCEmailTemplater:
+    return EmailTemplater()
+
+
 def oauth_scheme(
     config: Annotated[Config, Depends(get_config)],
 ) -> OAuth2PasswordBearer:
@@ -85,6 +92,7 @@ def oauth_scheme(
 
 
 def mediator(
+    email_templater: Annotated[ABCEmailTemplater, Depends(email_templater)],
     image_uploader: Annotated[ABCImageUploader, Depends(get_image_uploader)],
     api: Annotated[ABCApi, Depends(api)],
 ) -> Mediator:
@@ -94,7 +102,8 @@ def mediator(
         # Driver features
         (
             CreateDriverAccountCommand,
-            CreateDriverAccountCommandHandler(api, image_uploader),
+            CreateDriverAccountCommandHandler(
+                api, image_uploader, email_templater),
         ),
         (LoginDriverCommand, LoginDriverCommandHandler(api)),
         (LoginDriverVerifyCommand, LoginDriverVerifyCommandHandler(api)),
@@ -113,7 +122,10 @@ def mediator(
         (StartOrderDeliveryCommand, StartOrderDeliveryCommandHandler(api)),
         (FinishOrderDeliveryCommand, FinishOrderDeliveryCommandHandler(api)),
         # Business features
-        (CreateBusinessAccountCommand, CreateBusinessAccountCommandHandler(api)),
+        (
+            CreateBusinessAccountCommand,
+            CreateBusinessAccountCommandHandler(api, email_templater),
+        ),
         (LoginBusinessCommand, LoginBusinessCommandHandler(api)),
         (LoginBusinessVerifyCommand, LoginBusinessVerifyCommandHandler(api)),
         (GetBusinessOrdersQuery, GetBusinessOrdersQueryHandler(api)),
@@ -125,7 +137,10 @@ def mediator(
         (GetDeliveryJobsQuery, GetDeliveryJobsQueryHandler(api)),
         (GetDeliveryJobQuery, GetDeliveryJobQueryHandler(api)),
         # Consumer features
-        (CreateConsumerCommand, CreateConsumerCommandHandler(api, image_uploader)),
+        (
+            CreateConsumerCommand,
+            CreateConsumerCommandHandler(api, image_uploader, email_templater),
+        ),
         (LoginConsumerCommand, LoginConsumerCommandHandler(api)),
         (LoginConsumerVerifyCommand, LoginConsumerVerifyCommandHandler(api)),
         (GetConsumerByUserIdQuery, GetConsumerByUserIdQueryHandler(api)),

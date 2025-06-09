@@ -3,9 +3,7 @@ from uuid import UUID
 
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
-from ed_core.documentation.api.abc_core_api_client import (BusinessDto,
-                                                           CreateOrderDto,
-                                                           OrderDto)
+from ed_core.documentation.api.abc_core_api_client import BusinessDto, OrderDto
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from ed_notification.documentation.api.abc_notification_api_client import \
     NotificationDto
@@ -15,6 +13,8 @@ from rmediator import Mediator
 
 from ed_gateway.application.features.business.dtos import (
     BusinessAccountDto, CreateBusinessAccountDto, LoginBusinessDto)
+from ed_gateway.application.features.business.dtos.create_order_dto import \
+    CreateOrderDto
 from ed_gateway.application.features.business.requests.commands import (
     CancelBusinessOrderCommand, CreateBusinessAccountCommand,
     CreateOrderCommand, LoginBusinessCommand, LoginBusinessVerifyCommand)
