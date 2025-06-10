@@ -1,10 +1,12 @@
 from typing import Annotated
+from uuid import UUID
 
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
 from ed_core.documentation.api.abc_core_api_client import \
     ConsumerDto as CoreConsumerDto
 from ed_core.documentation.api.abc_core_api_client import OrderDto
+from ed_domain.common.exceptions import ApplicationException, Exceptions
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator
@@ -76,7 +78,7 @@ async def login_consumer_verify(
 
 
 @router.get(
-    "/me", response_model=GenericResponse[ConsumerDto], tags=["Consumer Features"]
+    "/me", response_model=GenericResponse[CoreConsumerDto], tags=["Consumer Features"]
 )
 @rest_endpoint
 async def get_consumer(
@@ -100,12 +102,24 @@ async def get_consumer_delivery_jobs(
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
-    consumer = (
-        await mediator.send(GetConsumerByUserIdQuery(user_id=auth.credentials))
-    )["data"]
-    print(consumer)
-    LOG.info(
-        "Sending GetConsumerOrdersQuery to mediator with consumer_id: %s",
-        consumer["id"],
-    )
-    return await mediator.send(GetConsumerOrdersQuery(consumer_id=consumer["id"]))
+    consumer_id = await _get_consumer_id(auth.credentials, mediator)
+    return await mediator.send(GetConsumerOrdersQuery(consumer_id=consumer_id))
+
+
+async def _get_consumer_id(user_id: str, mediator: Mediator) -> UUID:
+    response = (
+        await mediator.send(GetConsumerByUserIdQuery(user_id=user_id))
+    ).to_dict()
+
+    if (
+        not response["is_success"]
+        or "data" not in response
+        or "id" not in response["data"]
+    ):
+        raise ApplicationException(
+            Exceptions.NotFoundException,
+            "Consumer not found.",
+            response.get("errors", ["Failed to retrieve consumer."]),
+        )
+
+    return response["data"]["id"]

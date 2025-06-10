@@ -1,5 +1,5 @@
 from ed_core.documentation.api.abc_core_api_client import OrderDto
-from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
+from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -23,18 +23,12 @@ class GetConsumerOrdersQueryHandler(RequestHandler):
         LOG.info(
             f"Calling core get_consumer_delivery_jobs API with consumer_id: {request.consumer_id}"
         )
-        response = await self._api.core_api.get_consumer_delivery_jobs(
-            str(request.consumer_id)
-        )
+        id = request.consumer_id
+        response = await self._api.core_api.get_consumer_orders(str(id))
 
         LOG.info(
             f"Received response from get_consumer_delivery_jobs: {response}")
         if not response["is_success"]:
-            LOG.error(
-                "Failed to fetch orders for consumer %s: %s",
-                request.consumer_id,
-                response["errors"],
-            )
             raise ApplicationException(
                 EXCEPTION_NAMES[response["http_status_code"]],
                 "Failed to fetch orders.",
@@ -42,5 +36,5 @@ class GetConsumerOrdersQueryHandler(RequestHandler):
             )
 
         return BaseResponse[list[OrderDto]].success(
-            "C onsumer orders fetched successfully.", response["data"]
+            "Consumer orders fetched successfully.", response["data"]
         )
