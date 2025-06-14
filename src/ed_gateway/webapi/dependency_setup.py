@@ -23,12 +23,14 @@ from ed_gateway.application.features.business.requests.queries import (
     GetBusinessByUserIdQuery, GetBusinessOrdersQuery, GetBusinessQuery)
 from ed_gateway.application.features.consumers.handlers.commands import (
     CreateConsumerCommandHandler, LoginConsumerCommandHandler,
-    LoginConsumerVerifyCommandHandler)
+    LoginConsumerVerifyCommandHandler, RateDeliveryCommandHandler,
+    UpdateConsumerCommandHandler)
 from ed_gateway.application.features.consumers.handlers.queries import (
     GetConsumerByUserIdQueryHandler, GetConsumerOrdersQueryHandler,
     GetConsumerQueryHandler)
 from ed_gateway.application.features.consumers.requests.commands import (
-    CreateConsumerCommand, LoginConsumerCommand, LoginConsumerVerifyCommand)
+    CreateConsumerCommand, LoginConsumerCommand, LoginConsumerVerifyCommand,
+    RateDeliveryCommand, UpdateConsumerCommand)
 from ed_gateway.application.features.consumers.requests.queries import (
     GetConsumerByUserIdQuery, GetConsumerOrdersQuery, GetConsumerQuery)
 from ed_gateway.application.features.delivery_jobs.handlers.queries import (
@@ -150,6 +152,8 @@ def mediator(
         (GetConsumerByUserIdQuery, GetConsumerByUserIdQueryHandler(api)),
         (GetConsumerQuery, GetConsumerQueryHandler(api)),
         (GetConsumerOrdersQuery, GetConsumerOrdersQueryHandler(api)),
+        (RateDeliveryCommand, RateDeliveryCommandHandler(api)),
+        (UpdateConsumerCommand, UpdateConsumerCommandHandler(api)),
         # Order features
         (TrackOrderQuery, TrackOrderQueryHandler(api)),
         # Notification features

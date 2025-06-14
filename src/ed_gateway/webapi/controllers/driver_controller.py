@@ -321,7 +321,7 @@ async def notfication_websocket(
         await asyncio.sleep(15)
 
 
-@router.websocket("/me/location")
+@router.websocket("/{token}/location")
 async def websocket_endpoint(
     websocket: WebSocket,
     mediator: Annotated[Mediator, Depends(mediator)],
