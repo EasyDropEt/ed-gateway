@@ -22,7 +22,7 @@ ed-core = "^0.2.41"
 cloudinary = "^1.44.0"
 python-multipart = "^0.0.20"
 ed-infrastructure = "^0.3.31"
-ed-notification = "^0.1.17"
+ed-notification = "^0.1.20"
 
 
 [tool.poetry.group.test.dependencies]
