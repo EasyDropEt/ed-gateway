@@ -1,3 +1,4 @@
+import asyncio
 from typing import Annotated
 from uuid import UUID
 
@@ -288,17 +289,20 @@ async def verify_order_drop_off(
     )
 
 
-@router.websocket("/me/notifications")
+@router.websocket("/{token}/notifications")
 async def notfication_websocket(
+    token: str,
     websocket: WebSocket,
     mediator: Annotated[Mediator, Depends(mediator)],
 ):
-    auth = await _get_auth_credentials(websocket)
+    auth = await oauth2_scheme.verify_token(token)
     await websocket.accept()
 
     while True:
         response = await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
         await websocket.send_json(response.to_dict())
+
+        await asyncio.sleep(15)
 
 
 @router.websocket("/me/location")
