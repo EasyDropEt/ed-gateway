@@ -26,6 +26,8 @@ from ed_gateway.application.features.drivers.requests.commands import (
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery, GetDriverOrdersQuery,
     GetDriverPaymentSummaryQuery)
+from ed_gateway.application.features.notifications.requests.commands import \
+    ReadNotificationCommand
 from ed_gateway.application.features.notifications.requests.queries import \
     GetNotificationsQuery
 from ed_gateway.common.generic_helpers import get_config
@@ -161,12 +163,26 @@ async def get_driver_notifications(
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
-
-    # Notifications are user-scoped (user_id), not driver-scoped—hence no _get_driver_id call
     LOG.info(
         "Sending GetNotificationsQuery to mediator with user_id: %s", auth.credentials
     )
     return await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
+
+
+@router.put(
+    "/me/notifications/{notification_id}",
+    response_model=GenericResponse[NotificationDto],
+    tags=["Driver Features"],
+)
+@rest_endpoint
+async def read_driver_notification(
+    notification_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(
+        ReadNotificationCommand(UUID(auth.credentials), notification_id)
+    )
 
 
 @router.post(

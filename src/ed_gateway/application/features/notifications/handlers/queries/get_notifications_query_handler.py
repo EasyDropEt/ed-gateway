@@ -18,6 +18,9 @@ class GetNotificationsQueryHandler(RequestHandler):
     def __init__(self, api: ABCApi):
         self._api = api
 
+        self._error_message = "Failed to fetch notifications."
+        self._success_message = "Notifications fetched successfully."
+
     async def handle(
         self, request: GetNotificationsQuery
     ) -> BaseResponse[list[NotificationDto]]:
@@ -32,10 +35,10 @@ class GetNotificationsQueryHandler(RequestHandler):
         if not response["is_success"]:
             raise ApplicationException(
                 EXCEPTION_NAMES[response["http_status_code"]],
-                "Failed to fetch notifications.",
+                self._error_message,
                 response["errors"],
             )
 
         return BaseResponse[list[NotificationDto]].success(
-            "Notifications fetched successfully.", response["data"]
+            self._success_message, response["data"]
         )

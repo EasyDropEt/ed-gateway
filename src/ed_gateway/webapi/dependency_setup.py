@@ -53,8 +53,12 @@ from ed_gateway.application.features.drivers.requests.commands import (
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByIdQuery, GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery,
     GetDriverOrdersQuery, GetDriverPaymentSummaryQuery)
+from ed_gateway.application.features.notifications.handlers.commands import \
+    ReadNotificationCommandHandler
 from ed_gateway.application.features.notifications.handlers.queries import \
     GetNotificationsQueryHandler
+from ed_gateway.application.features.notifications.requests.commands import \
+    ReadNotificationCommand
 from ed_gateway.application.features.notifications.requests.queries import \
     GetNotificationsQuery
 from ed_gateway.application.features.order.handlers.queries import \
@@ -150,6 +154,7 @@ def mediator(
         (TrackOrderQuery, TrackOrderQueryHandler(api)),
         # Notification features
         (GetNotificationsQuery, GetNotificationsQueryHandler(api)),
+        (ReadNotificationCommand, ReadNotificationCommandHandler(api)),
     ]
 
     for request, handler in features:
