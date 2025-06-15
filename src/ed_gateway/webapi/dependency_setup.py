@@ -10,17 +10,21 @@ from ed_gateway.application.contracts.infrastructure.email.abc_email_templater i
 from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uploader import \
     ABCImageUploader
 from ed_gateway.application.features.business.handlers.commands import (
-    CancelBusinessOrderCommandHandler, CreateBusinessAccountCommandHandler,
-    CreateOrderCommandHandler, LoginBusinessCommandHandler,
-    LoginBusinessVerifyCommandHandler)
+    CancelBusinessOrderCommandHandler, CreateApiKeyCommandHandler,
+    CreateBusinessAccountCommandHandler, CreateOrderCommandHandler,
+    DeleteApiKeyCommandHandler, LoginBusinessCommandHandler,
+    LoginBusinessVerifyCommandHandler, UpdateBusinessCommandHandler)
 from ed_gateway.application.features.business.handlers.queries import (
-    GetBusinessByUserIdQueryHandler, GetBusinessOrdersQueryHandler,
-    GetBusinessQueryHandler)
+    GetBusinessApiKeysQueryHandler, GetBusinessByUserIdQueryHandler,
+    GetBusinessOrdersQueryHandler, GetBusinessQueryHandler,
+    GetBusinessReportQueryHandler)
 from ed_gateway.application.features.business.requests.commands import (
-    CancelBusinessOrderCommand, CreateBusinessAccountCommand,
-    CreateOrderCommand, LoginBusinessCommand, LoginBusinessVerifyCommand)
+    CancelBusinessOrderCommand, CreateApiKeyCommand,
+    CreateBusinessAccountCommand, CreateOrderCommand, DeleteApiKeyCommand,
+    LoginBusinessCommand, LoginBusinessVerifyCommand, UpdateBusinessCommand)
 from ed_gateway.application.features.business.requests.queries import (
-    GetBusinessByUserIdQuery, GetBusinessOrdersQuery, GetBusinessQuery)
+    GetBusinessApiKeysQuery, GetBusinessByUserIdQuery, GetBusinessOrdersQuery,
+    GetBusinessQuery, GetBusinessReportQuery)
 from ed_gateway.application.features.consumers.handlers.commands import (
     CreateConsumerCommandHandler, LoginConsumerCommandHandler,
     LoginConsumerVerifyCommandHandler, RateDeliveryCommandHandler,
@@ -139,6 +143,11 @@ def mediator(
         (GetBusinessQuery, GetBusinessQueryHandler(api)),
         (GetBusinessByUserIdQuery, GetBusinessByUserIdQueryHandler(api)),
         (CancelBusinessOrderCommand, CancelBusinessOrderCommandHandler(api)),
+        (UpdateBusinessCommand, UpdateBusinessCommandHandler(api)),
+        (GetBusinessApiKeysQuery, GetBusinessApiKeysQueryHandler(api)),
+        (CreateApiKeyCommand, CreateApiKeyCommandHandler(api)),
+        (DeleteApiKeyCommand, DeleteApiKeyCommandHandler(api)),
+        (GetBusinessReportQuery, GetBusinessReportQueryHandler(api)),
         # Delivery features
         (GetDeliveryJobsQuery, GetDeliveryJobsQueryHandler(api)),
         (GetDeliveryJobQuery, GetDeliveryJobQueryHandler(api)),

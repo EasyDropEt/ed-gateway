@@ -35,6 +35,6 @@ class StartOrderPickUpCommandHandler(RequestHandler):
             )
 
         return BaseResponse[None].success(
-            "Order pick up initiated successfully. Verification OTP sent to consumer.",
+            "Order pick up initiated successfully. Verification OTP sent to business.",
             response["data"],
         )

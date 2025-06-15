@@ -170,7 +170,7 @@ async def get_driver_notifications(
 
 
 @router.put(
-    "/me/notifications/{notification_id}",
+    "/me/notifications/{notification_id}/read",
     response_model=GenericResponse[NotificationDto],
     tags=["Driver Features"],
 )

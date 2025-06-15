@@ -16,6 +16,8 @@ class FinishOrderPickUpCommandHandler(RequestHandler):
     def __init__(self, api: ABCApi):
         self._api = api
 
+        self._error_message = "Failed to verify pick up order."
+
     async def handle(self, request: FinishOrderPickUpCommand) -> BaseResponse[None]:
         LOG.info(
             f"Calling core verify_order_pick_up API with driver_id: {request.driver_id}, "
@@ -32,7 +34,7 @@ class FinishOrderPickUpCommandHandler(RequestHandler):
         if response["is_success"] is False:
             raise ApplicationException(
                 EXCEPTION_NAMES[response["http_status_code"]],
-                "Failed to verify pick up order.",
+                self._error_message,
                 response["errors"],
             )
 

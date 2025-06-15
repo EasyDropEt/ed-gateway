@@ -1,13 +1,20 @@
-from typing import Annotated
+import asyncio
+from datetime import datetime
+from typing import Annotated, Optional
 from uuid import UUID
 
-from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
-                                                    UnverifiedUserDto)
-from ed_core.documentation.api.abc_core_api_client import BusinessDto, OrderDto
+from ed_auth.documentation.api.abc_auth_api_client import (LoginUserVerifyDto,
+                                                           UnverifiedUserDto)
+from ed_core.documentation.api.abc_core_api_client import (ApiKeyDto,
+                                                           BusinessDto,
+                                                           BusinessReportDto,
+                                                           CreateApiKeyDto,
+                                                           OrderDto,
+                                                           UpdateBusinessDto)
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from ed_notification.documentation.api.abc_notification_api_client import \
     NotificationDto
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, WebSocket
 from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator
 
@@ -16,10 +23,14 @@ from ed_gateway.application.features.business.dtos import (
 from ed_gateway.application.features.business.dtos.create_order_dto import \
     CreateOrderDto
 from ed_gateway.application.features.business.requests.commands import (
-    CancelBusinessOrderCommand, CreateBusinessAccountCommand,
-    CreateOrderCommand, LoginBusinessCommand, LoginBusinessVerifyCommand)
+    CancelBusinessOrderCommand, CreateApiKeyCommand,
+    CreateBusinessAccountCommand, CreateOrderCommand, DeleteApiKeyCommand,
+    LoginBusinessCommand, LoginBusinessVerifyCommand, UpdateBusinessCommand)
 from ed_gateway.application.features.business.requests.queries import (
-    GetBusinessByUserIdQuery, GetBusinessOrdersQuery)
+    GetBusinessApiKeysQuery, GetBusinessByUserIdQuery, GetBusinessOrdersQuery,
+    GetBusinessReportQuery)
+from ed_gateway.application.features.notifications.requests.commands import \
+    ReadNotificationCommand
 from ed_gateway.application.features.notifications.requests.queries import \
     GetNotificationsQuery
 from ed_gateway.common.generic_helpers import get_config
@@ -96,22 +107,103 @@ async def get_business(
     return await mediator.send(GetBusinessByUserIdQuery(user_id=auth.credentials))
 
 
+@router.put(
+    "/me", response_model=GenericResponse[BusinessDto], tags=["Business Features"]
+)
+@rest_endpoint
+async def update_business(
+    dto: UpdateBusinessDto,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    business_id = await _get_business_id(auth.credentials, mediator)
+    return await mediator.send(UpdateBusinessCommand(business_id, dto))
+
+
 @router.get(
     "/me/notifications",
     response_model=GenericResponse[list[NotificationDto]],
     tags=["Business Features"],
 )
 @rest_endpoint
-# Notifications are scoped to the user account (user_id), not to a business.
 async def get_business_notifications(
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
-
-    LOG.info(
-        "Sending GetNotificationsQuery to mediator with user_id: %s", auth.credentials
-    )
     return await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
+
+
+@router.post(
+    "/me/api-keys",
+    response_model=GenericResponse[ApiKeyDto],
+    tags=["Business Features"],
+)
+@rest_endpoint
+async def create_api_key(
+    dto: CreateApiKeyDto,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    business_id = await _get_business_id(auth.credentials, mediator)
+    return await mediator.send(CreateApiKeyCommand(business_id, dto))
+
+
+@router.get(
+    "/me/api-keys",
+    response_model=GenericResponse[list[ApiKeyDto]],
+    tags=["Business Features"],
+)
+@rest_endpoint
+async def get_api_keys(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    business_id = await _get_business_id(auth.credentials, mediator)
+    LOG.info(
+        "Sending GetBusinessOrdersQuery to mediator with business_id: %s", business_id
+    )
+    return await mediator.send(GetBusinessApiKeysQuery(business_id))
+
+
+@router.delete(
+    "/me/api-keys/{api_key_prefix}",
+    response_model=GenericResponse[None],
+    tags=["Business Features"],
+)
+@rest_endpoint
+async def delete_api_key(
+    api_key_prefix: str,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    business_id = await _get_business_id(auth.credentials, mediator)
+    LOG.info(
+        "Sending DeleteApiKeyCommand to mediator with business_id: %s, api_key_prefix: %s",
+        business_id,
+        api_key_prefix,
+    )
+    return await mediator.send(DeleteApiKeyCommand(business_id, api_key_prefix))
+
+
+@router.get(
+    "/me/report",
+    response_model=GenericResponse[BusinessReportDto],
+    tags=["Business Features"],
+)
+@rest_endpoint
+async def get_report(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+    start_date: Optional[datetime] = None,
+    end_date: Optional[datetime] = None,
+):
+    business_id = await _get_business_id(auth.credentials, mediator)
+    LOG.info(
+        "Sending GetBusinessOrdersQuery to mediator with business_id: %s", business_id
+    )
+    return await mediator.send(
+        GetBusinessReportQuery(business_id, start_date, end_date)
+    )
 
 
 @router.post(
@@ -132,7 +224,7 @@ async def create_order(
         business_id,
         request,
     )
-    return await mediator.send(CreateOrderCommand(business_id=business_id, dto=request))
+    return await mediator.send(CreateOrderCommand(business_id, dto=request))
 
 
 @router.get(
@@ -149,7 +241,7 @@ async def get_orders(
     LOG.info(
         "Sending GetBusinessOrdersQuery to mediator with business_id: %s", business_id
     )
-    return await mediator.send(GetBusinessOrdersQuery(business_id=business_id))
+    return await mediator.send(GetBusinessOrdersQuery(business_id))
 
 
 @router.post(
@@ -164,9 +256,55 @@ async def cancel_order(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     business_id = await _get_business_id(auth.credentials, mediator)
-    return await mediator.send(
-        CancelBusinessOrderCommand(business_id=business_id, order_id=order_id)
+    return await mediator.send(CancelBusinessOrderCommand(business_id, order_id))
+
+
+@router.get(
+    "/me/notifications",
+    response_model=GenericResponse[list[NotificationDto]],
+    tags=["Business Features"],
+)
+@rest_endpoint
+async def get_notifications(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    LOG.info(
+        "Sending GetNotificationsQuery to mediator with user_id: %s", auth.credentials
     )
+    return await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
+
+
+@router.put(
+    "/me/notifications/{notification_id}/read",
+    response_model=GenericResponse[NotificationDto],
+    tags=["Business Features"],
+)
+@rest_endpoint
+async def read_notification(
+    notification_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(
+        ReadNotificationCommand(UUID(auth.credentials), notification_id)
+    )
+
+
+@router.websocket("/{token}/notifications")
+async def notfication_websocket(
+    token: str,
+    websocket: WebSocket,
+    mediator: Annotated[Mediator, Depends(mediator)],
+):
+    auth = await oauth2_scheme.verify_token(token)
+    await websocket.accept()
+
+    while True:
+        response = await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
+        await websocket.send_json(response.to_dict())
+
+        await asyncio.sleep(15)
 
 
 async def _get_business_id(user_id: str, mediator: Mediator) -> UUID:

@@ -17,8 +17,8 @@ class API(FastAPI):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._routers = [
-            driver_controller.router,
             business_controller.router,
+            driver_controller.router,
             delivery_job_controller.router,
             consumer_controller.router,
             order_controller.router,
