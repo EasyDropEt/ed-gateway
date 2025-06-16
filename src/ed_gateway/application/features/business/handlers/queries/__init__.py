@@ -1,4 +1,4 @@
-from ed_gateway.application.features.business.handlers.queries.get_business_api_keys_handler import \
+from ed_gateway.application.features.business.handlers.queries.get_business_api_keys_query_handler import \
     GetBusinessApiKeysQueryHandler
 from ed_gateway.application.features.business.handlers.queries.get_business_by_user_id_query_handler import \
     GetBusinessByUserIdQueryHandler
@@ -8,6 +8,8 @@ from ed_gateway.application.features.business.handlers.queries.get_business_quer
     GetBusinessQueryHandler
 from ed_gateway.application.features.business.handlers.queries.get_business_report_query_handler import \
     GetBusinessReportQueryHandler
+from ed_gateway.application.features.business.handlers.queries.get_business_webhook_query_handler import \
+    GetBusinessWebhookQueryHandler
 
 __all__ = [
     "GetBusinessApiKeysQueryHandler",
@@ -15,4 +17,5 @@ __all__ = [
     "GetBusinessQueryHandler",
     "GetBusinessReportQueryHandler",
     "GetBusinessByUserIdQueryHandler",
+    "GetBusinessWebhookQueryHandler",
 ]

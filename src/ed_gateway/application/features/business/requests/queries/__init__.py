@@ -8,6 +8,8 @@ from ed_gateway.application.features.business.requests.queries.get_business_quer
     GetBusinessQuery
 from ed_gateway.application.features.business.requests.queries.get_business_report_query import \
     GetBusinessReportQuery
+from ed_gateway.application.features.business.requests.queries.get_business_webhook_query import \
+    GetBusinessWebhookQuery
 
 __all__ = [
     "GetBusinessApiKeysQuery",
@@ -15,4 +17,5 @@ __all__ = [
     "GetBusinessQuery",
     "GetBusinessReportQuery",
     "GetBusinessByUserIdQuery",
+    "GetBusinessWebhookQuery",
 ]

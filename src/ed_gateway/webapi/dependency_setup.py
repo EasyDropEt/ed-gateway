@@ -12,19 +12,21 @@ from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uplo
 from ed_gateway.application.features.business.handlers.commands import (
     CancelBusinessOrderCommandHandler, CreateApiKeyCommandHandler,
     CreateBusinessAccountCommandHandler, CreateOrderCommandHandler,
-    DeleteApiKeyCommandHandler, LoginBusinessCommandHandler,
-    LoginBusinessVerifyCommandHandler, UpdateBusinessCommandHandler)
+    CreateWebhookCommandHandler, DeleteApiKeyCommandHandler,
+    LoginBusinessCommandHandler, LoginBusinessVerifyCommandHandler,
+    UpdateBusinessCommandHandler)
 from ed_gateway.application.features.business.handlers.queries import (
     GetBusinessApiKeysQueryHandler, GetBusinessByUserIdQueryHandler,
     GetBusinessOrdersQueryHandler, GetBusinessQueryHandler,
-    GetBusinessReportQueryHandler)
+    GetBusinessReportQueryHandler, GetBusinessWebhookQueryHandler)
 from ed_gateway.application.features.business.requests.commands import (
     CancelBusinessOrderCommand, CreateApiKeyCommand,
-    CreateBusinessAccountCommand, CreateOrderCommand, DeleteApiKeyCommand,
-    LoginBusinessCommand, LoginBusinessVerifyCommand, UpdateBusinessCommand)
+    CreateBusinessAccountCommand, CreateOrderCommand, CreateWebhookCommand,
+    DeleteApiKeyCommand, LoginBusinessCommand, LoginBusinessVerifyCommand,
+    UpdateBusinessCommand)
 from ed_gateway.application.features.business.requests.queries import (
     GetBusinessApiKeysQuery, GetBusinessByUserIdQuery, GetBusinessOrdersQuery,
-    GetBusinessQuery, GetBusinessReportQuery)
+    GetBusinessQuery, GetBusinessReportQuery, GetBusinessWebhookQuery)
 from ed_gateway.application.features.consumers.handlers.commands import (
     CreateConsumerCommandHandler, LoginConsumerCommandHandler,
     LoginConsumerVerifyCommandHandler, RateDeliveryCommandHandler,
@@ -148,6 +150,8 @@ def mediator(
         (CreateApiKeyCommand, CreateApiKeyCommandHandler(api)),
         (DeleteApiKeyCommand, DeleteApiKeyCommandHandler(api)),
         (GetBusinessReportQuery, GetBusinessReportQueryHandler(api)),
+        (GetBusinessWebhookQuery, GetBusinessWebhookQueryHandler(api)),
+        (CreateWebhookCommand, CreateWebhookCommandHandler(api)),
         # Delivery features
         (GetDeliveryJobsQuery, GetDeliveryJobsQueryHandler(api)),
         (GetDeliveryJobQuery, GetDeliveryJobQueryHandler(api)),

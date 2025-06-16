@@ -6,6 +6,8 @@ from ed_gateway.application.features.business.handlers.commands.create_business_
     CreateBusinessAccountCommandHandler
 from ed_gateway.application.features.business.handlers.commands.create_order_command_handler import \
     CreateOrderCommandHandler
+from ed_gateway.application.features.business.handlers.commands.create_webhook_command_handler import \
+    CreateWebhookCommandHandler
 from ed_gateway.application.features.business.handlers.commands.delete_api_key_command_handler import \
     DeleteApiKeyCommandHandler
 from ed_gateway.application.features.business.handlers.commands.login_business_command_handler import \
@@ -18,6 +20,7 @@ from ed_gateway.application.features.business.handlers.commands.update_business_
 __all__ = [
     "CreateApiKeyCommandHandler",
     "CreateOrderCommandHandler",
+    "CreateWebhookCommandHandler",
     "CancelBusinessOrderCommandHandler",
     "DeleteApiKeyCommandHandler",
     "LoginBusinessCommandHandler",

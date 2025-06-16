@@ -6,6 +6,8 @@ from ed_gateway.application.features.business.requests.commands.create_business_
     CreateBusinessAccountCommand
 from ed_gateway.application.features.business.requests.commands.create_order_command import \
     CreateOrderCommand
+from ed_gateway.application.features.business.requests.commands.create_webhook_command import \
+    CreateWebhookCommand
 from ed_gateway.application.features.business.requests.commands.delete_api_key_command import \
     DeleteApiKeyCommand
 from ed_gateway.application.features.business.requests.commands.login_business_command import \
@@ -18,6 +20,7 @@ from ed_gateway.application.features.business.requests.commands.update_business_
 __all__ = [
     "CreateApiKeyCommand",
     "CreateOrderCommand",
+    "CreateWebhookCommand",
     "CancelBusinessOrderCommand",
     "DeleteApiKeyCommand",
     "LoginBusinessCommand",

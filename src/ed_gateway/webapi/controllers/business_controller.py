@@ -5,10 +5,12 @@ from uuid import UUID
 
 from ed_auth.documentation.api.abc_auth_api_client import (LoginUserVerifyDto,
                                                            UnverifiedUserDto)
+from ed_core.application.features.common.dtos import WebhookDto
 from ed_core.documentation.api.abc_core_api_client import (ApiKeyDto,
                                                            BusinessDto,
                                                            BusinessReportDto,
                                                            CreateApiKeyDto,
+                                                           CreateWebhookDto,
                                                            OrderDto,
                                                            UpdateBusinessDto)
 from ed_domain.common.exceptions import ApplicationException, Exceptions
@@ -24,11 +26,12 @@ from ed_gateway.application.features.business.dtos.create_order_dto import \
     CreateOrderDto
 from ed_gateway.application.features.business.requests.commands import (
     CancelBusinessOrderCommand, CreateApiKeyCommand,
-    CreateBusinessAccountCommand, CreateOrderCommand, DeleteApiKeyCommand,
-    LoginBusinessCommand, LoginBusinessVerifyCommand, UpdateBusinessCommand)
+    CreateBusinessAccountCommand, CreateOrderCommand, CreateWebhookCommand,
+    DeleteApiKeyCommand, LoginBusinessCommand, LoginBusinessVerifyCommand,
+    UpdateBusinessCommand)
 from ed_gateway.application.features.business.requests.queries import (
     GetBusinessApiKeysQuery, GetBusinessByUserIdQuery, GetBusinessOrdersQuery,
-    GetBusinessReportQuery)
+    GetBusinessReportQuery, GetBusinessWebhookQuery)
 from ed_gateway.application.features.notifications.requests.commands import \
     ReadNotificationCommand
 from ed_gateway.application.features.notifications.requests.queries import \
@@ -131,6 +134,38 @@ async def get_business_notifications(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     return await mediator.send(GetNotificationsQuery(UUID(auth.credentials)))
+
+
+@router.post(
+    "/me/webhook",
+    response_model=GenericResponse[WebhookDto],
+    tags=["Business Features"],
+)
+@rest_endpoint
+async def create_webhook(
+    dto: CreateWebhookDto,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    business_id = await _get_business_id(auth.credentials, mediator)
+    return await mediator.send(CreateWebhookCommand(business_id, dto))
+
+
+@router.get(
+    "/me/webhook",
+    response_model=GenericResponse[WebhookDto],
+    tags=["Business Features"],
+)
+@rest_endpoint
+async def get_webhook(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    business_id = await _get_business_id(auth.credentials, mediator)
+    LOG.info(
+        "Sending GetBusinessOrdersQuery to mediator with business_id: %s", business_id
+    )
+    return await mediator.send(GetBusinessWebhookQuery(business_id))
 
 
 @router.post(
