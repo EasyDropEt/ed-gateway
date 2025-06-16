@@ -13,6 +13,7 @@ from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uplo
     ABCImageUploader
 from ed_gateway.application.features.consumers.requests.commands import \
     CreateConsumerCommand
+from ed_gateway.application.service.auth_api_service import AuthApiService
 from ed_gateway.common.logging_helpers import get_logger
 
 LOG = get_logger()
@@ -22,13 +23,15 @@ LOG = get_logger()
 class CreateConsumerCommandHandler(RequestHandler):
     def __init__(
         self,
-        api_handler: ABCApi,
+        api: ABCApi,
         image_uploader: ABCImageUploader,
         email_templater: ABCEmailTemplater,
     ):
-        self._api_handler = api_handler
+        self._api = api
         self._image_uploader = image_uploader
         self._email_templater = email_templater
+
+        self._auth_service = AuthApiService(api.auth_api)
 
         self._success_message = "Consumer account created successfully"
         self._error_message = "Failed to create consumer account."
@@ -36,8 +39,7 @@ class CreateConsumerCommandHandler(RequestHandler):
     async def handle(self, request: CreateConsumerCommand) -> BaseResponse[ConsumerDto]:
         dto = request.dto
 
-        LOG.info(f"Calling auth create_get_otp API with request: {dto}")
-        create_user_response = await self._api_handler.auth_api.create_get_otp(
+        user = await self._auth_service.create(
             {
                 "first_name": dto["first_name"],
                 "last_name": dto["last_name"],
@@ -47,23 +49,11 @@ class CreateConsumerCommandHandler(RequestHandler):
         )
 
         LOG.info(
-            "Received response from create_get_otp - success: %s",
-            create_user_response.get("is_success"),
-        )
-        if not create_user_response["is_success"]:
-            raise ApplicationException(
-                EXCEPTION_NAMES[create_user_response["http_status_code"]],
-                self._error_message,
-                create_user_response["errors"],
-            )
-
-        user = create_user_response["data"]
-        LOG.info(
             "Calling core create_consumer API for user: %s %s",
             dto.get("first_name"),
             dto.get("last_name"),
         )
-        create_consumer_response = await self._api_handler.core_api.create_consumer(
+        create_consumer_response = await self._api.core_api.create_consumer(
             CreateConsumerDto(
                 user_id=user["id"],
                 first_name=dto["first_name"],
@@ -77,16 +67,14 @@ class CreateConsumerCommandHandler(RequestHandler):
         LOG.info(
             f"Received response from create_consumer: {create_consumer_response}")
         if create_consumer_response["is_success"] is False:
-            await self._api_handler.auth_api.delete_user(
-                create_user_response["data"]["id"]
-            )
+            await self._api.auth_api.delete_user(user["id"])
             raise ApplicationException(
                 EXCEPTION_NAMES[create_consumer_response["http_status_code"]],
                 self._error_message,
                 create_consumer_response["errors"],
             )
 
-        await self._api_handler.notification_api.send_notification(
+        await self._api.notification_api.send_notification(
             {
                 "user_id": user["id"],
                 "message": self._email_templater.welcome_consumer(dto["first_name"]),

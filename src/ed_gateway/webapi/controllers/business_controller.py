@@ -5,6 +5,8 @@ from uuid import UUID
 
 from ed_auth.documentation.api.abc_auth_api_client import (LoginUserVerifyDto,
                                                            UnverifiedUserDto)
+from ed_core.application.features.business.dtos.create_order_dto import \
+    CreateParcelDto
 from ed_core.application.features.common.dtos import WebhookDto
 from ed_core.documentation.api.abc_core_api_client import (ApiKeyDto,
                                                            BusinessDto,
@@ -21,14 +23,13 @@ from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator
 
 from ed_gateway.application.features.business.dtos import (
-    BusinessAccountDto, CreateBusinessAccountDto, LoginBusinessDto)
-from ed_gateway.application.features.business.dtos.create_order_dto import \
-    CreateOrderDto
+    BusinessAccountDto, CheckoutDto, CreateBusinessAccountDto, CreateOrderDto,
+    LoginBusinessDto)
 from ed_gateway.application.features.business.requests.commands import (
     CancelBusinessOrderCommand, CreateApiKeyCommand,
     CreateBusinessAccountCommand, CreateOrderCommand, CreateWebhookCommand,
-    DeleteApiKeyCommand, LoginBusinessCommand, LoginBusinessVerifyCommand,
-    UpdateBusinessCommand)
+    DeleteApiKeyCommand, InitializeCheckoutCommand, LoginBusinessCommand,
+    LoginBusinessVerifyCommand, UpdateBusinessCommand)
 from ed_gateway.application.features.business.requests.queries import (
     GetBusinessApiKeysQuery, GetBusinessByUserIdQuery, GetBusinessOrdersQuery,
     GetBusinessReportQuery, GetBusinessWebhookQuery)
@@ -239,6 +240,27 @@ async def get_report(
     return await mediator.send(
         GetBusinessReportQuery(business_id, start_date, end_date)
     )
+
+
+@router.post(
+    "/me/checkout",
+    response_model=GenericResponse[CheckoutDto],
+    tags=["Business Features"],
+)
+@rest_endpoint
+async def initialize_checkout(
+    request: CreateParcelDto,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+
+    business_id = await _get_business_id(auth.credentials, mediator)
+    LOG.info(
+        "Sending InitializeCheckoutCommand to mediator with business_id: %s and request: %s",
+        business_id,
+        request,
+    )
+    return await mediator.send(InitializeCheckoutCommand(business_id, request))
 
 
 @router.post(

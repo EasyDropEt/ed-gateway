@@ -7,6 +7,7 @@ from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
 from ed_gateway.application.features.consumers.dtos import ConsumerDto
 from ed_gateway.application.features.consumers.requests.commands import \
     LoginConsumerVerifyCommand
+from ed_gateway.application.service.auth_api_service import AuthApiService
 from ed_gateway.common.logging_helpers import get_logger
 
 LOG = get_logger()
@@ -17,19 +18,12 @@ class LoginConsumerVerifyCommandHandler(RequestHandler):
     def __init__(self, api: ABCApi):
         self._api = api
 
+        self._auth_service = AuthApiService(api.auth_api)
+
     async def handle(
         self, request: LoginConsumerVerifyCommand
     ) -> BaseResponse[ConsumerDto]:
-        LOG.info("Handling LoginConsumerVerifyCommand")
-        verify_response = await self._api.auth_api.login_verify_otp(request.dto)
-        if verify_response["is_success"] is False:
-            raise ApplicationException(
-                EXCEPTION_NAMES[verify_response["http_status_code"]],
-                "Consumer login failed.",
-                verify_response["errors"],
-            )
-
-        user = verify_response["data"]
+        user = await self._auth_service.login_verify({**request.dto})
         get_consumer_response = await self._api.core_api.get_consumer_by_user_id(
             str(user["id"])
         )

@@ -1,5 +1,4 @@
 from ed_auth.documentation.api.auth_api_client import UnverifiedUserDto
-from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -7,6 +6,7 @@ from ed_gateway.application.common.responses.base_response import BaseResponse
 from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
 from ed_gateway.application.features.consumers.requests.commands import \
     LoginConsumerCommand
+from ed_gateway.application.service.auth_api_service import AuthApiService
 from ed_gateway.common.logging_helpers import get_logger
 
 LOG = get_logger()
@@ -16,21 +16,13 @@ LOG = get_logger()
 class LoginConsumerCommandHandler(RequestHandler):
     def __init__(self, api: ABCApi):
         self._api = api
+        self._auth_service = AuthApiService(api.auth_api)
+
+        self._success_message = "Log-in OTP sent successfully"
 
     async def handle(
         self, request: LoginConsumerCommand
     ) -> BaseResponse[UnverifiedUserDto]:
-        LOG.info(f"Calling auth login_get_otp API with request: {request.dto}")
-        response = await self._api.auth_api.login_get_otp({**request.dto})
+        user = await self._auth_service.login({**request.dto})
 
-        LOG.info(f"Received response from login_get_otp: {response}")
-        if not response["is_success"]:
-            raise ApplicationException(
-                EXCEPTION_NAMES[response["http_status_code"]],
-                "Failed to send OTP for log-in",
-                response["errors"],
-            )
-
-        return BaseResponse[UnverifiedUserDto].success(
-            "Log-in OTP sent successfully", response["data"]
-        )
+        return BaseResponse[UnverifiedUserDto].success(self._success_message, user)

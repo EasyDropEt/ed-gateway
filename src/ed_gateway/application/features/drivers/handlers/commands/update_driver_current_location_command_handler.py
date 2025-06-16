@@ -1,4 +1,4 @@
-from ed_domain.common.exceptions import ApplicationException, EXCEPTION_NAMES
+from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -22,18 +22,17 @@ class UpdateDriverCurrentLocationCommandHandler(RequestHandler):
         LOG.info(
             f"Calling core update_driver_current_location API with request: {request.dto}"
         )
-        update_response = await self._api.core_api.update_driver_current_location(
+        response = await self._api.core_api.update_driver_current_location(
             driver_id=str(request.driver_id), update_location_dto=request.dto
         )
 
         LOG.info(
-            f"Received response from update_driver_current_location: {update_response}"
-        )
-        if not update_response["is_success"]:
+            f"Received response from update_driver_current_location: {response}")
+        if not response["is_success"]:
             raise ApplicationException(
                 EXCEPTION_NAMES[response["http_status_code"]],
                 "Driver location update failed.",
-                update_response["errors"],
+                response["errors"],
             )
 
         return BaseResponse[None].success(

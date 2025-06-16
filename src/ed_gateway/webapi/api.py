@@ -5,7 +5,7 @@ from starlette.responses import JSONResponse
 
 from ed_gateway.common.logging_helpers import get_logger
 from ed_gateway.webapi.common.helpers import GenericResponse
-from ed_gateway.webapi.controllers import (business_controller,
+from ed_gateway.webapi.controllers import (api_controller, business_controller,
                                            consumer_controller,
                                            delivery_job_controller,
                                            driver_controller, order_controller)
@@ -22,6 +22,7 @@ class API(FastAPI):
             delivery_job_controller.router,
             consumer_controller.router,
             order_controller.router,
+            api_controller.router,
         ]
 
     @property

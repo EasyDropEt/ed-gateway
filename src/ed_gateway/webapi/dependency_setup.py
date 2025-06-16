@@ -10,9 +10,10 @@ from ed_gateway.application.contracts.infrastructure.email.abc_email_templater i
 from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uploader import \
     ABCImageUploader
 from ed_gateway.application.features.business.handlers.commands import (
-    CancelBusinessOrderCommandHandler, CreateApiKeyCommandHandler,
-    CreateBusinessAccountCommandHandler, CreateOrderCommandHandler,
-    CreateWebhookCommandHandler, DeleteApiKeyCommandHandler,
+    CancelBusinessOrderCommandHandler, CheckoutCommandHandler,
+    CreateApiKeyCommandHandler, CreateBusinessAccountCommandHandler,
+    CreateOrderCommandHandler, CreateWebhookCommandHandler,
+    DeleteApiKeyCommandHandler, InitializeCheckoutCommandHandler,
     LoginBusinessCommandHandler, LoginBusinessVerifyCommandHandler,
     UpdateBusinessCommandHandler)
 from ed_gateway.application.features.business.handlers.queries import (
@@ -20,10 +21,10 @@ from ed_gateway.application.features.business.handlers.queries import (
     GetBusinessOrdersQueryHandler, GetBusinessQueryHandler,
     GetBusinessReportQueryHandler, GetBusinessWebhookQueryHandler)
 from ed_gateway.application.features.business.requests.commands import (
-    CancelBusinessOrderCommand, CreateApiKeyCommand,
+    CancelBusinessOrderCommand, CheckoutCommand, CreateApiKeyCommand,
     CreateBusinessAccountCommand, CreateOrderCommand, CreateWebhookCommand,
-    DeleteApiKeyCommand, LoginBusinessCommand, LoginBusinessVerifyCommand,
-    UpdateBusinessCommand)
+    DeleteApiKeyCommand, InitializeCheckoutCommand, LoginBusinessCommand,
+    LoginBusinessVerifyCommand, UpdateBusinessCommand)
 from ed_gateway.application.features.business.requests.queries import (
     GetBusinessApiKeysQuery, GetBusinessByUserIdQuery, GetBusinessOrdersQuery,
     GetBusinessQuery, GetBusinessReportQuery, GetBusinessWebhookQuery)
@@ -152,6 +153,8 @@ def mediator(
         (GetBusinessReportQuery, GetBusinessReportQueryHandler(api)),
         (GetBusinessWebhookQuery, GetBusinessWebhookQueryHandler(api)),
         (CreateWebhookCommand, CreateWebhookCommandHandler(api)),
+        (InitializeCheckoutCommand, InitializeCheckoutCommandHandler(api)),
+        (CheckoutCommand, CheckoutCommandHandler(api)),
         # Delivery features
         (GetDeliveryJobsQuery, GetDeliveryJobsQueryHandler(api)),
         (GetDeliveryJobQuery, GetDeliveryJobQueryHandler(api)),
