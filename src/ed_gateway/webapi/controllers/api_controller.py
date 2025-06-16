@@ -25,9 +25,12 @@ async def initialize_checkout(
     dto: CreateParcelDto,
     mediator: Annotated[Mediator, Depends(mediator)],
     x_api_key: Annotated[str, Header(include_in_schema=True)],
+    x_callback_url: Annotated[str, Header(include_in_schema=True)],
 ):
     LOG.info("Sending GetDeliveryJobsQuery to mediator")
-    return await mediator.send(InitializeCheckoutCommand(x_api_key, dto))
+    return await mediator.send(
+        InitializeCheckoutCommand(x_api_key, x_callback_url, dto)
+    )
 
 
 @router.post("/checkout", response_model=GenericResponse[CheckoutDto])

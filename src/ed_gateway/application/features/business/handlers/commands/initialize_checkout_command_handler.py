@@ -54,12 +54,15 @@ class InitializeCheckoutCommandHandler(RequestHandler):
         base_url = "https://base.url"
         return BaseResponse[CheckoutDto].success(
             self._success_message,
-            CheckoutDto(url=self.build_checkout_url(
-                base_url, key, request.parcel)),
+            CheckoutDto(
+                url=self.build_checkout_url(
+                    base_url, key, request.parcel, request.callback_url
+                )
+            ),
         )
 
     def build_checkout_url(
-        self, base_url: str, api_key: str, parcel: CreateParcelDto
+        self, base_url: str, api_key: str, parcel: CreateParcelDto, call_back_url: str
     ) -> str:
         parcel_data = {
             "size": parcel["size"].value,
@@ -68,6 +71,7 @@ class InitializeCheckoutCommandHandler(RequestHandler):
             "height": parcel["height"],
             "weight": parcel["weight"],
             "fragile": int(parcel["fragile"]),
+            "callback_url": call_back_url,
         }
         query_string = urllib.parse.urlencode(parcel_data)
         separator = "&" if "?" in base_url else "?"

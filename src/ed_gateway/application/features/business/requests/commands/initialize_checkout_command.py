@@ -13,4 +13,5 @@ from ed_gateway.application.features.business.dtos import CheckoutDto
 @dataclass
 class InitializeCheckoutCommand(Request):
     api_key: str
+    callback_url: str
     parcel: CreateParcelDto
