@@ -1,7 +1,4 @@
-from ed_core.application.features.common.dtos import CreateConsumerDto
-from ed_core.documentation.api.abc_core_api_client import (CreateOrderDto,
-                                                           OrderDto)
-from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
+from ed_core.documentation.api.abc_core_api_client import OrderDto
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -9,6 +6,7 @@ from ed_gateway.application.common.responses.base_response import BaseResponse
 from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
 from ed_gateway.application.features.business.requests.commands import \
     CreateOrderCommand
+from ed_gateway.application.service.api_service import ApiService
 from ed_gateway.application.service.auth_api_service import AuthApiService
 from ed_gateway.common.logging_helpers import get_logger
 
@@ -21,9 +19,13 @@ class CreateOrderCommandHandler(RequestHandler):
         self._api_handler = api_handler
         self._auth_service = AuthApiService(api_handler.auth_api)
 
+        self._error_message = "Failed to create order."
+        self._success_message = "Order created successfully."
+
+        self._api_service = ApiService(self._error_message)
+
     async def handle(self, request: CreateOrderCommand) -> BaseResponse[OrderDto]:
         dto = request.dto
-
         user = await self._auth_service.create_or_get(
             {
                 "first_name": dto["first_name"],
@@ -33,45 +35,36 @@ class CreateOrderCommandHandler(RequestHandler):
             }
         )
 
-        if user["new"]:
+        consumer_response = await self._api_handler.core_api.get_consumer_by_user_id(
+            str(user["id"])
+        )
+        self._api_service.basic_verify(consumer_response)
+
+        if not consumer_response["is_success"]:
             consumer_response = await self._api_handler.core_api.create_consumer(
-                CreateConsumerDto(
-                    user_id=user["id"],
-                    first_name=dto["first_name"],
-                    last_name=dto["last_name"],
-                    email=dto["email"],
-                    phone_number=dto["phone_number"],
-                    location=dto["location"],
-                )
+                {
+                    "user_id": user["id"],
+                    "first_name": dto["first_name"],
+                    "last_name": dto["last_name"],
+                    "email": dto["email"],
+                    "phone_number": dto["phone_number"],
+                    "location": dto["location"],
+                }
             )
-        else:
-            consumer_response = (
-                await self._api_handler.core_api.get_consumer_by_user_id(
-                    str(user["id"])
-                )
-            )
+            self._api_service.verify(consumer_response)
 
         consumer = consumer_response["data"]
         LOG.info(
             f"Calling core create_business_orders API for business id: {request.business_id} with orders: {request.dto}"
         )
-        create_order_dto = CreateOrderDto(
-            consumer_id=consumer["id"],
-            parcel=dto["parcel"],
-            latest_time_of_delivery=dto["latest_time_of_delivery"],
-        )
         response = await self._api_handler.core_api.create_business_order(
-            str(request.business_id), create_order_dto
+            str(request.business_id),
+            {
+                "consumer_id": consumer["id"],
+                "parcel": dto["parcel"],
+                "latest_time_of_delivery": dto["latest_time_of_delivery"],
+            },
         )
+        self._api_service.verify(response)
 
-        LOG.info(f"Received response from create_business_orders: {response}")
-        if not response["is_success"]:
-            raise ApplicationException(
-                EXCEPTION_NAMES[response["http_status_code"]],
-                "Failed to create an order.",
-                response["errors"],
-            )
-
-        return BaseResponse[OrderDto].success(
-            "Order created successfully.", response["data"]
-        )
+        return BaseResponse[OrderDto].success(self._success_message, response["data"])

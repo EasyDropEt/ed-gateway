@@ -249,6 +249,23 @@ async def get_delivery_jobs(
     return await mediator.send(GetDeliveryJobsQuery())
 
 
+@router.post(
+    "/drivers", response_model=GenericResponse[DriverDto], tags=["Admin Features"]
+)
+@rest_endpoint
+async def create_driver_account(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    request: CreateDriverAccountDto,
+):
+    LOG.info(
+        "Sending CreateDriverAccountCommand to mediator with request: %s", request)
+    return await mediator.send(
+        CreateDriverAccountCommand(
+            dto=request,
+        )
+    )
+
+
 @router.get(
     "/drivers", response_model=GenericResponse[list[DriverDto]], tags=["Admin Features"]
 )
@@ -269,22 +286,3 @@ async def get_orders(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     return await mediator.send(GetOrdersQuery())
-
-
-@router.post(
-    "/drivers",
-    response_model=GenericResponse[DriverDto],
-    tags=["Admin Features Auth"],
-)
-@rest_endpoint
-async def create_driver_account(
-    mediator: Annotated[Mediator, Depends(mediator)],
-    request: CreateDriverAccountDto,
-):
-    LOG.info(
-        "Sending CreateDriverAccountCommand to mediator with request: %s", request)
-    return await mediator.send(
-        CreateDriverAccountCommand(
-            dto=request,
-        )
-    )
