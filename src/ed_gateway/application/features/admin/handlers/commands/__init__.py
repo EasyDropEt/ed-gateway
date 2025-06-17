@@ -4,6 +4,8 @@ from ed_gateway.application.features.admin.handlers.commands.login_admin_command
     LoginAdminCommandHandler
 from ed_gateway.application.features.admin.handlers.commands.login_admin_verify_command_handler import \
     LoginAdminVerifyCommandHandler
+from ed_gateway.application.features.admin.handlers.commands.settle_driver_payment_command_handler import \
+    SettleDriverPaymentCommandHandler
 from ed_gateway.application.features.admin.handlers.commands.update_admin_command_handler import \
     UpdateAdminCommandHandler
 
@@ -11,5 +13,6 @@ __all__ = [
     "LoginAdminCommandHandler",
     "CreateAdminCommandHandler",
     "LoginAdminVerifyCommandHandler",
+    "SettleDriverPaymentCommandHandler",
     "UpdateAdminCommandHandler",
 ]

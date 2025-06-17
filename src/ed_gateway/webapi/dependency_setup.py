@@ -11,14 +11,18 @@ from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uplo
     ABCImageUploader
 from ed_gateway.application.features.admin.handlers.commands import (
     CreateAdminCommandHandler, LoginAdminCommandHandler,
-    LoginAdminVerifyCommandHandler, UpdateAdminCommandHandler)
+    LoginAdminVerifyCommandHandler, SettleDriverPaymentCommandHandler,
+    UpdateAdminCommandHandler)
 from ed_gateway.application.features.admin.handlers.queries import (
-    GetAdminByUserIdQueryHandler, GetAdminQueryHandler)
+    GetAdminByUserIdQueryHandler, GetAdminQueryHandler, GetAdminsQueryHandler,
+    GetBusinessesQueryHandler, GetConsumersQueryHandler,
+    GetDriversQueryHandler, GetOrdersQueryHandler)
 from ed_gateway.application.features.admin.requests.commands import (
     CreateAdminCommand, LoginAdminCommand, LoginAdminVerifyCommand,
-    UpdateAdminCommand)
+    SettleDriverPaymentCommand, UpdateAdminCommand)
 from ed_gateway.application.features.admin.requests.queries import (
-    GetAdminByUserIdQuery, GetAdminQuery)
+    GetAdminByUserIdQuery, GetAdminQuery, GetAdminsQuery, GetBusinessesQuery,
+    GetConsumersQuery, GetDriversQuery, GetOrdersQuery)
 from ed_gateway.application.features.business.handlers.commands import (
     CancelBusinessOrderCommandHandler, CheckoutCommandHandler,
     CreateApiKeyCommandHandler, CreateBusinessAccountCommandHandler,
@@ -194,7 +198,15 @@ def mediator(
         (LoginAdminVerifyCommand, LoginAdminVerifyCommandHandler(api)),
         (GetAdminByUserIdQuery, GetAdminByUserIdQueryHandler(api)),
         (GetAdminQuery, GetAdminQueryHandler(api)),
+        (SettleDriverPaymentCommand, SettleDriverPaymentCommandHandler(api)),
         (UpdateAdminCommand, UpdateAdminCommandHandler(api)),
+        # Admin led features
+        (GetAdminsQuery, GetAdminsQueryHandler(api)),
+        (GetDriversQuery, GetDriversQueryHandler(api)),
+        (GetConsumersQuery, GetConsumersQueryHandler(api)),
+        (GetBusinessesQuery, GetBusinessesQueryHandler(api)),
+        (GetDeliveryJobsQuery, GetDeliveryJobsQueryHandler(api)),
+        (GetOrdersQuery, GetOrdersQueryHandler(api)),
     ]
 
     for request, handler in features:

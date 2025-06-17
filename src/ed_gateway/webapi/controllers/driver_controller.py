@@ -15,14 +15,13 @@ from fastapi import APIRouter, Depends, WebSocket
 from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator
 
-from ed_gateway.application.features.drivers.dtos import (
-    CreateDriverAccountDto, DriverAccountDto, LoginDriverDto)
+from ed_gateway.application.features.drivers.dtos import (DriverAccountDto,
+                                                          LoginDriverDto)
 from ed_gateway.application.features.drivers.requests.commands import (
     CancelDeliveryJobCommand, ClaimDeliveryJobCommand,
-    CreateDriverAccountCommand, FinishOrderDeliveryCommand,
-    FinishOrderPickUpCommand, LoginDriverCommand, LoginDriverVerifyCommand,
-    StartOrderDeliveryCommand, StartOrderPickUpCommand,
-    UpdateDriverCurrentLocationCommand)
+    FinishOrderDeliveryCommand, FinishOrderPickUpCommand, LoginDriverCommand,
+    LoginDriverVerifyCommand, StartOrderDeliveryCommand,
+    StartOrderPickUpCommand, UpdateDriverCurrentLocationCommand)
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery, GetDriverOrdersQuery,
     GetDriverPaymentSummaryQuery)
@@ -42,25 +41,6 @@ router = APIRouter(prefix="/drivers")
 config = get_config()
 api_dep = get_api(config)
 oauth2_scheme = JWTBearer(api_dep.auth_api)
-
-
-@router.post(
-    "/register",
-    response_model=GenericResponse[DriverDto],
-    tags=["Driver Auth"],
-)
-@rest_endpoint
-async def create_account(
-    mediator: Annotated[Mediator, Depends(mediator)],
-    request: CreateDriverAccountDto,
-):
-    LOG.info(
-        "Sending CreateDriverAccountCommand to mediator with request: %s", request)
-    return await mediator.send(
-        CreateDriverAccountCommand(
-            dto=request,
-        )
-    )
 
 
 @router.post(

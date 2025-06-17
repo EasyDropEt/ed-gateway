@@ -4,9 +4,13 @@ from uuid import UUID
 
 from ed_auth.application.features.auth.dtos import (LoginUserVerifyDto,
                                                     UnverifiedUserDto)
+from ed_core.application.features.common.dtos import (BusinessDto, ConsumerDto,
+                                                      DeliveryJobDto,
+                                                      DriverDto, OrderDto)
 from ed_core.documentation.api.abc_core_api_client import \
     AdminDto as CoreAdminDto
-from ed_core.documentation.api.abc_core_api_client import UpdateAdminDto
+from ed_core.documentation.api.abc_core_api_client import (
+    DriverPaymentSummaryDto, SettleDriverPaymentRequestDto, UpdateAdminDto)
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from ed_notification.documentation.api.abc_notification_api_client import \
     NotificationDto
@@ -19,9 +23,13 @@ from ed_gateway.application.features.admin.dtos import (AdminDto,
                                                         LoginAdminDto)
 from ed_gateway.application.features.admin.requests.commands import (
     CreateAdminCommand, LoginAdminCommand, LoginAdminVerifyCommand,
-    UpdateAdminCommand)
-from ed_gateway.application.features.admin.requests.queries import \
-    GetAdminByUserIdQuery
+    SettleDriverPaymentCommand, UpdateAdminCommand)
+from ed_gateway.application.features.admin.requests.queries import (
+    GetAdminByUserIdQuery, GetAdminsQuery, GetBusinessesQuery,
+    GetConsumersQuery, GetDeliveryJobsQuery, GetDriversQuery, GetOrdersQuery)
+from ed_gateway.application.features.drivers.dtos import CreateDriverAccountDto
+from ed_gateway.application.features.drivers.requests.commands import \
+    CreateDriverAccountCommand
 from ed_gateway.application.features.notifications.requests.commands import \
     ReadNotificationCommand
 from ed_gateway.application.features.notifications.requests.queries import \
@@ -34,14 +42,14 @@ from ed_gateway.webapi.dependency_setup import api as get_api
 from ed_gateway.webapi.dependency_setup import mediator
 
 LOG = get_logger()
-router = APIRouter(prefix="/admin")
+router = APIRouter(prefix="")
 config = get_config()
 api_dep = get_api(config)
 oauth2_scheme = JWTBearer(api_dep.auth_api)
 
 
 @router.post(
-    "/register",
+    "/admin/register",
     response_model=GenericResponse[CoreAdminDto],
     tags=["Admin Auth"],
 )
@@ -55,7 +63,7 @@ async def create_account(
 
 
 @router.post(
-    "/login/get-otp",
+    "/admin/login/get-otp",
     response_model=GenericResponse[UnverifiedUserDto],
     tags=["Admin Auth"],
 )
@@ -68,7 +76,7 @@ async def login_admin(
 
 
 @router.post(
-    "/login/verify",
+    "/admin/login/verify",
     response_model=GenericResponse[AdminDto],
     tags=["Admin Auth"],
 )
@@ -81,7 +89,7 @@ async def login_admin_verify(
 
 
 @router.get(
-    "/me", response_model=GenericResponse[CoreAdminDto], tags=["Admin Features"]
+    "/admin/me", response_model=GenericResponse[CoreAdminDto], tags=["Admin Features"]
 )
 @rest_endpoint
 async def get_admin(
@@ -95,8 +103,8 @@ async def get_admin(
     return await mediator.send(GetAdminByUserIdQuery(user_id=auth.credentials))
 
 
-@router.put(
-    "/me", response_model=GenericResponse[CoreAdminDto], tags=["Admin Features"]
+@router.get(
+    "/admin/me", response_model=GenericResponse[CoreAdminDto], tags=["Admin Features"]
 )
 @rest_endpoint
 async def update_admin(
@@ -108,8 +116,24 @@ async def update_admin(
     return await mediator.send(UpdateAdminCommand(admin_id, dto))
 
 
+@router.post(
+    "/admin/me/settle-driver-payment/{driver_id}",
+    response_model=GenericResponse[DriverPaymentSummaryDto],
+    tags=["Admin Features"],
+)
+@rest_endpoint
+async def settle_driver_payment(
+    driver_id: UUID,
+    dto: SettleDriverPaymentRequestDto,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    admin_id = await _get_admin_id(auth.credentials, mediator)
+    return await mediator.send(SettleDriverPaymentCommand(admin_id, driver_id, dto))
+
+
 @router.get(
-    "/me/notifications",
+    "/admin/me/notifications",
     response_model=GenericResponse[list[NotificationDto]],
     tags=["Admin Features"],
 )
@@ -125,7 +149,7 @@ async def get_notifications(
 
 
 @router.put(
-    "/me/notifications/{notification_id}/read",
+    "/admin/me/notifications/{notification_id}/read",
     response_model=GenericResponse[NotificationDto],
     tags=["Admin Features"],
 )
@@ -171,3 +195,94 @@ async def _get_admin_id(user_id: str, mediator: Mediator) -> UUID:
         )
 
     return response["data"]["id"]
+
+
+@router.get(
+    "/admins", response_model=GenericResponse[list[AdminDto]], tags=["Admin Features"]
+)
+@rest_endpoint
+async def get_admins(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetAdminsQuery())
+
+
+@router.get(
+    "/businesses",
+    response_model=GenericResponse[list[BusinessDto]],
+    tags=["Admin Features"],
+)
+@rest_endpoint
+async def get_businesses(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetBusinessesQuery())
+
+
+@router.get(
+    "/consumers",
+    response_model=GenericResponse[list[ConsumerDto]],
+    tags=["Admin Features"],
+)
+@rest_endpoint
+async def get_consumers(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetConsumersQuery())
+
+
+@router.get(
+    "/delivery-jobs",
+    response_model=GenericResponse[list[DeliveryJobDto]],
+    tags=["Admin Features"],
+)
+@rest_endpoint
+async def get_delivery_jobs(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetDeliveryJobsQuery())
+
+
+@router.get(
+    "/drivers", response_model=GenericResponse[list[DriverDto]], tags=["Admin Features"]
+)
+@rest_endpoint
+async def get_drivers(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetDriversQuery())
+
+
+@router.get(
+    "/orders", response_model=GenericResponse[list[OrderDto]], tags=["Admin Features"]
+)
+@rest_endpoint
+async def get_orders(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetOrdersQuery())
+
+
+@router.post(
+    "/drivers",
+    response_model=GenericResponse[DriverDto],
+    tags=["Admin Features Auth"],
+)
+@rest_endpoint
+async def create_driver_account(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    request: CreateDriverAccountDto,
+):
+    LOG.info(
+        "Sending CreateDriverAccountCommand to mediator with request: %s", request)
+    return await mediator.send(
+        CreateDriverAccountCommand(
+            dto=request,
+        )
+    )
