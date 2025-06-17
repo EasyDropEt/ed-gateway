@@ -37,7 +37,7 @@ class LoginConsumerVerifyCommandHandler(RequestHandler):
         return BaseResponse[ConsumerDto].success(
             "Consumer logged in successfully",
             ConsumerDto(
-                **get_consumer_response["data"],  # type: ignore
+                **get_consumer_response["data"],
                 token=user["token"],
             ),
         )

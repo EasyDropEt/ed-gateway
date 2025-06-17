@@ -1,7 +1,5 @@
-from ed_core.application.features.common.dtos import CreateConsumerDto
-from ed_core.documentation.api.abc_core_api_client import ConsumerDto
+from ed_core.documentation.api.abc_core_api_client import AdminDto
 from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
-from ed_domain.core.entities.notification import NotificationType
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -11,16 +9,16 @@ from ed_gateway.application.contracts.infrastructure.email.abc_email_templater i
     ABCEmailTemplater
 from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uploader import \
     ABCImageUploader
-from ed_gateway.application.features.consumers.requests.commands import \
-    CreateConsumerCommand
+from ed_gateway.application.features.admin.requests.commands import \
+    CreateAdminCommand
 from ed_gateway.application.service.auth_api_service import AuthApiService
 from ed_gateway.common.logging_helpers import get_logger
 
 LOG = get_logger()
 
 
-@request_handler(CreateConsumerCommand, BaseResponse[ConsumerDto])
-class CreateConsumerCommandHandler(RequestHandler):
+@request_handler(CreateAdminCommand, BaseResponse[AdminDto])
+class CreateAdminCommandHandler(RequestHandler):
     def __init__(
         self,
         api: ABCApi,
@@ -33,10 +31,10 @@ class CreateConsumerCommandHandler(RequestHandler):
 
         self._auth_service = AuthApiService(api.auth_api)
 
-        self._success_message = "Consumer account created successfully"
-        self._error_message = "Failed to create consumer account."
+        self._success_message = "Admin account created successfully"
+        self._error_message = "Failed to create admin account."
 
-    async def handle(self, request: CreateConsumerCommand) -> BaseResponse[ConsumerDto]:
+    async def handle(self, request: CreateAdminCommand) -> BaseResponse[AdminDto]:
         dto = request.dto
 
         user = await self._auth_service.create(
@@ -45,42 +43,31 @@ class CreateConsumerCommandHandler(RequestHandler):
                 "last_name": dto["last_name"],
                 "email": dto["email"],
                 "phone_number": dto["phone_number"],
+                "password": dto["password"],
             }
         )
 
-        LOG.info(
-            "Calling core create_consumer API for user: %s %s",
-            dto.get("first_name"),
-            dto.get("last_name"),
-        )
-        create_consumer_response = await self._api.core_api.create_consumer(
+        LOG.info("Calling core create_admin API for user: %s", user["id"])
+        create_admin_response = await self._api.core_api.create_admin(
             {
                 "user_id": user["id"],
                 "first_name": dto["first_name"],
                 "last_name": dto["last_name"],
                 "phone_number": dto["phone_number"],
                 "email": dto["email"],
-                "location": dto["location"],
+                "role": dto["role"],
             }
         )
 
         LOG.info(
-            f"Received response from create_consumer: {create_consumer_response}")
-        if create_consumer_response["is_success"] is False:
+            f"Received response from create_admin: {create_admin_response}")
+        if create_admin_response["is_success"] is False:
             await self._api.auth_api.delete_user(user["id"])
             raise ApplicationException(
-                EXCEPTION_NAMES[create_consumer_response["http_status_code"]],
+                EXCEPTION_NAMES[create_admin_response["http_status_code"]],
                 self._error_message,
-                create_consumer_response["errors"],
+                create_admin_response["errors"],
             )
 
-        await self._api.notification_api.send_notification(
-            {
-                "user_id": user["id"],
-                "message": self._email_templater.welcome_consumer(dto["first_name"]),
-                "notification_type": NotificationType.EMAIL,
-            }
-        )
-
-        consumer = create_consumer_response["data"]
-        return BaseResponse[ConsumerDto].success(self._success_message, consumer)
+        admin = create_admin_response["data"]
+        return BaseResponse[AdminDto].success(self._success_message, admin)

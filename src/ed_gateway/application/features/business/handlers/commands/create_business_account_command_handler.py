@@ -58,15 +58,15 @@ class CreateBusinessAccountCommandHandler(RequestHandler):
 
         LOG.info(f"Calling core create_business API with request: {dto}")
         create_business_response = await self._api_handler.core_api.create_business(
-            CreateBusinessDto(
-                user_id=user["id"],
-                business_name=dto["business_name"],
-                owner_first_name=dto["owner_first_name"],
-                owner_last_name=dto["owner_last_name"],
-                phone_number=dto["phone_number"],
-                email=dto["email"],
-                location=dto["location"],
-            ).model_dump()  # type: ignore
+            {
+                "user_id": user["id"],
+                "business_name": dto["business_name"],
+                "owner_first_name": dto["owner_first_name"],
+                "owner_last_name": dto["owner_last_name"],
+                "phone_number": dto["phone_number"],
+                "email": dto["email"],
+                "location": dto["location"],
+            }
         )
 
         LOG.info(

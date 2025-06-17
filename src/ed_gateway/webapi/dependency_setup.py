@@ -9,6 +9,16 @@ from ed_gateway.application.contracts.infrastructure.email.abc_email_templater i
     ABCEmailTemplater
 from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uploader import \
     ABCImageUploader
+from ed_gateway.application.features.admin.handlers.commands import (
+    CreateAdminCommandHandler, LoginAdminCommandHandler,
+    LoginAdminVerifyCommandHandler, UpdateAdminCommandHandler)
+from ed_gateway.application.features.admin.handlers.queries import (
+    GetAdminByUserIdQueryHandler, GetAdminQueryHandler)
+from ed_gateway.application.features.admin.requests.commands import (
+    CreateAdminCommand, LoginAdminCommand, LoginAdminVerifyCommand,
+    UpdateAdminCommand)
+from ed_gateway.application.features.admin.requests.queries import (
+    GetAdminByUserIdQuery, GetAdminQuery)
 from ed_gateway.application.features.business.handlers.commands import (
     CancelBusinessOrderCommandHandler, CheckoutCommandHandler,
     CreateApiKeyCommandHandler, CreateBusinessAccountCommandHandler,
@@ -175,6 +185,16 @@ def mediator(
         # Notification features
         (GetNotificationsQuery, GetNotificationsQueryHandler(api)),
         (ReadNotificationCommand, ReadNotificationCommandHandler(api)),
+        # Admin features
+        (
+            CreateAdminCommand,
+            CreateAdminCommandHandler(api, image_uploader, email_templater),
+        ),
+        (LoginAdminCommand, LoginAdminCommandHandler(api)),
+        (LoginAdminVerifyCommand, LoginAdminVerifyCommandHandler(api)),
+        (GetAdminByUserIdQuery, GetAdminByUserIdQueryHandler(api)),
+        (GetAdminQuery, GetAdminQueryHandler(api)),
+        (UpdateAdminCommand, UpdateAdminCommandHandler(api)),
     ]
 
     for request, handler in features:

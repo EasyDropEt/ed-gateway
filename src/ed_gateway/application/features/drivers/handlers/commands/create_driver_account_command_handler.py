@@ -60,16 +60,16 @@ class CreateDriverAccountCommandHandler(RequestHandler):
         LOG.info(f"Calling core create_driver API with request: {dto}")
         user = create_user_response["data"]
         create_driver_response = await self._api_handler.core_api.create_driver(
-            CreateDriverDto(
-                user_id=user["id"],
-                first_name=dto["first_name"],
-                last_name=dto["last_name"],
-                profile_image="placeholder",
-                phone_number=dto["phone_number"],
-                email=dto["email"],
-                location=dto["location"],
-                car=dto["car"],
-            ).model_dump()  # type: ignore
+            {
+                "user_id": user["id"],
+                "first_name": dto["first_name"],
+                "last_name": dto["last_name"],
+                "profile_image": "placeholder",
+                "phone_number": dto["phone_number"],
+                "email": dto["email"],
+                "location": dto["location"],
+                "car": dto["car"],
+            }
         )
 
         LOG.info(

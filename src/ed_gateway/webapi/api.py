@@ -5,7 +5,8 @@ from starlette.responses import JSONResponse
 
 from ed_gateway.common.logging_helpers import get_logger
 from ed_gateway.webapi.common.helpers import GenericResponse
-from ed_gateway.webapi.controllers import (api_controller, business_controller,
+from ed_gateway.webapi.controllers import (admin_controller, api_controller,
+                                           business_controller,
                                            consumer_controller,
                                            delivery_job_controller,
                                            driver_controller, order_controller)
@@ -17,6 +18,7 @@ class API(FastAPI):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._routers = [
+            admin_controller.router,
             business_controller.router,
             driver_controller.router,
             delivery_job_controller.router,
