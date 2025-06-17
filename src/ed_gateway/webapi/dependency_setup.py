@@ -16,13 +16,13 @@ from ed_gateway.application.features.admin.handlers.commands import (
 from ed_gateway.application.features.admin.handlers.queries import (
     GetAdminByUserIdQueryHandler, GetAdminQueryHandler, GetAdminsQueryHandler,
     GetBusinessesQueryHandler, GetConsumersQueryHandler,
-    GetDriversQueryHandler, GetOrdersQueryHandler)
+    GetDeliveryJobsQueryHandler, GetDriversQueryHandler, GetOrdersQueryHandler)
 from ed_gateway.application.features.admin.requests.commands import (
     CreateAdminCommand, LoginAdminCommand, LoginAdminVerifyCommand,
     SettleDriverPaymentCommand, UpdateAdminCommand)
 from ed_gateway.application.features.admin.requests.queries import (
     GetAdminByUserIdQuery, GetAdminQuery, GetAdminsQuery, GetBusinessesQuery,
-    GetConsumersQuery, GetDriversQuery, GetOrdersQuery)
+    GetConsumersQuery, GetDeliveryJobsQuery, GetDriversQuery, GetOrdersQuery)
 from ed_gateway.application.features.business.handlers.commands import (
     CancelBusinessOrderCommandHandler, CheckoutCommandHandler,
     CreateApiKeyCommandHandler, CreateBusinessAccountCommandHandler,
@@ -54,10 +54,10 @@ from ed_gateway.application.features.consumers.requests.commands import (
     RateDeliveryCommand, UpdateConsumerCommand)
 from ed_gateway.application.features.consumers.requests.queries import (
     GetConsumerByUserIdQuery, GetConsumerOrdersQuery, GetConsumerQuery)
-from ed_gateway.application.features.delivery_jobs.handlers.queries import (
-    GetDeliveryJobQueryHandler, GetDeliveryJobsQueryHandler)
-from ed_gateway.application.features.delivery_jobs.requests.queries import (
-    GetDeliveryJobQuery, GetDeliveryJobsQuery)
+from ed_gateway.application.features.delivery_jobs.handlers.queries import \
+    GetDeliveryJobQueryHandler
+from ed_gateway.application.features.delivery_jobs.requests.queries import \
+    GetDeliveryJobQuery
 from ed_gateway.application.features.drivers.handlers.commands import (
     ClaimDeliveryJobCommandHandler, CreateDriverAccountCommandHandler,
     FinishOrderDeliveryCommandHandler, FinishOrderPickUpCommandHandler,

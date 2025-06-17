@@ -198,7 +198,9 @@ async def _get_admin_id(user_id: str, mediator: Mediator) -> UUID:
 
 
 @router.get(
-    "/admins", response_model=GenericResponse[list[AdminDto]], tags=["Admin Features"]
+    "/admins",
+    response_model=GenericResponse[list[CoreAdminDto]],
+    tags=["Admin Features"],
 )
 @rest_endpoint
 async def get_admins(
