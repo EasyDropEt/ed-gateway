@@ -348,7 +348,7 @@ async def get_driver(
 
 @router.get(
     "/drivers/{driver_id}/payment/summary/details",
-    response_model=GenericResponse[DriverDto],
+    response_model=GenericResponse[DriverPaymentSummaryDto],
     tags=["Admin Features"],
 )
 @rest_endpoint
