@@ -8,8 +8,11 @@ from ed_gateway.application.features.drivers.requests.queries.get_driver_orders_
     GetDriverOrdersQuery
 from ed_gateway.application.features.drivers.requests.queries.get_driver_payment_summary_query import \
     GetDriverPaymentSummaryQuery
+from ed_gateway.application.features.drivers.requests.queries.get_drivers_query import \
+    GetDriversQuery
 
 __all__ = [
+    "GetDriversQuery",
     "GetDriverByIdQuery",
     "GetDriverByUserIdQuery",
     "GetDriverDeliveryJobsQuery",

@@ -4,8 +4,11 @@ from ed_gateway.application.features.consumers.handlers.queries.get_consumer_ord
     GetConsumerOrdersQueryHandler
 from ed_gateway.application.features.consumers.handlers.queries.get_consumer_query_handler import \
     GetConsumerQueryHandler
+from ed_gateway.application.features.consumers.handlers.queries.get_consumers_query_handler import \
+    GetConsumersQueryHandler
 
 __all__ = [
+    "GetConsumersQueryHandler",
     "GetConsumerOrdersQueryHandler",
     "GetConsumerQueryHandler",
     "GetConsumerByUserIdQueryHandler",

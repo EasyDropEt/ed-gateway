@@ -25,15 +25,24 @@ from ed_gateway.application.features.admin.requests.commands import (
     CreateAdminCommand, LoginAdminCommand, LoginAdminVerifyCommand,
     SettleDriverPaymentCommand, UpdateAdminCommand)
 from ed_gateway.application.features.admin.requests.queries import (
-    GetAdminByUserIdQuery, GetAdminsQuery, GetBusinessesQuery,
-    GetConsumersQuery, GetDeliveryJobsQuery, GetDriversQuery, GetOrdersQuery)
+    GetAdminByUserIdQuery, GetAdminsQuery)
+from ed_gateway.application.features.business.requests.queries import (
+    GetBusinessesQuery, GetBusinessQuery)
+from ed_gateway.application.features.consumers.requests.queries import (
+    GetConsumerQuery, GetConsumersQuery)
+from ed_gateway.application.features.delivery_jobs.requests.queries import (
+    GetDeliveryJobQuery, GetDeliveryJobsQuery)
 from ed_gateway.application.features.drivers.dtos import CreateDriverAccountDto
 from ed_gateway.application.features.drivers.requests.commands import \
     CreateDriverAccountCommand
+from ed_gateway.application.features.drivers.requests.queries import (
+    GetDriverByIdQuery, GetDriversQuery)
 from ed_gateway.application.features.notifications.requests.commands import \
     ReadNotificationCommand
 from ed_gateway.application.features.notifications.requests.queries import \
     GetNotificationsQuery
+from ed_gateway.application.features.order.requests.queries import (
+    GetOrderQuery, GetOrdersQuery)
 from ed_gateway.common.generic_helpers import get_config
 from ed_gateway.common.logging_helpers import get_logger
 from ed_gateway.webapi.common.helpers import GenericResponse, rest_endpoint
@@ -211,6 +220,20 @@ async def get_admins(
 
 
 @router.get(
+    "/businesses/{business_id}",
+    response_model=GenericResponse[list[BusinessDto]],
+    tags=["Admin Features"],
+)
+@rest_endpoint
+async def get_business(
+    business_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetBusinessQuery(business_id))
+
+
+@router.get(
     "/businesses",
     response_model=GenericResponse[list[BusinessDto]],
     tags=["Admin Features"],
@@ -224,6 +247,20 @@ async def get_businesses(
 
 
 @router.get(
+    "/consumers/{consumer_id}",
+    response_model=GenericResponse[list[ConsumerDto]],
+    tags=["Admin Features"],
+)
+@rest_endpoint
+async def get_consumer(
+    consumer_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetConsumerQuery(consumer_id))
+
+
+@router.get(
     "/consumers",
     response_model=GenericResponse[list[ConsumerDto]],
     tags=["Admin Features"],
@@ -234,6 +271,20 @@ async def get_consumers(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     return await mediator.send(GetConsumersQuery())
+
+
+@router.get(
+    "/delivery-jobs/{delivery_job_id}",
+    response_model=GenericResponse[list[DeliveryJobDto]],
+    tags=["Admin Features"],
+)
+@rest_endpoint
+async def get_delivery_job(
+    delivery_job_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetDeliveryJobQuery(delivery_job_id))
 
 
 @router.get(
@@ -267,6 +318,20 @@ async def create_driver_account(
 
 
 @router.get(
+    "/drivers/{driver_id}",
+    response_model=GenericResponse[list[DriverDto]],
+    tags=["Admin Features"],
+)
+@rest_endpoint
+async def get_driver(
+    driver_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetDriverByIdQuery(driver_id))
+
+
+@router.get(
     "/drivers", response_model=GenericResponse[list[DriverDto]], tags=["Admin Features"]
 )
 @rest_endpoint
@@ -275,6 +340,20 @@ async def get_drivers(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     return await mediator.send(GetDriversQuery())
+
+
+@router.get(
+    "/orders/{order_id}",
+    response_model=GenericResponse[list[OrderDto]],
+    tags=["Admin Features"],
+)
+@rest_endpoint
+async def get_order(
+    order_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetOrderQuery(order_id))
 
 
 @router.get(

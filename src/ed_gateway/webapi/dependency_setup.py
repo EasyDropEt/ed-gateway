@@ -14,15 +14,12 @@ from ed_gateway.application.features.admin.handlers.commands import (
     LoginAdminVerifyCommandHandler, SettleDriverPaymentCommandHandler,
     UpdateAdminCommandHandler)
 from ed_gateway.application.features.admin.handlers.queries import (
-    GetAdminByUserIdQueryHandler, GetAdminQueryHandler, GetAdminsQueryHandler,
-    GetBusinessesQueryHandler, GetConsumersQueryHandler,
-    GetDeliveryJobsQueryHandler, GetDriversQueryHandler, GetOrdersQueryHandler)
+    GetAdminByUserIdQueryHandler, GetAdminQueryHandler, GetAdminsQueryHandler)
 from ed_gateway.application.features.admin.requests.commands import (
     CreateAdminCommand, LoginAdminCommand, LoginAdminVerifyCommand,
     SettleDriverPaymentCommand, UpdateAdminCommand)
 from ed_gateway.application.features.admin.requests.queries import (
-    GetAdminByUserIdQuery, GetAdminQuery, GetAdminsQuery, GetBusinessesQuery,
-    GetConsumersQuery, GetDeliveryJobsQuery, GetDriversQuery, GetOrdersQuery)
+    GetAdminByUserIdQuery, GetAdminQuery, GetAdminsQuery)
 from ed_gateway.application.features.business.handlers.commands import (
     CancelBusinessOrderCommandHandler, CheckoutCommandHandler,
     CreateApiKeyCommandHandler, CreateBusinessAccountCommandHandler,
@@ -32,32 +29,35 @@ from ed_gateway.application.features.business.handlers.commands import (
     UpdateBusinessCommandHandler)
 from ed_gateway.application.features.business.handlers.queries import (
     GetBusinessApiKeysQueryHandler, GetBusinessByUserIdQueryHandler,
-    GetBusinessOrdersQueryHandler, GetBusinessQueryHandler,
-    GetBusinessReportQueryHandler, GetBusinessWebhookQueryHandler)
+    GetBusinessesQueryHandler, GetBusinessOrdersQueryHandler,
+    GetBusinessQueryHandler, GetBusinessReportQueryHandler,
+    GetBusinessWebhookQueryHandler)
 from ed_gateway.application.features.business.requests.commands import (
     CancelBusinessOrderCommand, CheckoutCommand, CreateApiKeyCommand,
     CreateBusinessAccountCommand, CreateOrderCommand, CreateWebhookCommand,
     DeleteApiKeyCommand, InitializeCheckoutCommand, LoginBusinessCommand,
     LoginBusinessVerifyCommand, UpdateBusinessCommand)
 from ed_gateway.application.features.business.requests.queries import (
-    GetBusinessApiKeysQuery, GetBusinessByUserIdQuery, GetBusinessOrdersQuery,
-    GetBusinessQuery, GetBusinessReportQuery, GetBusinessWebhookQuery)
+    GetBusinessApiKeysQuery, GetBusinessByUserIdQuery, GetBusinessesQuery,
+    GetBusinessOrdersQuery, GetBusinessQuery, GetBusinessReportQuery,
+    GetBusinessWebhookQuery)
 from ed_gateway.application.features.consumers.handlers.commands import (
     CreateConsumerCommandHandler, LoginConsumerCommandHandler,
     LoginConsumerVerifyCommandHandler, RateDeliveryCommandHandler,
     UpdateConsumerCommandHandler)
 from ed_gateway.application.features.consumers.handlers.queries import (
     GetConsumerByUserIdQueryHandler, GetConsumerOrdersQueryHandler,
-    GetConsumerQueryHandler)
+    GetConsumerQueryHandler, GetConsumersQueryHandler)
 from ed_gateway.application.features.consumers.requests.commands import (
     CreateConsumerCommand, LoginConsumerCommand, LoginConsumerVerifyCommand,
     RateDeliveryCommand, UpdateConsumerCommand)
 from ed_gateway.application.features.consumers.requests.queries import (
-    GetConsumerByUserIdQuery, GetConsumerOrdersQuery, GetConsumerQuery)
-from ed_gateway.application.features.delivery_jobs.handlers.queries import \
-    GetDeliveryJobQueryHandler
-from ed_gateway.application.features.delivery_jobs.requests.queries import \
-    GetDeliveryJobQuery
+    GetConsumerByUserIdQuery, GetConsumerOrdersQuery, GetConsumerQuery,
+    GetConsumersQuery)
+from ed_gateway.application.features.delivery_jobs.handlers.queries import (
+    GetDeliveryJobQueryHandler, GetDeliveryJobsQueryHandler)
+from ed_gateway.application.features.delivery_jobs.requests.queries import (
+    GetDeliveryJobQuery, GetDeliveryJobsQuery)
 from ed_gateway.application.features.drivers.handlers.commands import (
     ClaimDeliveryJobCommandHandler, CreateDriverAccountCommandHandler,
     FinishOrderDeliveryCommandHandler, FinishOrderPickUpCommandHandler,
@@ -67,7 +67,7 @@ from ed_gateway.application.features.drivers.handlers.commands import (
 from ed_gateway.application.features.drivers.handlers.queries import (
     GetDriverByIdQueryHandler, GetDriverByUserIdQueryHandler,
     GetDriverDeliveryJobsQueryHandler, GetDriverOrdersQueryHandler,
-    GetDriverPaymentSummaryQueryHandler)
+    GetDriverPaymentSummaryQueryHandler, GetDriversQueryHandler)
 from ed_gateway.application.features.drivers.requests.commands import (
     ClaimDeliveryJobCommand, CreateDriverAccountCommand,
     FinishOrderDeliveryCommand, FinishOrderPickUpCommand, LoginDriverCommand,
@@ -75,7 +75,7 @@ from ed_gateway.application.features.drivers.requests.commands import (
     StartOrderPickUpCommand, UpdateDriverCurrentLocationCommand)
 from ed_gateway.application.features.drivers.requests.queries import (
     GetDriverByIdQuery, GetDriverByUserIdQuery, GetDriverDeliveryJobsQuery,
-    GetDriverOrdersQuery, GetDriverPaymentSummaryQuery)
+    GetDriverOrdersQuery, GetDriverPaymentSummaryQuery, GetDriversQuery)
 from ed_gateway.application.features.notifications.handlers.commands import \
     ReadNotificationCommandHandler
 from ed_gateway.application.features.notifications.handlers.queries import \
@@ -84,10 +84,10 @@ from ed_gateway.application.features.notifications.requests.commands import \
     ReadNotificationCommand
 from ed_gateway.application.features.notifications.requests.queries import \
     GetNotificationsQuery
-from ed_gateway.application.features.order.handlers.queries import \
-    TrackOrderQueryHandler
-from ed_gateway.application.features.order.requests.queries import \
-    TrackOrderQuery
+from ed_gateway.application.features.order.handlers.queries import (
+    GetOrderQueryHandler, GetOrdersQueryHandler, TrackOrderQueryHandler)
+from ed_gateway.application.features.order.requests.queries import (
+    GetOrderQuery, GetOrdersQuery, TrackOrderQuery)
 from ed_gateway.common.generic_helpers import get_config
 from ed_gateway.common.typing.config import Config
 from ed_gateway.infrastructure.api.api import Api
@@ -138,6 +138,7 @@ def mediator(
         (GetDriverDeliveryJobsQuery, GetDriverDeliveryJobsQueryHandler(api)),
         (GetDriverByIdQuery, GetDriverByIdQueryHandler(api)),
         (GetDriverByUserIdQuery, GetDriverByUserIdQueryHandler(api)),
+        (GetDriversQuery, GetDriversQueryHandler(api)),
         (GetDriverOrdersQuery, GetDriverOrdersQueryHandler(api)),
         (GetDriverPaymentSummaryQuery, GetDriverPaymentSummaryQueryHandler(api)),
         (ClaimDeliveryJobCommand, ClaimDeliveryJobCommandHandler(api)),
@@ -156,9 +157,10 @@ def mediator(
         ),
         (LoginBusinessCommand, LoginBusinessCommandHandler(api)),
         (LoginBusinessVerifyCommand, LoginBusinessVerifyCommandHandler(api)),
+        (GetBusinessQuery, GetBusinessQueryHandler(api)),
+        (GetBusinessesQuery, GetBusinessesQueryHandler(api)),
         (GetBusinessOrdersQuery, GetBusinessOrdersQueryHandler(api)),
         (CreateOrderCommand, CreateOrderCommandHandler(api)),
-        (GetBusinessQuery, GetBusinessQueryHandler(api)),
         (GetBusinessByUserIdQuery, GetBusinessByUserIdQueryHandler(api)),
         (CancelBusinessOrderCommand, CancelBusinessOrderCommandHandler(api)),
         (UpdateBusinessCommand, UpdateBusinessCommandHandler(api)),
@@ -176,6 +178,7 @@ def mediator(
         # Delivery features
         (GetDeliveryJobsQuery, GetDeliveryJobsQueryHandler(api)),
         (GetDeliveryJobQuery, GetDeliveryJobQueryHandler(api)),
+        (GetDeliveryJobsQuery, GetDeliveryJobsQueryHandler(api)),
         # Consumer features
         (
             CreateConsumerCommand,
@@ -186,10 +189,13 @@ def mediator(
         (GetConsumerByUserIdQuery, GetConsumerByUserIdQueryHandler(api)),
         (GetConsumerQuery, GetConsumerQueryHandler(api)),
         (GetConsumerOrdersQuery, GetConsumerOrdersQueryHandler(api)),
+        (GetConsumersQuery, GetConsumersQueryHandler(api)),
         (RateDeliveryCommand, RateDeliveryCommandHandler(api)),
         (UpdateConsumerCommand, UpdateConsumerCommandHandler(api)),
         # Order features
         (TrackOrderQuery, TrackOrderQueryHandler(api)),
+        (GetOrderQuery, GetOrderQueryHandler(api)),
+        (GetOrdersQuery, GetOrdersQueryHandler(api)),
         # Notification features
         (GetNotificationsQuery, GetNotificationsQueryHandler(api)),
         (ReadNotificationCommand, ReadNotificationCommandHandler(api)),
@@ -202,15 +208,9 @@ def mediator(
         (LoginAdminVerifyCommand, LoginAdminVerifyCommandHandler(api)),
         (GetAdminByUserIdQuery, GetAdminByUserIdQueryHandler(api)),
         (GetAdminQuery, GetAdminQueryHandler(api)),
+        (GetAdminsQuery, GetAdminsQueryHandler(api)),
         (SettleDriverPaymentCommand, SettleDriverPaymentCommandHandler(api)),
         (UpdateAdminCommand, UpdateAdminCommandHandler(api)),
-        # Admin led features
-        (GetAdminsQuery, GetAdminsQueryHandler(api)),
-        (GetDriversQuery, GetDriversQueryHandler(api)),
-        (GetConsumersQuery, GetConsumersQueryHandler(api)),
-        (GetBusinessesQuery, GetBusinessesQueryHandler(api)),
-        (GetDeliveryJobsQuery, GetDeliveryJobsQueryHandler(api)),
-        (GetOrdersQuery, GetOrdersQueryHandler(api)),
     ]
 
     for request, handler in features:

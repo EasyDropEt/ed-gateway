@@ -11,4 +11,4 @@ from ed_gateway.application.common.responses.base_response import BaseResponse
 @request(BaseResponse[AdminDto])
 @dataclass
 class GetAdminQuery(Request):
-    admin_id: UUID
+    id: UUID

@@ -10,8 +10,11 @@ from ed_gateway.application.features.business.handlers.queries.get_business_repo
     GetBusinessReportQueryHandler
 from ed_gateway.application.features.business.handlers.queries.get_business_webhook_query_handler import \
     GetBusinessWebhookQueryHandler
+from ed_gateway.application.features.business.handlers.queries.get_businesses_query_handler import \
+    GetBusinessesQueryHandler
 
 __all__ = [
+    "GetBusinessesQueryHandler",
     "GetBusinessApiKeysQueryHandler",
     "GetBusinessOrdersQueryHandler",
     "GetBusinessQueryHandler",

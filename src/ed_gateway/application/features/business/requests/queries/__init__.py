@@ -10,8 +10,11 @@ from ed_gateway.application.features.business.requests.queries.get_business_repo
     GetBusinessReportQuery
 from ed_gateway.application.features.business.requests.queries.get_business_webhook_query import \
     GetBusinessWebhookQuery
+from ed_gateway.application.features.business.requests.queries.get_businesses_query import \
+    GetBusinessesQuery
 
 __all__ = [
+    "GetBusinessesQuery",
     "GetBusinessApiKeysQuery",
     "GetBusinessOrdersQuery",
     "GetBusinessQuery",

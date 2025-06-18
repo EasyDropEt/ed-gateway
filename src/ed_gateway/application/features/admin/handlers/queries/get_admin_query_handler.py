@@ -18,9 +18,8 @@ class GetAdminQueryHandler(RequestHandler):
         self._api = api
 
     async def handle(self, request: GetAdminQuery) -> BaseResponse[AdminDto]:
-        LOG.info(
-            f"Calling core get_admin API with admin_id: {request.admin_id}")
-        response = await self._api.core_api.get_admin(str(request.admin_id))
+        LOG.info(f"Calling core get_admin API with admin_id: {request.id}")
+        response = await self._api.core_api.get_admin(str(request.id))
 
         LOG.info(f"Received response from get_admin: {response}")
         if not response["is_success"]:
