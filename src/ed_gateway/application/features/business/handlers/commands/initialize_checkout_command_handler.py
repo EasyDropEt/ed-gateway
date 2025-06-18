@@ -56,15 +56,24 @@ class InitializeCheckoutCommandHandler(RequestHandler):
             self._success_message,
             CheckoutDto(
                 url=self.build_checkout_url(
-                    base_url, key, request.parcel, request.callback_url
+                    api_key=key,
+                    business_name=business["business_name"],
+                    base_url=base_url,
+                    parcel=request.parcel,
+                    call_back_url=request.callback_url,
                 )
             ),
         )
 
     def build_checkout_url(
-        self, base_url: str, api_key: str, parcel: CreateParcelDto, call_back_url: str
+        self,
+        api_key: str,
+        business_name: str,
+        base_url: str,
+        parcel: CreateParcelDto,
+        call_back_url: str,
     ) -> str:
-        parcel_data = {
+        query_data = {
             "size": parcel["size"].value,
             "length": parcel["length"],
             "width": parcel["width"],
@@ -72,8 +81,9 @@ class InitializeCheckoutCommandHandler(RequestHandler):
             "weight": parcel["weight"],
             "fragile": int(parcel["fragile"]),
             "callback_url": call_back_url,
+            "business_name": business_name,
         }
-        query_string = urllib.parse.urlencode(parcel_data)
+        query_string = urllib.parse.urlencode(query_data)
         separator = "&" if "?" in base_url else "?"
         checkout_url = f"{base_url}{separator}api_key={api_key}&{query_string}"
         return checkout_url
