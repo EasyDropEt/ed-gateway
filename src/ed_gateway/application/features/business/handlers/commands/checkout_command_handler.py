@@ -1,7 +1,4 @@
-from ed_core.application.features.business.dtos import CreateOrderDto
-from ed_core.application.features.common.dtos import (CreateConsumerDto,
-                                                      OrderDto)
-from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
+from ed_core.application.features.common.dtos import OrderDto
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -9,9 +6,9 @@ from ed_gateway.application.common.responses.base_response import BaseResponse
 from ed_gateway.application.contracts.infrastructure.api.abc_api import ABCApi
 from ed_gateway.application.features.business.requests.commands import \
     CheckoutCommand
+from ed_gateway.application.service.api_service import ApiService
 from ed_gateway.application.service.auth_api_service import AuthApiService
 from ed_gateway.common.logging_helpers import get_logger
-from src.ed_gateway.application.service.api_service import ApiService
 
 LOG = get_logger()
 
