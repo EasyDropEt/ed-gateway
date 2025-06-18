@@ -112,7 +112,7 @@ async def get_admin(
     return await mediator.send(GetAdminByUserIdQuery(user_id=auth.credentials))
 
 
-@router.get(
+@router.put(
     "/admin/me", response_model=GenericResponse[CoreAdminDto], tags=["Admin Features"]
 )
 @rest_endpoint
@@ -208,7 +208,7 @@ async def _get_admin_id(user_id: str, mediator: Mediator) -> UUID:
 
 @router.get(
     "/admins",
-    response_model=GenericResponse[list[CoreAdminDto]],
+    response_model=GenericResponse[CoreAdminDto],
     tags=["Admin Features"],
 )
 @rest_endpoint
@@ -217,20 +217,6 @@ async def get_admins(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     return await mediator.send(GetAdminsQuery())
-
-
-@router.get(
-    "/businesses/{business_id}",
-    response_model=GenericResponse[list[BusinessDto]],
-    tags=["Admin Features"],
-)
-@rest_endpoint
-async def get_business(
-    business_id: UUID,
-    mediator: Annotated[Mediator, Depends(mediator)],
-    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
-):
-    return await mediator.send(GetBusinessQuery(business_id))
 
 
 @router.get(
@@ -247,17 +233,17 @@ async def get_businesses(
 
 
 @router.get(
-    "/consumers/{consumer_id}",
-    response_model=GenericResponse[list[ConsumerDto]],
+    "/businesses/{business_id}",
+    response_model=GenericResponse[BusinessDto],
     tags=["Admin Features"],
 )
 @rest_endpoint
-async def get_consumer(
-    consumer_id: UUID,
+async def get_business(
+    business_id: UUID,
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
-    return await mediator.send(GetConsumerQuery(consumer_id))
+    return await mediator.send(GetBusinessQuery(business_id))
 
 
 @router.get(
@@ -274,17 +260,17 @@ async def get_consumers(
 
 
 @router.get(
-    "/delivery-jobs/{delivery_job_id}",
-    response_model=GenericResponse[list[DeliveryJobDto]],
+    "/consumers/{consumer_id}",
+    response_model=GenericResponse[ConsumerDto],
     tags=["Admin Features"],
 )
 @rest_endpoint
-async def get_delivery_job(
-    delivery_job_id: UUID,
+async def get_consumer(
+    consumer_id: UUID,
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
-    return await mediator.send(GetDeliveryJobQuery(delivery_job_id))
+    return await mediator.send(GetConsumerQuery(consumer_id))
 
 
 @router.get(
@@ -298,6 +284,31 @@ async def get_delivery_jobs(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     return await mediator.send(GetDeliveryJobsQuery())
+
+
+@router.get(
+    "/delivery-jobs/{delivery_job_id}",
+    response_model=GenericResponse[DeliveryJobDto],
+    tags=["Admin Features"],
+)
+@rest_endpoint
+async def get_delivery_job(
+    delivery_job_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetDeliveryJobQuery(delivery_job_id))
+
+
+@router.get(
+    "/drivers", response_model=GenericResponse[list[DriverDto]], tags=["Admin Features"]
+)
+@rest_endpoint
+async def get_drivers(
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetDriversQuery())
 
 
 @router.post(
@@ -319,7 +330,7 @@ async def create_driver_account(
 
 @router.get(
     "/drivers/{driver_id}",
-    response_model=GenericResponse[list[DriverDto]],
+    response_model=GenericResponse[DriverDto],
     tags=["Admin Features"],
 )
 @rest_endpoint
@@ -332,19 +343,19 @@ async def get_driver(
 
 
 @router.get(
-    "/drivers", response_model=GenericResponse[list[DriverDto]], tags=["Admin Features"]
+    "/orders", response_model=GenericResponse[list[OrderDto]], tags=["Admin Features"]
 )
 @rest_endpoint
-async def get_drivers(
+async def get_orders(
     mediator: Annotated[Mediator, Depends(mediator)],
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
-    return await mediator.send(GetDriversQuery())
+    return await mediator.send(GetOrdersQuery())
 
 
 @router.get(
     "/orders/{order_id}",
-    response_model=GenericResponse[list[OrderDto]],
+    response_model=GenericResponse[OrderDto],
     tags=["Admin Features"],
 )
 @rest_endpoint
@@ -354,14 +365,3 @@ async def get_order(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     return await mediator.send(GetOrderQuery(order_id))
-
-
-@router.get(
-    "/orders", response_model=GenericResponse[list[OrderDto]], tags=["Admin Features"]
-)
-@rest_endpoint
-async def get_orders(
-    mediator: Annotated[Mediator, Depends(mediator)],
-    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
-):
-    return await mediator.send(GetOrdersQuery())
