@@ -1,5 +1,6 @@
 from typing import Annotated
 
+from ed_core.application.features.common.dtos import OrderDto
 from ed_domain.common.exceptions import ApplicationException, Exceptions
 from fastapi import APIRouter, Depends, Header, HTTPException
 from rmediator import Mediator
@@ -33,7 +34,7 @@ async def initialize_checkout(
     )
 
 
-@router.post("/checkout", response_model=GenericResponse[CheckoutDto])
+@router.post("/checkout", response_model=GenericResponse[OrderDto])
 @rest_endpoint
 async def checkout(
     dto: CreateOrderDto,
