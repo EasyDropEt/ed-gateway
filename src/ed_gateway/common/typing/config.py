@@ -11,5 +11,6 @@ class CloudinaryConfig(TypedDict):
 class Config(TypedDict):
     auth_api: str
     core_api: str
+    checkout_base_url: str
     notification_api: str
     cloudinary: CloudinaryConfig

@@ -119,6 +119,7 @@ def oauth_scheme(
 
 
 def mediator(
+    config: Annotated[Config, Depends(get_config)],
     email_templater: Annotated[ABCEmailTemplater, Depends(email_templater)],
     image_uploader: Annotated[ABCImageUploader, Depends(get_image_uploader)],
     api: Annotated[ABCApi, Depends(api)],
@@ -167,7 +168,10 @@ def mediator(
         (GetBusinessReportQuery, GetBusinessReportQueryHandler(api)),
         (GetBusinessWebhookQuery, GetBusinessWebhookQueryHandler(api)),
         (CreateWebhookCommand, CreateWebhookCommandHandler(api)),
-        (InitializeCheckoutCommand, InitializeCheckoutCommandHandler(api)),
+        (
+            InitializeCheckoutCommand,
+            InitializeCheckoutCommandHandler(api, config["checkout_base_url"]),
+        ),
         (CheckoutCommand, CheckoutCommandHandler(api)),
         # Delivery features
         (GetDeliveryJobsQuery, GetDeliveryJobsQueryHandler(api)),

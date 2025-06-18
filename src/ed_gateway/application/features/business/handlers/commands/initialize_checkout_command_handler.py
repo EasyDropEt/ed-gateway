@@ -19,8 +19,9 @@ LOG = get_logger()
 
 @request_handler(InitializeCheckoutCommand, BaseResponse[CheckoutDto])
 class InitializeCheckoutCommandHandler(RequestHandler):
-    def __init__(self, api: ABCApi):
+    def __init__(self, api: ABCApi, checkout_base_url: str):
         self._api = api
+        self._checkout_base_url = checkout_base_url
 
         self._error_message = "Order checkout cannot be initialized."
         self._success_message = "Order checkout initialized succesfully."
@@ -51,14 +52,13 @@ class InitializeCheckoutCommandHandler(RequestHandler):
         key = api_key_response["data"]["key"]
         assert key is not None
 
-        base_url = "https://base.url"
         return BaseResponse[CheckoutDto].success(
             self._success_message,
             CheckoutDto(
                 url=self.build_checkout_url(
                     api_key=key,
                     business_name=business["business_name"],
-                    base_url=base_url,
+                    base_url=self._checkout_base_url,
                     parcel=request.parcel,
                     call_back_url=request.callback_url,
                 )

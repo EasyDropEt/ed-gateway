@@ -12,6 +12,7 @@ def get_config() -> Config:
     return {
         "auth_api": _get_env_variable("AUTH_API"),
         "core_api": _get_env_variable("CORE_API"),
+        "checkout_base_url": _get_env_variable("CHECKOUT_BASE_URL"),
         "notification_api": _get_env_variable("NOTIFICATION_API"),
         "cloudinary": {
             "cloud_name": _get_env_variable("CLOUDINARY_CLOUD_NAME"),
