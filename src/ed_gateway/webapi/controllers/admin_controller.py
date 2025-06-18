@@ -98,7 +98,9 @@ async def login_admin_verify(
 
 
 @router.get(
-    "/admin/me", response_model=GenericResponse[CoreAdminDto], tags=["Admin Features"]
+    "/admin/me/profile",
+    response_model=GenericResponse[CoreAdminDto],
+    tags=["Admin Features"],
 )
 @rest_endpoint
 async def get_admin(
@@ -113,7 +115,9 @@ async def get_admin(
 
 
 @router.put(
-    "/admin/me", response_model=GenericResponse[CoreAdminDto], tags=["Admin Features"]
+    "/admin/me/profile",
+    response_model=GenericResponse[CoreAdminDto],
+    tags=["Admin Features"],
 )
 @rest_endpoint
 async def update_admin(

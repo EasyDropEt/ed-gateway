@@ -69,7 +69,9 @@ async def login_driver_verify(
     return await mediator.send(LoginDriverVerifyCommand(dto=request))
 
 
-@router.get("/me", response_model=GenericResponse[DriverDto], tags=["Driver Features"])
+@router.get(
+    "/me/profile", response_model=GenericResponse[DriverDto], tags=["Driver Features"]
+)
 @rest_endpoint
 async def get_driver(
     mediator: Annotated[Mediator, Depends(mediator)],

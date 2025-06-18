@@ -88,7 +88,9 @@ async def login_consumer_verify(
 
 
 @router.get(
-    "/me", response_model=GenericResponse[CoreConsumerDto], tags=["Consumer Features"]
+    "/me/profile",
+    response_model=GenericResponse[CoreConsumerDto],
+    tags=["Consumer Features"],
 )
 @rest_endpoint
 async def get_consumer(

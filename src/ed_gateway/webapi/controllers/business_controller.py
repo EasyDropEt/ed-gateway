@@ -5,8 +5,6 @@ from uuid import UUID
 
 from ed_auth.documentation.api.abc_auth_api_client import (LoginUserVerifyDto,
                                                            UnverifiedUserDto)
-from ed_core.application.features.business.dtos.create_order_dto import \
-    CreateParcelDto
 from ed_core.application.features.common.dtos import WebhookDto
 from ed_core.documentation.api.abc_core_api_client import (ApiKeyDto,
                                                            BusinessDto,
@@ -23,13 +21,13 @@ from fastapi.security import HTTPAuthorizationCredentials
 from rmediator import Mediator
 
 from ed_gateway.application.features.business.dtos import (
-    BusinessAccountDto, CheckoutDto, CreateBusinessAccountDto, CreateOrderDto,
+    BusinessAccountDto, CreateBusinessAccountDto, CreateOrderDto,
     LoginBusinessDto)
 from ed_gateway.application.features.business.requests.commands import (
     CancelBusinessOrderCommand, CreateApiKeyCommand,
     CreateBusinessAccountCommand, CreateOrderCommand, CreateWebhookCommand,
-    DeleteApiKeyCommand, InitializeCheckoutCommand, LoginBusinessCommand,
-    LoginBusinessVerifyCommand, UpdateBusinessCommand)
+    DeleteApiKeyCommand, LoginBusinessCommand, LoginBusinessVerifyCommand,
+    UpdateBusinessCommand)
 from ed_gateway.application.features.business.requests.queries import (
     GetBusinessApiKeysQuery, GetBusinessByUserIdQuery, GetBusinessOrdersQuery,
     GetBusinessReportQuery, GetBusinessWebhookQuery)
@@ -95,7 +93,7 @@ async def login_business_verify(
 
 
 @router.get(
-    "/me",
+    "/me/profile",
     response_model=GenericResponse[BusinessDto],
     tags=["Business Features"],
 )
@@ -112,7 +110,9 @@ async def get_business(
 
 
 @router.put(
-    "/me", response_model=GenericResponse[BusinessDto], tags=["Business Features"]
+    "/me/profile",
+    response_model=GenericResponse[BusinessDto],
+    tags=["Business Features"],
 )
 @rest_endpoint
 async def update_business(
