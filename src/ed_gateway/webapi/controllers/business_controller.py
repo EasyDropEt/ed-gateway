@@ -243,29 +243,8 @@ async def get_report(
 
 
 @router.post(
-    "/me/checkout",
-    response_model=GenericResponse[CheckoutDto],
-    tags=["Business Features"],
-)
-@rest_endpoint
-async def initialize_checkout(
-    request: CreateParcelDto,
-    mediator: Annotated[Mediator, Depends(mediator)],
-    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
-):
-
-    business_id = await _get_business_id(auth.credentials, mediator)
-    LOG.info(
-        "Sending InitializeCheckoutCommand to mediator with business_id: %s and request: %s",
-        business_id,
-        request,
-    )
-    return await mediator.send(InitializeCheckoutCommand(business_id, request))
-
-
-@router.post(
     "/me/orders",
-    response_model=GenericResponse[list[OrderDto]],
+    response_model=GenericResponse[OrderDto],
     tags=["Business Features"],
 )
 @rest_endpoint

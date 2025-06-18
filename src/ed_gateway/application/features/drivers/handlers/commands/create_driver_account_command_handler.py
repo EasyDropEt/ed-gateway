@@ -1,6 +1,4 @@
-from ed_core.documentation.api.abc_core_api_client import (CreateDriverDto,
-                                                           DriverDto)
-from ed_domain.common.exceptions import EXCEPTION_NAMES, ApplicationException
+from ed_core.documentation.api.abc_core_api_client import DriverDto
 from ed_domain.core.entities.notification import NotificationType
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
@@ -13,6 +11,7 @@ from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uplo
     ABCImageUploader
 from ed_gateway.application.features.drivers.requests.commands.create_driver_account_command import \
     CreateDriverAccountCommand
+from ed_gateway.application.service.api_service import ApiService
 from ed_gateway.common.logging_helpers import get_logger
 
 LOG = get_logger()
@@ -33,12 +32,14 @@ class CreateDriverAccountCommandHandler(RequestHandler):
         self._success_message = "Driver account created successfully."
         self._error_message = "Failed to create user account."
 
+        self._api_service = ApiService(self._error_message)
+
     async def handle(
         self, request: CreateDriverAccountCommand
     ) -> BaseResponse[DriverDto]:
         dto = request.dto
         LOG.info(f"Calling auth create_get_otp API with request: {dto}")
-        create_user_response = await self._api_handler.auth_api.create_get_otp(
+        create_user = await self._api_handler.auth_api.create_get_otp(
             {
                 "first_name": dto["first_name"],
                 "last_name": dto["last_name"],
@@ -48,18 +49,12 @@ class CreateDriverAccountCommandHandler(RequestHandler):
             }
         )
 
-        LOG.info(
-            f"Received response from create_get_otp: {create_user_response}")
-        if not create_user_response["is_success"]:
-            raise ApplicationException(
-                EXCEPTION_NAMES[create_user_response["http_status_code"]],
-                self._error_message,
-                create_user_response["errors"],
-            )
+        LOG.info(f"Received response from create_get_otp: {create_user}")
+        self._api_service.verify(create_user)
 
         LOG.info(f"Calling core create_driver API with request: {dto}")
-        user = create_user_response["data"]
-        create_driver_response = await self._api_handler.core_api.create_driver(
+        user = create_user["data"]
+        create_driver = await self._api_handler.core_api.create_driver(
             {
                 "user_id": user["id"],
                 "first_name": dto["first_name"],
@@ -72,15 +67,11 @@ class CreateDriverAccountCommandHandler(RequestHandler):
             }
         )
 
-        LOG.info(
-            f"Received response from create_driver: {create_driver_response}")
-        if create_driver_response["is_success"] is False:
+        LOG.info(f"Received response from create_driver: {create_driver}")
+        self._api_service.basic_verify(create_driver)
+        if not create_driver["is_success"]:
             await self._api_handler.auth_api.delete_user(user["id"])
-            raise ApplicationException(
-                EXCEPTION_NAMES[create_driver_response["http_status_code"]],
-                self._error_message,
-                create_driver_response["errors"],
-            )
+            self._api_service.verify(create_driver)
 
         await self._api_handler.notification_api.send_notification(
             {
@@ -90,5 +81,5 @@ class CreateDriverAccountCommandHandler(RequestHandler):
             }
         )
 
-        driver = create_driver_response["data"]
+        driver = create_driver["data"]
         return BaseResponse[DriverDto].success(self._success_message, driver)

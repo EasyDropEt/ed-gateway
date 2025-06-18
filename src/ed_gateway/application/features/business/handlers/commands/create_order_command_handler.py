@@ -1,4 +1,5 @@
 from ed_core.documentation.api.abc_core_api_client import OrderDto
+from ed_domain.core.entities.parcel import ParcelSize
 from rmediator.decorators import request_handler
 from rmediator.types import RequestHandler
 
@@ -57,11 +58,15 @@ class CreateOrderCommandHandler(RequestHandler):
         LOG.info(
             f"Calling core create_business_orders API for business id: {request.business_id} with orders: {request.dto}"
         )
+        parcel_size = dto["parcel"]["size"].value
         response = await self._api_handler.core_api.create_business_order(
             str(request.business_id),
             {
                 "consumer_id": consumer["id"],
-                "parcel": dto["parcel"],
+                "parcel": {
+                    **dto["parcel"],
+                    "size": parcel_size,  # type: ignore
+                },
                 "latest_time_of_delivery": dto["latest_time_of_delivery"],
             },
         )

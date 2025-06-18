@@ -13,6 +13,7 @@ from ed_gateway.application.contracts.infrastructure.image_upload.abc_image_uplo
     ABCImageUploader
 from ed_gateway.application.features.consumers.requests.commands import \
     CreateConsumerCommand
+from ed_gateway.application.service.api_service import ApiService
 from ed_gateway.application.service.auth_api_service import AuthApiService
 from ed_gateway.common.logging_helpers import get_logger
 
@@ -36,9 +37,10 @@ class CreateConsumerCommandHandler(RequestHandler):
         self._success_message = "Consumer account created successfully"
         self._error_message = "Failed to create consumer account."
 
+        self._api_service = ApiService(self._error_message)
+
     async def handle(self, request: CreateConsumerCommand) -> BaseResponse[ConsumerDto]:
         dto = request.dto
-
         user = await self._auth_service.create(
             {
                 "first_name": dto["first_name"],
@@ -48,12 +50,8 @@ class CreateConsumerCommandHandler(RequestHandler):
             }
         )
 
-        LOG.info(
-            "Calling core create_consumer API for user: %s %s",
-            dto.get("first_name"),
-            dto.get("last_name"),
-        )
-        create_consumer_response = await self._api.core_api.create_consumer(
+        LOG.info("Calling core create_consumer API for user: %s %s")
+        create_consumer = await self._api.core_api.create_consumer(
             {
                 "user_id": user["id"],
                 "first_name": dto["first_name"],
@@ -64,15 +62,11 @@ class CreateConsumerCommandHandler(RequestHandler):
             }
         )
 
-        LOG.info(
-            f"Received response from create_consumer: {create_consumer_response}")
-        if create_consumer_response["is_success"] is False:
+        LOG.info(f"Received response from create_consumer: {create_consumer}")
+        self._api_service.basic_verify(create_consumer)
+        if not create_consumer["is_success"]:
             await self._api.auth_api.delete_user(user["id"])
-            raise ApplicationException(
-                EXCEPTION_NAMES[create_consumer_response["http_status_code"]],
-                self._error_message,
-                create_consumer_response["errors"],
-            )
+            self._api_service.verify(create_consumer)
 
         await self._api.notification_api.send_notification(
             {
@@ -82,5 +76,5 @@ class CreateConsumerCommandHandler(RequestHandler):
             }
         )
 
-        consumer = create_consumer_response["data"]
+        consumer = create_consumer["data"]
         return BaseResponse[ConsumerDto].success(self._success_message, consumer)
