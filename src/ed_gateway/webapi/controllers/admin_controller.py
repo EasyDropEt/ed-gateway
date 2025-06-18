@@ -36,7 +36,7 @@ from ed_gateway.application.features.drivers.dtos import CreateDriverAccountDto
 from ed_gateway.application.features.drivers.requests.commands import \
     CreateDriverAccountCommand
 from ed_gateway.application.features.drivers.requests.queries import (
-    GetDriverByIdQuery, GetDriversQuery)
+    GetDriverByIdQuery, GetDriverPaymentSummaryQuery, GetDriversQuery)
 from ed_gateway.application.features.notifications.requests.commands import \
     ReadNotificationCommand
 from ed_gateway.application.features.notifications.requests.queries import \
@@ -344,6 +344,20 @@ async def get_driver(
     auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
 ):
     return await mediator.send(GetDriverByIdQuery(driver_id))
+
+
+@router.get(
+    "/drivers/{driver_id}/payment/summary/details",
+    response_model=GenericResponse[DriverDto],
+    tags=["Admin Features"],
+)
+@rest_endpoint
+async def get_driver_payment_summary(
+    driver_id: UUID,
+    mediator: Annotated[Mediator, Depends(mediator)],
+    auth: Annotated[HTTPAuthorizationCredentials, Depends(oauth2_scheme)],
+):
+    return await mediator.send(GetDriverPaymentSummaryQuery(driver_id))
 
 
 @router.get(
